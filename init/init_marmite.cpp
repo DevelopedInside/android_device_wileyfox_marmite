@@ -80,23 +80,26 @@ void vendor_load_properties()
     check_aw87319();
 
     std::string cmv = GetProperty("ro.boot.cmv","");
+    int display_density = 320;
 
     if (cmv == "mv1")
     {
         /* Swift 2 */
-        property_set("ro.sf.lcd_density", "320");
         property_set("ro.media.maxmem", "10590068224");
     }
     else if (cmv == "mv2")
     {
         /* Swift 2 Plus*/
-        property_set("ro.sf.lcd_density", "320");
+        /* nothing */
     }
     else if (cmv == "mv3")
     {
         /* Swift 2 X */
-        property_set("ro.sf.lcd_density", "440");
-//        property_set("ro.power_profile.override", "power_profile_2x");
+        display_density = 480;
+    }
+    char density[5];
+    snprintf(density, sizeof(density), "%d", display_density);
+    property_set("ro.sf.lcd_density", density);
     }
 }
 
