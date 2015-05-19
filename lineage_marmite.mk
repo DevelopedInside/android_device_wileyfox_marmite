@@ -43,5 +43,7 @@ PRODUCT_BUILD_PROP_OVERRIDES += \
 
 BUILD_FINGERPRINT := Wileyfox/Swift2/marmite:8.1.0/OPM5.171019.017/38c792b31d:user/release-keys
 
+# Due to multi-density builds, these are set by init
 PRODUCT_SYSTEM_PROPERTY_BLACKLIST += \
-    ro.product.model
+    ro.product.model \
+    ro.sf.lcd_density
