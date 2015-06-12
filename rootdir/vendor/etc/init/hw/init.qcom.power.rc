@@ -146,9 +146,6 @@ on enable-low-power
     # Enable timer migration to little cluster
     write /proc/sys/kernel/power_aware_timer_migration 1
 
-    # android background processes are set to nice 10. Never schedule these on the a57s.
-    write /proc/sys/kernel/sched_upmigrate_min_nice 9
-
     # Start memory configuration
     start qcom-mem
 
