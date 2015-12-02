@@ -104,7 +104,6 @@ ro.gps.agps_provider=1
 media.aac_51_output_enabled=true
 media.msm8956hw=0
 media.stagefright.audio.sink=280
-mm.enable.qcom_parser=917503
 mm.enable.smoothstreaming=true
 mmp.enable.3g2=true
 persist.mm.sta.enable=0
