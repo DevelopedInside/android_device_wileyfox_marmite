@@ -49,4 +49,14 @@
     <!-- Show enabled lte option for lte device -->
     <bool name="config_enabled_lte" translatable="false">true</bool>
 
+    <!-- For this option to exist and work, the parameter name must be defined -->
+    <string name="incall_echo_cancellation_parameter">fluence</string>
+
+    <!-- Paired with the above parameter, the below values will be used as enable/disable values for audiomanager.
+         "incall_echo_cancellation_parameter=incall_echo_cancellation_value" will be sent directly down into the
+         HAL. Size of this array must be exactly 2. -->
+    <string-array name="incall_echo_cancellation_values">
+        <item>dualmic</item>
+        <item>none</item>
+    </string-array>
 </resources>
