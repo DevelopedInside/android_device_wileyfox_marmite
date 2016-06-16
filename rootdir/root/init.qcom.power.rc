@@ -202,5 +202,4 @@ on property:dev.bootcomplete=1
     write /dev/cpuset/camera-daemon/cpus 4-7
 
     # Set perfd properties
-    rm /data/system/perfd/default_values
-    start perfd
+    setprop sys.post_boot.parsed 1
