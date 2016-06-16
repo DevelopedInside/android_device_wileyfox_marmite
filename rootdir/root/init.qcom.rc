@@ -335,6 +335,7 @@ on post-fs-data
     mkdir /data/vendor/perfd 0770 root system
     chmod 2770 /data/vendor/perfd
     rm /data/vendor/perfd/default_values
+    start perfd
 
     # NFC local data and nfcee xml storage
     mkdir /data/vendor/nfc 0770 nfc nfc
