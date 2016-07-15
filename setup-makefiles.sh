@@ -42,7 +42,11 @@ setup_vendor "$DEVICE" "$VENDOR" "$LINEAGE_ROOT"
 # Copyright headers and guards
 write_headers
 
-# Device specific files
+# Qualcomm BSP blobs - we put a conditional around here
+# in case the BSP is actually being built
+write_makefiles "$MY_DIR"/proprietary-files-qc.txt true
+
+# The standard blobs
 write_makefiles "$MY_DIR"/proprietary-files.txt true
 
 # Finish
