@@ -632,8 +632,8 @@ service ipacm-diag /system/bin/ipacm-diag
 
 service ipacm /system/vendor/bin/ipacm
     class main
-    user net_admin
-    group net_admin inet radio
+    user radio
+    group radio inet
     disabled
     writepid /dev/cpuset/system-background/tasks
 
