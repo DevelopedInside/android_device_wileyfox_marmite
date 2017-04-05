@@ -19,6 +19,8 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
+PRODUCT_ENFORCE_RRO_TARGETS := framework-res
+
 # Include device-specific product fragments
 include $(LOCAL_PATH)/product/*.mk
 
