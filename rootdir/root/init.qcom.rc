@@ -217,8 +217,6 @@ on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
     chown media_rw media_rw /data/media
 
-    mkdir /data/misc/ipa 0700 net_admin net_admin
-
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
 
     # Create the directories used by the Wireless subsystem
@@ -235,6 +233,10 @@ on post-fs-data
     #create netmgr log dir
     mkdir /data/vendor/netmgr 0770 radio radio
     chmod 0770 /data/vendor/netmgr
+
+    # Create ipacm log dir
+    mkdir /data/vendor/ipa 0770 radio radio
+    chmod 0770 /data/vendor/ipa
 
     # Create the directories used by CnE subsystem
     mkdir /data/connectivity 0771 system system
@@ -622,10 +624,10 @@ service ipacm-diag /system/bin/ipacm-diag
     group net_admin diag
     disabled
 
-service ipacm /system/bin/ipacm
+service ipacm /system/vendor/bin/ipacm
     class main
     user net_admin
-    group net_admin inet
+    group net_admin inet radio
     disabled
     writepid /dev/cpuset/system-background/tasks
 
