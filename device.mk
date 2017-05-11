@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+# Inherit from wileyfox_marmite_common
+$(call inherit-product, device/wileyfox/marmite-common/msm8937.mk)
+
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay

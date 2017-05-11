@@ -27,6 +27,8 @@ LOCAL_PATH := $(call my-dir)
 
 ifeq ($(TARGET_DEVICE),marmite)
 
+#$(call inherit-product, device/wileyfox/marmite-common/Android.mk)
+
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
 include $(CLEAR_VARS)
