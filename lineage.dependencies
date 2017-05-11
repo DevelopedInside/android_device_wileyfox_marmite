@@ -1,0 +1,10 @@
+[
+  {
+    "repository": "android_device_qcom_common",
+    "target_path": "device/qcom/common"
+  }
+  {
+    "repository": "android_device_wileyfox_marmite-common",
+    "target_path": "device/wileyfox/marmite-common"
+  }
+]

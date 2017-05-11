@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device name="Android">
+    <item name="none">0</item>
+    <item name="screen.on">103.5</item>
+    <item name="screen.full">197.5</item>
+    <item name="bluetooth.active">131.9</item>
+    <item name="bluetooth.on">0.7</item>
+    <item name="wifi.on">0.9</item>
+    <item name="wifi.active">50.2</item>
+    <item name="wifi.scan">93.2</item>
+    <item name="dsp.audio">22.1</item>
+    <item name="dsp.video">95.6</item>
+    <item name="camera.avg">486.9</item>
+    <item name="camera.flashlight">132.5</item>
+    <item name="gps.on">39.6</item>
+    <item name="radio.active">106.7</item>
+    <item name="radio.scanning">113.2</item>
+    <array name="radio.on">
+        <value>17</value>
+        <value>3</value>
+    </array>
+    <array name="cpu.speeds.cluster0">
+        <value>960000</value>
+        <value>1094400</value>
+        <value>1209600</value>
+        <value>1248000</value>
+        <value>1344000</value>
+        <value>1401000</value>
+    </array>
+    <array name="cpu.speeds.cluster1">
+        <value>768000</value>
+        <value>902400</value>
+        <value>998400</value>
+        <value>1094400</value>
+    </array>
+    <item name="cpu.idle">2.89</item>
+    <item name="cpu.awake">17</item>
+    <array name="cpu.active.cluster0">
+        <value>68.95</value>
+        <value>91.34</value>
+        <value>117.30</value>
+        <value>119.86</value>
+        <value>136.83</value>
+        <value>145.08</value>
+    </array>
+    <array name="cpu.active.cluster1">
+        <value>41.13</value>
+        <value>48.72</value>
+        <value>60.89</value>
+        <value>97.6</value>
+    </array>
+    <array name="cpu.clusters.cores">
+        <value>4</value>
+        <value>4</value>
+    </array>
+    <item name="battery.capacity">2700</item>
+    <array name="wifi.batchedscan">
+        <value>.0093</value>
+        <value>.0757</value>
+        <value>.5983</value>
+        <value>4.779</value>
+        <value>38.22</value>
+    </array>
+</device>
