@@ -17,6 +17,8 @@
 # Inherit from wileyfox_marmite_common
 $(call inherit-product, device/wileyfox/marmite-common/msm8937.mk)
 
+$(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay
