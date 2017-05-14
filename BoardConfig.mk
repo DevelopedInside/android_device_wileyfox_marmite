@@ -22,4 +22,4 @@ include device/wileyfox/marmite-common/BoardConfigCommon.mk
 include $(DEVICE_PATH)/board/*.mk
 
 # Inherit the proprietary files
--include vendor/wileyfox/marmite/BoardConfigVendor.mk
+#-include vendor/wileyfox/marmite/BoardConfigVendor.mk

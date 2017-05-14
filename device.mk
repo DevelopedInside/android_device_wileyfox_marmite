@@ -27,4 +27,4 @@ DEVICE_PACKAGE_OVERLAYS += \
 include $(LOCAL_PATH)/product/*.mk
 
 # Inherit proprietary files
-$(call inherit-product-if-exists, vendor/wileyfox/marmite/marmite-vendor.mk)
+#$(call inherit-product-if-exists, vendor/wileyfox/marmite/marmite-vendor.mk)
