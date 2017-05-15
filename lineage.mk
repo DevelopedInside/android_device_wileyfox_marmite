@@ -26,16 +26,18 @@ $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
 
 # Set those variables here to overwrite the inherited values.
-BOARD_VENDOR := wileyfox
-PRODUCT_DEVICE := marmite
 PRODUCT_NAME := lineage_marmite
-PRODUCT_BRAND := Wileyfox
-PRODUCT_MODEL := Wileyfox Swift 2
+PRODUCT_DEVICE := marmite
 PRODUCT_MANUFACTURER := Wileyfox
+PRODUCT_MODEL := Swift2
 
 PRODUCT_GMS_CLIENTID_BASE := android-wileyfox
 
+PRODUCT_BRAND := wileyfox
+TARGET_VENDOR := wileyfox
 TARGET_VENDOR_PRODUCT_NAME := marmite
+TARGET_VENDOR_DEVICE_NAME := Swift2
+PRODUCT_BUILD_PROP_OVERRIDES += TARGET_DEVICE=Swift2 PRODUCT_NAME=marmite
 
 PRODUCT_SYSTEM_PROPERTY_BLACKLIST += \
     ro.product.model
