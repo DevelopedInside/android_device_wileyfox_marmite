@@ -18,6 +18,7 @@
 $(call inherit-product, device/wileyfox/marmite-common/marmite_base.mk)
 
 $(call inherit-product-if-exists, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+$(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
 
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
