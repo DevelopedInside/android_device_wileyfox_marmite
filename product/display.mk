@@ -8,7 +8,3 @@ PRODUCT_AAPT_PREF_CONFIG := xhdpi
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-dalvik-heap.mk)
 $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk)
 
-# Properties
-#PRODUCT_PROPERTY_OVERRIDES += \
-#    ro.sf.lcd_density=320 \
-#    qemu.hw.mainkeys=0
