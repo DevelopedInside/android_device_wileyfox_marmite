@@ -16,9 +16,9 @@
 -->
 <resources>
     <!-- Default wi-fi hotspot ssid -->
-    <string name="config_wifiHotSpotSsid" translatable="false">Redmi</string>
+    <string name="config_wifiHotSpotSsid" translatable="false">Swift2</string>
     <!-- Default wi-fi direct name -->
-    <string name="config_wifiDirectName" translatable="false">Redmi</string>
+    <string name="config_wifiDirectName" translatable="false">Swift2</string>
 
     <!-- Default value for proximity check on screen wake
      NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)-->
