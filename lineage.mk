@@ -33,7 +33,7 @@ PRODUCT_DEVICE := marmite
 PRODUCT_GMS_CLIENTID_BASE := android-wileyfox
 
 PRODUCT_MANUFACTURER := Wileyfox
-PRODUCT_MODEL := Wileyfox Swift 2
+#PRODUCT_MODEL := Wileyfox Swift 2
 
 PRODUCT_BRAND := Wileyfox
 TARGET_VENDOR := wileyfox
