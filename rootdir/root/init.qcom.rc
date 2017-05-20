@@ -371,7 +371,7 @@ service nqnfcinfo /system/vendor/bin/nqnfcinfo
 service perfd /system/vendor/bin/perfd
    class main
    user root
-   group root readproc
+   group root readproc system
    disabled
    socket perfd seqpacket 0666 root system
    writepid /dev/cpuset/system-background/tasks
