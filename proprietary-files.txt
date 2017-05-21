@@ -59,6 +59,7 @@ etc/acdbdata/AW87319/MTP_Speaker_cal.acdb
 bin/btnvtool
 bin/hci_qcomm_init
 vendor/lib64/libbtnv.so
+vendor/lib/libbt-vendor.so
 
 # CNE
 bin/cnd
@@ -96,6 +97,7 @@ lib/libmmcamera_interface.so
 lib/libmmjpeg_interface.so
 lib/libmm-qcamera.so
 lib/libqomx_core.so
+lib/libmm-omxcore.so
 
 vendor/lib/libchromaflash.so
 vendor/lib/libflash_pmic.so
@@ -401,7 +403,7 @@ vendor/lib64/libdpmtcm.so
 bin/qseecomd
 vendor/bin/mdtpd
 vendor/lib/libcppf.so
-#vendor/lib/liboemcrypto.so
+vendor/lib/liboemcrypto.so
 vendor/lib/mediadrm/libwvdrmengine.so
 vendor/lib/mediadrm/libdrmclearkeyplugin.so
 vendor/lib64/mediadrm/libdrmclearkeyplugin.so
@@ -590,12 +592,12 @@ vendor/lib64/hw/keystore.msm8937.so
 
 # Media
 etc/firmware/DE.o.msm8937
-lib/libOmxSwVdec.so
-lib/libOmxSwVencMpeg4.so
+#lib/libOmxSwVdec.so
+#lib/libOmxSwVencMpeg4.so
 lib/libOmxVpp.so
 lib/libvpplibrary.so
-lib64/libOmxSwVdec.so
-lib64/libOmxSwVencMpeg4.so
+#lib64/libOmxSwVdec.so
+#lib64/libOmxSwVencMpeg4.so
 vendor/lib/libAlacSwDec.so
 vendor/lib/libApeSwDec.so
 vendor/lib/libFlacSwDec.so
@@ -728,8 +730,11 @@ lib/libnfc_ndef.so
 vendor/lib/hw/nfc_nci.nqx.default.so
 vendor/lib64/hw/nfc_nci.nqx.default.so
 -framework/com.nxp.nfc.nq.jar
+#-framework/com.android.nfc_extras.jar
 etc/permissions/com.nxp.nfc.nq.xml
 etc/permissions/com.nxp.mifare.xml
+vendor/lib/libnqnfc_nci_jni.so
+vendor/lib/libnqnfc-nci.so
 vendor/lib64/libnqnfc_nci_jni.so
 vendor/lib64/libnqnfc-nci.so
 
@@ -833,6 +838,15 @@ vendor/lib64/libavutil.so
 
 vendor/lib/libp61-jcop-kit.so
 vendor/lib64/libp61-jcop-kit.so
+
+vendor/lib/libswscale.so
+vendor/lib64/libswscale.so
+
+-framework/com.google.android.maps.jar
+-framework/com.google.android.media.effects.jar
+-framework/com.google.widevine.software.drm.jar
+
+lib/modules/core_ctl.ko
 
 # Lights
 lib/hw/lights.msm8937.so
