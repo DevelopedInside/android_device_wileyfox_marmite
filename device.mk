@@ -18,8 +18,7 @@
 $(call inherit-product, device/cyanogen/msm8937-common/msm8937.mk)
 
 # Overlay
-DEVICE_PACKAGE_OVERLAYS += \
-    $(LOCAL_PATH)/overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Include device-specific product fragments
 include $(LOCAL_PATH)/product/*.mk

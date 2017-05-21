@@ -728,12 +728,10 @@ lib/libnfc_ndef.so
 vendor/lib/hw/nfc_nci.nqx.default.so
 vendor/lib64/hw/nfc_nci.nqx.default.so
 -framework/com.nxp.nfc.nq.jar
-etc/permisions/com.nxp.nfc.nq.xml
-etc/permisions/com.nxp.miframe.xml
-vendor/lib/libnqnfc_nci_jni.so
-vendor/lib/libnqnfc_nci.so
+etc/permissions/com.nxp.nfc.nq.xml
+etc/permissions/com.nxp.mifare.xml
 vendor/lib64/libnqnfc_nci_jni.so
-vendor/lib64/libnqnfc_nci.so
+vendor/lib64/libnqnfc-nci.so
 
 # Radio - IMS
 bin/ims_rtp_daemon
