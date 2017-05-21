@@ -100,6 +100,7 @@ lib/libqomx_core.so
 vendor/lib/libchromaflash.so
 vendor/lib/libflash_pmic.so
 vendor/lib/libjpegdhw.so
+vendor/lib/libjpegdmahw.so
 vendor/lib/libjpegehw.so
 
 vendor/lib/libmmcamera_dbg.so 
@@ -723,6 +724,7 @@ vendor/lib64/libril-qcril-hook-oem.so
 vendor/lib64/libsystem_health_mon.so
 
 # NFC
+lib/libnfc_ndef.so
 vendor/lib/hw/nfc_nci.nqx.default.so
 vendor/lib64/hw/nfc_nci.nqx.default.so
 -framework/com.nxp.nfc.nq.jar
