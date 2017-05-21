@@ -14,8 +14,8 @@
 # limitations under the License.
 #
 
-# Inherit from wileyfox_marmite_common
-$(call inherit-product, device/wileyfox/marmite-common/marmite_base.mk)
+# Inherit from msm8937-common
+$(call inherit-product, device/cyanogen/msm8937-common/msm8937.mk)
 
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
@@ -25,4 +25,4 @@ DEVICE_PACKAGE_OVERLAYS += \
 include $(LOCAL_PATH)/product/*.mk
 
 # Inherit proprietary files
-#$(call inherit-product-if-exists, vendor/wileyfox/marmite/marmite-vendor.mk)
+$(call inherit-product-if-exists, vendor/wileyfox/marmite/marmite-vendor.mk)

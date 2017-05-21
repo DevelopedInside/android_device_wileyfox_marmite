@@ -1,0 +1,4 @@
+on early-init
+    setprop ro.product.model "Swift 2"
+    setprop ro.browser.search_code_bing CY18
+    setprop ro.browser.search_code_yahoo cya_oem18

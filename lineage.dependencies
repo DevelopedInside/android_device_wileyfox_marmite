@@ -1,11 +1,7 @@
 [
   {
-    "repository": "android_device_wileyfox_marmite-common",
-    "target_path": "device/wileyfox/marmite-common"
-  },
-  {
-    "repository": "android_device_wileyfox_msm8937-common",
-    "target_path": "device/wileyfox/msm8937-common"
+    "repository": "android_device_cyanogen_msm8937-common",
+    "target_path": "device/cyanogen/msm8937-common"
   },
   {
     "repository": "android_device_qcom_common",

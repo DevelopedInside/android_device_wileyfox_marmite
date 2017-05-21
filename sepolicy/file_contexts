@@ -1,0 +1,42 @@
+##########################
+# Devices
+#
+
+#For Goodix fingerprint
+/dev/gf66xx-spi     u:object_r:gx_fpd_device:s0
+/dev/ttyACM[0-9]*   u:object_r:gx_fpd_device:s0
+/dev/goodix_fp*     u:object_r:gx_fpd_device:s0
+
+#############################
+# System files
+#
+
+#For Goodix fingerprint
+/system/bin/gx_fpd       u:object_r:gx_fpd_exec:s0
+
+
+#############################
+# Data files
+#
+# NOTE: When modifying existing label rules, changes may also need to
+# propagate to the "Expanded data files" section.
+#
+
+# Goodix Fingerprint data
+/data/system/fingerprint(/.*)?    u:object_r:gx_fpd_data_file:s0
+/persist/data/gxfp(/.*)?                  u:object_r:gx_fpd_data_file:s0
+
+# Goodix Fingerprint libs
+/system/lib/libfpservice.so       u:object_r:gx_fpd_lib_file:s0
+/system/lib/libfpalgorithm.so     u:object_r:gx_fpd_lib_file:s0
+/system/lib/libfphal.so           u:object_r:gx_fpd_lib_file:s0
+/system/lib/libfpnav.so           u:object_r:gx_fpd_lib_file:s0
+/system/lib/libalgoandroid.so     u:object_r:gx_fpd_lib_file:s0
+/system/lib64/libfpservice.so     u:object_r:gx_fpd_lib_file:s0
+/system/lib64/libfpalgorithm.so   u:object_r:gx_fpd_lib_file:s0
+/system/lib64/libfphal.so         u:object_r:gx_fpd_lib_file:s0
+/system/lib64/libfpnav.so         u:object_r:gx_fpd_lib_file:s0
+/system/lib64/libalgoandroid.so   u:object_r:gx_fpd_lib_file:s0
+
+
+/dev/block/platform/soc/7824900.sdhci/by-name/persist         u:object_r:persist_block_device:s0
