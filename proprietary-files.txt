@@ -730,6 +730,10 @@ vendor/lib64/hw/nfc_nci.nqx.default.so
 -framework/com.nxp.nfc.nq.jar
 etc/permisions/com.nxp.nfc.nq.xml
 etc/permisions/com.nxp.miframe.xml
+vendor/lib/libnqnfc_nci_jni.so
+vendor/lib/libnqnfc_nci.so
+vendor/lib64/libnqnfc_nci_jni.so
+vendor/lib64/libnqnfc_nci.so
 
 # Radio - IMS
 bin/ims_rtp_daemon
@@ -829,6 +833,18 @@ vendor/lib64/libavcodec.so
 vendor/lib64/libavformat.so
 vendor/lib64/libavutil.so
 
+vendor/lib/libp61-jcop-kit.so
+vendor/lib64/libp61-jcop-kit.so
+
 # Lights
 lib/hw/lights.msm8937.so
 lib64/hw/lights.msm8937.so
+
+# MPEG
+vendor/lib/libffmpeg_extractor.so
+vendor/lib/libffmpeg_omx.so
+vendor/lib/libffmpeg_utils.so
+
+vendor/lib64/libffmpeg_extractor.so
+vendor/lib64/libffmpeg_omx.so
+vendor/lib64/libffmpeg_utils.so
