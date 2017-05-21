@@ -725,6 +725,9 @@ vendor/lib64/libsystem_health_mon.so
 # NFC
 vendor/lib/hw/nfc_nci.nqx.default.so
 vendor/lib64/hw/nfc_nci.nqx.default.so
+-framework/com.nxp.nfc.nq.jar
+etc/permisions/com.nxp.nfc.nq.xml
+etc/permisions/com.nxp.miframe.xml
 
 # Radio - IMS
 bin/ims_rtp_daemon
