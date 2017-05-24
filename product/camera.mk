@@ -1,6 +1,10 @@
 # Camera
 PRODUCT_PACKAGES += \
-    Camera2
+    camera.msm8937 \
+    libmm-qcamera
+
+PRODUCT_PACKAGES += \
+    Snap
 
 # Camera configs
 PRODUCT_COPY_FILES += \

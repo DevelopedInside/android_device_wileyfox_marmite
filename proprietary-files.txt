@@ -7,6 +7,9 @@ vendor/lib64/libadsprpc.so
 vendor/lib64/libadsp_default_listener.so
 
 # Audio
+lib/hw/audio.primary.msm8937.so
+lib64/hw/audio.primary.msm8937.so
+
 vendor/etc/audio_effects.conf
 vendor/etc/audio_output_policy.conf
 etc/surround_sound_3mic/surround_sound_rec_AZ.cfg
@@ -98,6 +101,8 @@ lib/libmmjpeg_interface.so
 lib/libmm-qcamera.so
 lib/libqomx_core.so
 lib/libmm-omxcore.so
+
+lib64/libfilterpack_facedetect.so
 
 vendor/lib/libchromaflash.so
 vendor/lib/libflash_pmic.so
@@ -592,12 +597,13 @@ vendor/lib64/hw/keystore.msm8937.so
 
 # Media
 etc/firmware/DE.o.msm8937
-#lib/libOmxSwVdec.so
-#lib/libOmxSwVencMpeg4.so
+lib/libOmxSwVdec.so
+lib/libOmxSwVencMpeg4.so
 lib/libOmxVpp.so
 lib/libvpplibrary.so
-#lib64/libOmxSwVdec.so
-#lib64/libOmxSwVencMpeg4.so
+lib64/libOmxSwVdec.so
+lib64/libOmxSwVencMpeg4.so
+
 vendor/lib/libAlacSwDec.so
 vendor/lib/libApeSwDec.so
 vendor/lib/libFlacSwDec.so
@@ -847,6 +853,16 @@ vendor/lib64/libswscale.so
 -framework/com.google.widevine.software.drm.jar
 
 lib/modules/core_ctl.ko
+lib/libextmedia_jni.so
+lib64/libextmedia_jni.so
+
+#lib/libclcore.bc
+#lib/libclcore_debug.bc
+#lib/libclcore_neon.bc
+
+#lib64/libclcore.bc
+#lib64/libclcore_debug.bc
+
 
 # Lights
 lib/hw/lights.msm8937.so

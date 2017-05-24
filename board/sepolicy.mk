@@ -1,3 +1,3 @@
 # SELinux
 BOARD_SEPOLICY_DIRS += \
-    $(DEVICE_COMMON_PATH)/sepolicy
+    $(DEVICE_PATH)/sepolicy
