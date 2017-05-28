@@ -50,14 +50,6 @@ etc/acdbdata/MTP/MTP_Hdmi_cal.acdb
 etc/acdbdata/MTP/MTP_Headset_cal.acdb
 etc/acdbdata/MTP/MTP_Speaker_cal.acdb
 
-etc/acdbdata/AW87319/MTP_Bluetooth_cal.acdb
-etc/acdbdata/AW87319/MTP_General_cal.acdb
-etc/acdbdata/AW87319/MTP_Global_cal.acdb
-etc/acdbdata/AW87319/MTP_Handset_cal.acdb
-etc/acdbdata/AW87319/MTP_Hdmi_cal.acdb
-etc/acdbdata/AW87319/MTP_Headset_cal.acdb
-etc/acdbdata/AW87319/MTP_Speaker_cal.acdb
-
 # Bluetooth
 bin/btnvtool
 bin/hci_qcomm_init
@@ -92,7 +84,6 @@ vendor/lib64/libvendorconn.so
 vendor/lib64/libwqe.so
 vendor/lib64/libxml.so
 
-
 # Camera
 bin/mm-qcamera-daemon
 lib/hw/camera.msm8937.so
@@ -102,6 +93,7 @@ lib/libmm-qcamera.so
 lib/libqomx_core.so
 lib/libmm-omxcore.so
 
+lib64/libmm-omxcore.so
 lib64/libfilterpack_facedetect.so
 
 vendor/lib/libchromaflash.so
@@ -624,8 +616,8 @@ vendor/lib/libmmosal.so
 vendor/lib64/libFlacSwDec.so
 -vendor/lib64/libMpeg4SwEncoder.so
 
-vendor/media/LMspeed_508.emd
-vendor/media/PFFprec_600.emd
+#vendor/media/LMspeed_508.emd
+#vendor/media/PFFprec_600.emd
 
 # Modem
 vendor/lib/libwms.so
@@ -812,6 +804,8 @@ bin/cnss-daemon
 bin/cnss_diag
 bin/wcnss_service
 #etc/firmware/wlan/prima/WCNSS_cfg.dat
+-lib64/libwpa_qmi_eap_proxy.so
+lib64/libwcnss_qmi.so
 
 #???
 vendor/firmware/libpn548ad_fw.so
