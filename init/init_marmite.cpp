@@ -28,6 +28,8 @@
    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/sysinfo.h>
+
 #include <fcntl.h>
 #include <stdlib.h>
 
@@ -35,6 +37,11 @@
 #include "property_service.h"
 #include "log.h"
 #include "util.h"
+
+char const *heapstartsize;
+char const *heapgrowthlimit;
+char const *heapsize;
+char const *heapminfree;
 
 static int read_file2(const char *fname, char *data, int max_size)
 {
@@ -87,6 +94,27 @@ static void init_alarm_boot_properties()
     }
 }
 
+void check_device()
+{
+    struct sysinfo sys;
+
+    sysinfo(&sys);
+
+    if (sys.totalram > 2048ull * 1024 * 1024) {
+        // from - phone-xxhdpi-3072-dalvik-heap.mk
+        heapstartsize = "8m";
+        heapgrowthlimit = "288m";
+        heapsize = "768m";
+        heapminfree = "2m";
+    } else {
+        // from - phone-xxhdpi-2048-dalvik-heap.mk
+        heapstartsize = "16m";
+        heapgrowthlimit = "192m";
+        heapsize = "512m";
+        heapminfree = "2m";
+    }
+}
+
 /* Wileyfox Swift 2 */
 void load_marmite() {
     property_set("ro.sf.lcd_density", "320");
@@ -101,11 +129,22 @@ void load_marmitePlus() {
 /* Wileyfox Swift 2X*/
 void load_marmiteX() {
     property_set("ro.sf.lcd_density", "440");
+    property_set("audio.acdb.name", "AW87319"); //Nextbit Robin (ether)
+    //Based on: https://github.com/CyanogenMod/android_hardware_qcom_audio/commit/f6cfe88a8959aacbb0d1782265d4fba52c8854da
+    property_set("ro.audio.customplatform", "AW87319");
 }
 
 void vendor_load_properties()
 {
     char cmv[PROP_VALUE_MAX];
+    check_device();
+
+    property_set("dalvik.vm.heapstartsize", heapstartsize);
+    property_set("dalvik.vm.heapgrowthlimit", heapgrowthlimit);
+    property_set("dalvik.vm.heapsize", heapsize);
+    property_set("dalvik.vm.heaptargetutilization", "0.75");
+    property_set("dalvik.vm.heapminfree", heapminfree);
+    property_set("dalvik.vm.heapmaxfree", "8m");
 
     property_set("qemu.hw.mainkeys", "0");
     property_get("ro.boot.cmv", cmv);
