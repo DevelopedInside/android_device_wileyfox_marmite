@@ -4,16 +4,14 @@ PRODUCT_PACKAGES += \
     com.nxp.nfc.nq \
     nfc_nci.nqx.default \
     NQNfcNci \
-    nqnfcee_access.xml \
-    nqnfcse_access.xml \
     Tag
 
 # NFC
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
-    $(LOCAL_PATH)/configs/libnfc-nxp.conf:system/etc/libnfc-nxp.conf \
-    $(LOCAL_PATH)/configs/nqnfcee_access.xml:system/etc/nqnfcee_access.xml \
-    $(LOCAL_PATH)/configs/nqnfcse_access.xml:system/etc/nqnfcse_access.xml 
+    $(LOCAL_PATH)/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
+    $(LOCAL_PATH)/nfc/libnfc-nxp.conf:system/etc/libnfc-nxp.conf \
+    $(LOCAL_PATH)/nfc/nqnfcee_access.xml:system/etc/nqnfcee_access.xml \
+    $(LOCAL_PATH)/nfc/nqnfcse_access.xml:system/etc/nqnfcse_access.xml 
 	
 # Permissions
 PRODUCT_COPY_FILES += \
