@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# Build the BSP if available
+ifneq ($(QCPATH),)
+$(call inherit-product-if-exists, $(QCPATH)/common/config/device-vendor.mk)
+endif
 
 # Inherit from msm8937-common
 $(call inherit-product, device/cyanogen/msm8937-common/msm8937.mk)
@@ -24,4 +28,4 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 include $(LOCAL_PATH)/product/*.mk
 
 # Inherit proprietary files
-$(call inherit-product-if-exists, vendor/wileyfox/marmite/marmite-vendor.mk)
+$(call inherit-product, vendor/wileyfox/marmite/marmite-vendor.mk)
