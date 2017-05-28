@@ -725,12 +725,13 @@ vendor/lib64/libsystem_health_mon.so
 
 # NFC
 lib/libnfc_ndef.so
+vendor/firmware/libpn548ad_fw.so
 vendor/lib/hw/nfc_nci.nqx.default.so
 vendor/lib64/hw/nfc_nci.nqx.default.so
--framework/com.nxp.nfc.nq.jar
+#-framework/com.nxp.nfc.nq.jar
 #-framework/com.android.nfc_extras.jar
-etc/permissions/com.nxp.nfc.nq.xml
-etc/permissions/com.nxp.mifare.xml
+#etc/permissions/com.nxp.nfc.nq.xml
+#etc/permissions/com.nxp.mifare.xml
 vendor/lib/libnqnfc_nci_jni.so
 vendor/lib/libnqnfc-nci.so
 vendor/lib64/libnqnfc_nci_jni.so
@@ -808,7 +809,6 @@ bin/wcnss_service
 lib64/libwcnss_qmi.so
 
 #???
-vendor/firmware/libpn548ad_fw.so
 vendor/lib/libwqe.so
 vendor/lib/libwvdrm_L3.so
 vendor/lib/libWVStreamControlAPI_L3.so
