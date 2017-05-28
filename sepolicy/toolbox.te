@@ -1,0 +1,6 @@
+allow toolbox sysfs:dir relabelfrom;
+allow toolbox sysfs:file relabelfrom;
+allow toolbox sysfs_devices_system_cpu:dir relabelto;
+allow toolbox sysfs_devices_system_cpu:file relabelto;
+allow toolbox sysfs_rqstats:dir { read search open };
+
