@@ -13,11 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Build the BSP if available
-ifneq ($(QCPATH),)
-$(call inherit-product-if-exists, $(QCPATH)/common/config/device-vendor.mk)
-endif
-
 # Inherit from msm8937-common
 $(call inherit-product, device/cyanogen/msm8937-common/msm8937.mk)
 
