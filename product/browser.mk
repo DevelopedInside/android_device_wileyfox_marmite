@@ -1,3 +1,3 @@
 # Browser
-PRODUCT_PACKAGES += \
-	Gello
+#PRODUCT_PACKAGES += \
+#	Gello
