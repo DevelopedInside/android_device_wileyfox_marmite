@@ -148,6 +148,7 @@ void vendor_load_properties()
 
     property_set("qemu.hw.mainkeys", "0");
     property_get("ro.boot.cmv", cmv);
+    property_set("ro.audio.customplatform", "AW87319"); //test
 
     if (!strcmp(cmv, "mv1")) {
         /* Swift 2 */
