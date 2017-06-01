@@ -1,3 +1,3 @@
 # Protobuf
-#PRODUCT_PACKAGES += \
-#    libprotobuf-cpp-full
+PRODUCT_PACKAGES += \
+    libprotobuf-cpp-lite
