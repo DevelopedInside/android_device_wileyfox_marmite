@@ -119,20 +119,6 @@ void check_device()
 void load_marmite() {
     property_set("ro.sf.lcd_density", "320");
     property_set("ro.media.maxmem", "10590068224");
-
-    // Audio (based on UK website wileyfox)
-    //Based on: https://github.com/CyanogenMod/android_hardware_qcom_audio/commit/f6cfe88a8959aacbb0d1782265d4fba52c8854da
-    property_set("ro.audio.customplatform", "AW87319");
-    //taked from Nextbit Robin (ether)
-    property_set("audio.acdb.name", "AW87319");
-    // shamrock (msm8952)
-    property_set("persist.audio.calfile0", "/etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb");
-    property_set("persist.audio.calfile1", "/etc/acdbdata/AW87319/AW87319_General_cal.acdb");
-    property_set("persist.audio.calfile2", "/etc/acdbdata/AW87319/AW87319_Global_cal.acdb");
-    property_set("persist.audio.calfile3", "/etc/acdbdata/AW87319/AW87319_Handset_cal.acdb");
-    property_set("persist.audio.calfile4", "/etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb");
-    property_set("persist.audio.calfile5", "/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb");
-    property_set("persist.audio.calfile6", "/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb");
 }
 
 /* Wileyfox Swift 2 Plus */
@@ -143,20 +129,9 @@ void load_marmitePlus() {
 /* Wileyfox Swift 2X*/
 void load_marmiteX() {
     property_set("ro.sf.lcd_density", "440");
-
-    // Audio (based on UK website wileyfox)
+    property_set("audio.acdb.name", "AW87319"); //Nextbit Robin (ether)
     //Based on: https://github.com/CyanogenMod/android_hardware_qcom_audio/commit/f6cfe88a8959aacbb0d1782265d4fba52c8854da
     property_set("ro.audio.customplatform", "AW87319");
-    //taked from Nextbit Robin (ether)
-    property_set("audio.acdb.name", "AW87319");
-    // shamrock (msm8952)
-    property_set("persist.audio.calfile0", "/etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb");
-    property_set("persist.audio.calfile1", "/etc/acdbdata/AW87319/AW87319_General_cal.acdb");
-    property_set("persist.audio.calfile2", "/etc/acdbdata/AW87319/AW87319_Global_cal.acdb");
-    property_set("persist.audio.calfile3", "/etc/acdbdata/AW87319/AW87319_Handset_cal.acdb");
-    property_set("persist.audio.calfile4", "/etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb");
-    property_set("persist.audio.calfile5", "/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb");
-    property_set("persist.audio.calfile6", "/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb");
 }
 
 void vendor_load_properties()
