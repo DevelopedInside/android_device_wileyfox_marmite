@@ -10,8 +10,8 @@ PRODUCT_PACKAGES += \
 
 # NFC
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
-    $(LOCAL_PATH)/nfc/libnfc-nxp.conf:system/etc/libnfc-nxp.conf
+    $(LOCAL_PATH)/configs/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
+    $(LOCAL_PATH)/configs/nfc/libnfc-nxp.conf:system/etc/libnfc-nxp.conf
 
 #    $(LOCAL_PATH)/nfc/nqnfcee_access.xml:system/etc/nqnfcee_access.xml \
 #    $(LOCAL_PATH)/nfc/nqnfcse_access.xml:system/etc/nqnfcse_access.xml
