@@ -1,3 +1,3 @@
 # Lights
-#PRODUCT_PACKAGES += \
-#    lights.msm8937
+PRODUCT_PACKAGES += \
+    lights.msm8937
