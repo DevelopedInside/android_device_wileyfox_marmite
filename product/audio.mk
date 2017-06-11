@@ -33,9 +33,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Speaker_cal.acdb:system/etc/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Speaker_cal.acdb
 
 # Files 2 Vendor
-#PRODUCT_COPY_FILES += \
-#    $(LOCAL_PATH)/audio/audio_output_policy.conf:system/vendor/etc/audio_output_policy.conf \
-#    $(LOCAL_PATH)/audio/audio_effects.conf:system/vendor/etc/audio_effects.conf 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/audio/audio_output_policy.conf:system/vendor/etc/audio_output_policy.conf
 
 # SoundTriggers
 PRODUCT_COPY_FILES += \
