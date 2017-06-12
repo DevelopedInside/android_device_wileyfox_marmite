@@ -400,9 +400,9 @@ bin/qseecomd
 vendor/bin/mdtpd
 vendor/lib/libcppf.so
 vendor/lib/liboemcrypto.so
-#vendor/lib/mediadrm/libwvdrmengine.so
-#vendor/lib/mediadrm/libdrmclearkeyplugin.so
-#vendor/lib64/mediadrm/libdrmclearkeyplugin.so
+vendor/lib/mediadrm/libwvdrmengine.so
+vendor/lib/mediadrm/libdrmclearkeyplugin.so
+vendor/lib64/mediadrm/libdrmclearkeyplugin.so
 
 #vendor/lib64/liboemcrypto.so
 vendor/lib64/libGPreqcancel.so
