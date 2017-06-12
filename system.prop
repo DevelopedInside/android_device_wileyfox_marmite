@@ -108,8 +108,8 @@ mm.enable.qcom_parser=917503
 mm.enable.smoothstreaming=true
 mmp.enable.3g2=true
 persist.mm.sta.enable=0
-vidc.disable.split.mode=1
-vidc.enc.narrow.searchrange=1
+vendor.vidc.disable.split.mode=1
+vendor.vidc.enc.narrow.searchrange=1
 video.disable.ubwc=1
 
 # Misc
