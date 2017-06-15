@@ -1,0 +1,3 @@
+r_dir_file(domain, sysfs_power_management);
+r_dir_file(domain, sysfs_devices_system_cpu);
+

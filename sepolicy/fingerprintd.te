@@ -1,6 +1,26 @@
-allow fingerprintd tee_device:chr_file { open read write ioctl };
-allow fingerprintd fingerprint_data_file:dir rw_dir_perms;
-allow fingerprintd fingerprint_data_file:file rw_file_perms;
-allow fingerprintd fingerprint_socket:file rw_file_perms;
-allow fingerprintd sysfs_devices_fingerprint:dir r_dir_perms;
-allow fingerprintd sysfs_devices_fingerprint:file { open read write };
+allow fingerprintd gx_fpd_service:service_manager { find };
+allow fingerprintd fingerprint_service:service_manager { find };
+set_prop(fingerprintd, system_prop)
+
+allow fingerprintd tee_device:chr_file { read write ioctl open };
+
+allow fingerprintd fpc_data_file:dir create_dir_perms;
+allow fingerprintd fpc_data_file:sock_file { create unlink };
+
+allow fingerprintd fpc_sysfs:file rw_file_perms;
+
+#-------------------------------------------------------
+binder_call(fingerprintd, gx_fpd);
+allow fingerprintd gx_fpd_service:service_manager find;
+
+# For Goodix fingerprint
+allow fingerprintd gx_fpd_lib_file:file r_file_perms;
+#allow fingerprintd gx_fpd_lib_file:file { getattr read execute execmod };
+allow fingerprintd gx_fpd_lib_file:chr_file { r_file_perms setattr };
+allow fingerprintd gx_fp_lib_file:file rx_file_perms;
+allow fingerprintd gx_fp_lib_file:chr_file { r_file_perms setattr };
+
+allow fingerprintd gx_fpd_data_file:file rw_file_perms;
+allow fingerprintd gx_fpd_data_file:file {create write};
+#allow fingerprintd gx_fpd_data_file:file { getattr read execute execmod };
+allow fingerprintd gx_fpd_data_file:chr_file { r_file_perms setattr };

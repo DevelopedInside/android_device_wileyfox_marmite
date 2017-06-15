@@ -1,0 +1,148 @@
+allow appdomain gx_fpd_lib_file:file rx_file_perms;
+allow appdomain gx_fp_lib_file:file rx_file_perms;
+allow appdomain gx_fpd_data_file:file { create rw_file_perms};
+
+allow binderservicedomain gx_fpd_data_file:file { create open getattr write };
+allow binderservicedomain fingerprintd_data_file:file { create open getattr write };
+
+type gx_fpd_device, dev_type;
+
+type gx_fpd_lib_file, data_file_type;
+type gx_fp_lib_file, data_file_type;
+type gx_fpd_data_file, file_type, data_file_type;
+
+type gx_fpd_service, app_api_service, system_server_service, service_manager_type;
+
+#-----------------------------------------------------------------------------
+type gx_fpd, domain;
+type gx_fpd_exec, exec_type, file_type;
+#typeattribute gx_fpd mlstrustedsubject;
+
+file_type_auto_trans(gx_fpd, system_data_file, gx_fpd_data_file);
+allow gx_fpd_data_file labeledfs:filesystem associate;
+
+#add this type trans
+file_type_auto_trans(gx_fpd, system_data_file, gx_fpd_data_file)
+
+# gx_fpd
+init_daemon_domain(gx_fpd)
+binder_use(gx_fpd)
+binder_call(gx_fpd, binderservicedomain)
+binder_call(gx_fpd, appdomain)
+binder_service(gx_fpd)
+
+# callback to fingerprintd with binder
+binder_call(gx_fpd, fingerprintd);
+allow gx_fpd fingerprintd_service:service_manager find;
+
+# allow to call PowerManagerService
+binder_call(gx_fpd, system_server);
+allow gx_fpd power_service:service_manager find;
+
+# allow to set properties
+set_prop(gx_fpd, system_prop)
+set_prop(gx_fpd, config_prop)
+
+# add self
+allow gx_fpd gx_fpd_service:service_manager { add find };
+allow gx_fpd self:process execmem;
+allow gx_fpd self:capability { dac_override dac_read_search };
+allow gx_fpd kernel:system module_request;
+
+# allow TEE
+allow gx_fpd tee_device:chr_file { open read ioctl write };
+
+# allow gx_fpd_device
+allow gx_fpd gx_fpd_device:file { create_file_perms };
+allow gx_fpd gx_fpd_device:chr_file { rw_file_perms setattr };
+allow gx_fpd gx_fpd_device:chr_file { getattr open read ioctl lock append write };
+
+# allow fingerprintd_data_file
+allow gx_fpd fingerprintd_data_file:file { create_file_perms rw_file_perms create open };
+allow gx_fpd fingerprintd_data_file:file { create open };
+allow gx_fpd fingerprintd_data_file:chr_file { rw_file_perms setattr };
+r_dir_file(gx_fpd, fingerprintd_data_file)
+allow gx_fpd fingerprintd_data_file:dir { ra_dir_perms r_dir_perms };
+allow gx_fpd fingerprintd_data_file:dir { create setattr };
+
+# allow gx_fpd_data_file
+allow gx_fpd gx_fpd_data_file:file { create_file_perms create open write};
+allow gx_fpd gx_fpd_data_file:chr_file { rw_file_perms setattr };
+r_dir_file(gx_fpd, gx_fpd_data_file)
+allow gx_fpd gx_fpd_data_file:dir { create setattr open read ra_dir_perms rw_dir_perms };
+allow gx_fpd_data_file labeledfs:filesystem associate;
+
+# allow gx_fpd_lib_file
+allow gx_fpd gx_fpd_lib_file:file { create_file_perms getattr read execute execmod };
+allow gx_fpd gx_fpd_lib_file:chr_file { rw_file_perms setattr };
+allow gx_fpd gx_fpd_lib_file:dir ra_dir_perms;
+allow gx_fpd gx_fp_lib_file:file { create_file_perms getattr read execute execmod };
+allow gx_fpd gx_fp_lib_file:chr_file { rw_file_perms setattr };
+allow gx_fpd gx_fp_lib_file:dir ra_dir_perms;
+
+# allow system_file
+allow gx_fpd system_file:file rx_file_perms;
+
+# Need to add auth tokens to KeyStore
+use_keystore(gx_fpd)
+allow gx_fpd keystore:keystore_key { add_auth };
+
+# For permissions checking
+binder_call(gx_fpd, system_server);
+allow gx_fpd permission_service:service_manager find;
+
+# allow SD-Card
+allow gx_fpd fuse:dir create_dir_perms;
+allow gx_fpd fuse:file create_file_perms;
+r_dir_file(gx_fpd, sdcard_type)
+allow gx_fpd sdcard_type:file write;
+allow gx_fpd app_data_file:dir search;
+allow gx_fpd app_data_file:file rw_file_perms;
+
+allow gx_fpd persist_file:file create_file_perms;
+allow gx_fpd persist_file:chr_file { rw_file_perms setattr };
+r_dir_file(gx_fpd, persist_file)
+allow gx_fpd persist_file:dir create_dir_perms;
+allow gx_fpd persist_file:dir ra_dir_perms;
+allow gx_fpd persist_data_file:file create_file_perms;
+allow gx_fpd persist_data_file:chr_file { rw_file_perms setattr };
+r_dir_file(gx_fpd, persist_data_file)
+allow gx_fpd persist_data_file:dir create_dir_perms;
+allow gx_fpd persist_data_file:dir ra_dir_perms;
+
+allow gx_fpd self:netlink_socket create;
+allow gx_fpd system_data_file:dir { write open read add_name create};
+allow gx_fpd system_data_file:file { open};
+
+#============= debuggerd ==============
+allow debuggerd gx_fpd_lib_file:file read;
+
+#============= gx_fpd ==============
+allow gx_fpd tee_device:chr_file { open read write ioctl };
+
+#============= location ==============
+allow location permission_service:service_manager find;
+
+#============= themeservice_app ==============
+allow themeservice_app network_management_service:service_manager find;
+
+#============= gx_fpd ==============
+allow gx_fpd tee_device:chr_file { open read ioctl write };
+
+#============= init ==============
+allow init gx_fpd_data_file:dir { relabelto getattr read open search };
+allow init gx_fpd_data_file:file { relabelto getattr open read write };
+#-----------------------------------------------------------------------------
+
+#============= gx_fpd ==============
+allow gx_fpd firmware_file:dir { read search };
+
+#============= tee ==============
+allow tee gx_fpd_data_file:dir { open read write search remove_name };
+allow tee gx_fpd_data_file:file { read write open unlink };
+
+allow fingerprintd gx_fpd_data_file:dir { open read write search remove_name add_name};
+allow fingerprintd gx_fpd_data_file:file { read write open unlink };
+
+allow gx_fpd fingerprintd_data_file:dir { open read write search remove_name add_name};
+allow gx_fpd fingerprintd_data_file:file { read write open unlink };
