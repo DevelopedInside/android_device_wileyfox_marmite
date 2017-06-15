@@ -1,2 +1,0 @@
-allow mediaserver smartamp_device:chr_file { read write ioctl open };
-
