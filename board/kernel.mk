@@ -15,4 +15,3 @@ TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 
 TARGET_KERNEL_SOURCE := kernel/wileyfox/msm8937
 TARGET_KERNEL_CONFIG := lineageos_marmite_defconfig
-
