@@ -825,7 +825,7 @@ vendor/lib64/libssd.so
 #vendor/lib/libswscale.so
 #vendor/lib64/libswscale.so
 
-lib/modules/core_ctl.ko
+#lib/modules/core_ctl.ko
 lib/libextmedia_jni.so
 lib64/libextmedia_jni.so
 
