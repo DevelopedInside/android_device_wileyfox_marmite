@@ -8,7 +8,7 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.usb.id.ptp_adb=2283 \
     ro.usb.id.ums=2286 \
     ro.usb.id.ums_adb=2285 \
-    ro.usb.vid=2970 
+    ro.usb.vid=2970
 
 # USB Secure
 ADDITIONAL_DEFAULT_PROPERTIES += \
