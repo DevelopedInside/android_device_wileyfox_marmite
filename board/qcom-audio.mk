@@ -3,7 +3,8 @@
 # Reverse engineering (Snowman decompiler)
 AUDIO_FEATURE_ENABLED_ANC_HEADSET := true
 AUDIO_FEATURE_ENABLED_CUSTOMSTEREO := true
-AUDIO_FEATURE_ENABLED_EXT_HDMI := true
+# In CyanogenOS HDMI is enabled, but now it's throw too many errors while building
+# AUDIO_FEATURE_ENABLED_EXT_HDMI := true
 AUDIO_FEATURE_ENABLED_FLUENCE := true
 AUDIO_FEATURE_ENABLED_FM_POWER_OPT := true
 AUDIO_FEATURE_ENABLED_HFP := true
