@@ -490,6 +490,11 @@ service dpmd /system/bin/dpmd
     group system readproc
     writepid /dev/cpuset/system-background/tasks
 
+service dpmQmiMgr /system/vendor/bin/dpmQmiMgr
+    class main
+    user system
+    group radio system
+
 service irsc_util /system/vendor/bin/irsc_util "/system/vendor/etc/sec_config"
     class core
     user root
