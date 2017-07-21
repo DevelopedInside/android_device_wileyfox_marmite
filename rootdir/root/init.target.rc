@@ -138,12 +138,6 @@ service qseecomd /system/vendor/bin/qseecomd
 #   user system
 #   group system net_raw
 
-service perfd /system/vendor/bin/perfd
-   class main
-   user root
-   writepid /dev/cpuset/system-background/tasks
-   disabled
-
 service gamed /system/vendor/bin/gamed
    class main
    user system
