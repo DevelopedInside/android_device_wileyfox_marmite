@@ -119,6 +119,11 @@ on enable-low-power
     write /sys/devices/system/cpu/cpu6/online 1
     write /sys/devices/system/cpu/cpu7/online 1
 
+    # Enable power_efficient workqueue
+    chown system system /sys/module/workqueue/parameters/power_efficient
+    chmod 0664 /sys/module/workqueue/parameters/power_efficient
+    write /sys/module/workqueue/parameters/power_efficient 1
+
     # Enable low power modes
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
 
