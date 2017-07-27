@@ -121,8 +121,8 @@ persist.nfc.smartcard.config=SIM1,eSE1
 
 # Perf
 ro.vendor.qti.config.zram=true
-ro.core_ctl_max_cpu=4
-ro.core_ctl_min_cpu=2
+ro.vendor.qti.core_ctl_min_cpu=2
+ro.vendor.qti.core_ctl_max_cpu=4
 ro.sys.fw.use_trim_settings=true
 ro.vendor.at_library=libqti-at.so
 ro.vendor.extension_library=libqti-perfd-client.so
