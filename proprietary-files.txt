@@ -7,9 +7,6 @@ vendor/lib64/libadsprpc.so
 vendor/lib64/libadsp_default_listener.so
 
 # Audio
-#lib/hw/audio.primary.msm8937.so
-#lib64/hw/audio.primary.msm8937.so
-
 etc/surround_sound_3mic/surround_sound_rec_AZ.cfg
 etc/surround_sound_3mic/surround_sound_rec_5.1.cfg
 etc/drc/drc_cfg_AZ.txt
@@ -320,6 +317,15 @@ vendor/lib/libchromatix_s5k3p3_zsl_preview_dw9800_x50l.so
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800.so 
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800_x50l.so 
 
+# Camera configs
+etc/camera/msm8937_camera.xml
+etc/camera/ov8856_chromatix.xml
+etc/camera/ov8865_chromatix.xml
+etc/camera/s5k3l8_chromatix.xml
+etc/camera/s5k3l8_f3l8yam_chromatix.xml
+etc/camera/s5k3p3_chromatix.xml
+etc/camera/s5k3p3_x50l_chromatix.xml
+
 # Camera firmware
 etc/firmware/cpp_firmware_v1_1_1.fw
 etc/firmware/cpp_firmware_v1_1_6.fw
@@ -400,9 +406,6 @@ bin/qseecomd
 vendor/bin/mdtpd
 vendor/lib/libcppf.so
 vendor/lib/liboemcrypto.so
-vendor/lib/mediadrm/libwvdrmengine.so
-#vendor/lib/mediadrm/libdrmclearkeyplugin.so
-#vendor/lib64/mediadrm/libdrmclearkeyplugin.so
 
 #vendor/lib64/liboemcrypto.so
 vendor/lib64/libGPreqcancel.so
@@ -448,15 +451,7 @@ etc/permissions/com.qti.location.sdk.xml
 etc/permissions/com.qualcomm.location.xml
 -framework/com.qti.location.sdk.jar
 -lib/libloc_api_v02.so
-#lib/libloc_eng.so
-#lib/libloc_core.so
-#lib/libgps.utils.so
-
 -lib64/libloc_api_v02.so
-#lib64/libloc_eng.so
-#lib64/libloc_core.so
-#lib64/libgps.utils.so
-
 -priv-app/com.qualcomm.location/com.qualcomm.location.apk
 vendor/bin/slim_daemon
 vendor/lib/hw/flp.default.so
@@ -714,14 +709,7 @@ vendor/lib64/libril-qcril-hook-oem.so
 vendor/lib64/libsystem_health_mon.so
 
 # NFC
-#lib/libnfc_ndef.so
 vendor/firmware/libpn548ad_fw.so
-#vendor/lib/hw/nfc_nci.nqx.default.so
-#vendor/lib64/hw/nfc_nci.nqx.default.so
-#vendor/lib/libnqnfc_nci_jni.so
-#vendor/lib/libnqnfc-nci.so
-#vendor/lib64/libnqnfc_nci_jni.so
-#vendor/lib64/libnqnfc-nci.so
 
 # Radio - IMS
 bin/ims_rtp_daemon
@@ -786,58 +774,24 @@ vendor/lib64/libTimeService.so
 # USB
 etc/firmware/ice40.bin
 
+# Widevine
+vendor/lib/libwvdrm_L3.so
+vendor/lib/libWVStreamControlAPI_L3.so
+vendor/lib/mediadrm/libwvdrmengine.so
+
 # Wi-Fi
 bin/cnss-daemon
 bin/cnss_diag
-#bin/wcnss_service
 -lib64/libwpa_qmi_eap_proxy.so
 lib64/libwcnss_qmi.so
 
 #???
-vendor/lib/libwqe.so
-vendor/lib/libwvdrm_L3.so
-vendor/lib/libWVStreamControlAPI_L3.so
-#vendor/lib/hw/power.msm8937.so
-
-vendor/lib64/libwqe.so
-#vendor/lib64/hw/power.msm8937.so
-
-#vendor/lib/libswresample.so
-
 vendor/lib64/libsdm-color.so
 vendor/lib64/libsdm-diag.so
 vendor/lib64/libsdmextension.so
 vendor/lib64/libsd_sdk_display.so
 vendor/lib64/libssd.so
-#vendor/lib64/libswresample.so
-
-#vendor/lib/libavcodec.so
-#vendor/lib/libavformat.so
-#vendor/lib/libavutil.so
-
-#vendor/lib64/libavcodec.so
-#vendor/lib64/libavformat.so
-#vendor/lib64/libavutil.so
-
-#vendor/lib/libp61-jcop-kit.so
-#vendor/lib64/libp61-jcop-kit.so
-
-#vendor/lib/libswscale.so
-#vendor/lib64/libswscale.so
 
 lib/modules/core_ctl.ko
 lib/libextmedia_jni.so
 lib64/libextmedia_jni.so
-
-# Lights
-#lib/hw/lights.msm8937.so
-#lib64/hw/lights.msm8937.so
-
-# MPEG
-#vendor/lib/libffmpeg_extractor.so
-#vendor/lib/libffmpeg_omx.so
-#vendor/lib/libffmpeg_utils.so
-
-#vendor/lib64/libffmpeg_extractor.so
-#vendor/lib64/libffmpeg_omx.so
-#vendor/lib64/libffmpeg_utils.so
