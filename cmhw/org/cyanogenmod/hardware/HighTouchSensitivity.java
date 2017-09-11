@@ -22,6 +22,7 @@ import org.cyanogenmod.internal.util.FileUtils;
  * Glove mode / high touch sensitivity
  */
 public class HighTouchSensitivity {
+
     private static final String CONTROL_PATH = "/proc/class/ms-touchscreen-msg20xx/device/glove_mode";
 
     /**
@@ -30,7 +31,7 @@ public class HighTouchSensitivity {
      * @return boolean Supported devices must return always true
      */
     public static boolean isSupported() {
-	return FileUtils.isFileWritable(CONTROL_PATH);
+	    return FileUtils.isFileWritable(CONTROL_PATH);
     }
 
     /** This method returns the current activation status of high touch sensitivity
