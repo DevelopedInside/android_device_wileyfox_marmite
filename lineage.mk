@@ -22,6 +22,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 # Inherit some common LineageOS stuff
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
+# Must define platform variant before including any common things
+TARGET_BOARD_PLATFORM_VARIANT := msm8937
+
 # Inherit from marmite device
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
 
