@@ -579,11 +579,11 @@ framework/izat.xt.srv.jar
 -priv-app/com.qualcomm.location/com.qualcomm.location.apk
 -lib/libloc_api_v02.so
 lib/libloc_ds_api.so
-#lib/libgnsspps.so
+lib/libgnsspps.so
 
 -lib64/libloc_api_v02.so
 lib64/libloc_ds_api.so
-#lib64/libgnsspps.so
+lib64/libgnsspps.so
 
 vendor/bin/slim_daemon
 vendor/lib/hw/flp.default.so
