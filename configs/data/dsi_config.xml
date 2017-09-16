@@ -4,7 +4,6 @@
      Copyright (c) 2013, 2015 Qualcomm Technologies, Inc.  All Rights Reserved.
      Qualcomm Technologies Proprietary and Confidential.
 -->
-
 <list name="dsi_config">
 
    <!-- Configuration for legacy MSM targets -->
@@ -611,8 +610,8 @@
      </list>
    </listitem>
 
-   <!-- Configuration for MSM8998  -->
-   <listitem name="msm8998">
+   <!-- Configuration for Cobalt  -->
+   <listitem name="cobalt">
 
      <data name="qos_enabled" type="int"> 1 </data>
      <data name="rmnet_data_enabled" type="int"> 1 </data>

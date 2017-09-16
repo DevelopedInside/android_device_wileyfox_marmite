@@ -5,7 +5,6 @@
      Qualcomm Technologies Proprietary and Confidential.
 -->
 
-
 <!-- QMI configuration -->
 <list name="netmgr_config">
   <!-- Logging overrides for ds_exec() family of commands -->
@@ -70,7 +69,7 @@
          <data type="string"> rmnet7 </data>
       </list>
 
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> rev_rmnet0 </data>
@@ -154,7 +153,7 @@
          <data type="string"> rmnet_data7 </data>
       </list>
 
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> rev_rmnet_usb0 </data>
@@ -239,7 +238,7 @@
          <data type="string"> rmnet_data7 </data>
       </list>
 
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -325,7 +324,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -525,6 +524,7 @@
 
       <data name="qmi_dpm_enabled" type="int"> 1 </data>
       <data name="dpm_retry_timeout" type="int"> 10000 </data>
+      <data name="use_qmuxd" type="int"> 0 </data>
       <data name="wda_data_format_enabled" type="int"> 1 </data>
       <data name="ep_type" type="int"> 5 </data> <!-- DATA_EP_TYPE_BAM_DMUX_V01 -->
 
@@ -669,7 +669,7 @@
       <data name="use_qmuxd" type="int"> 0 </data>
       <data name="dpm_retry_timeout" type="int"> 10000 </data>
       <data name="wda_data_format_enabled" type="int"> 1 </data>
- 
+
       <data name="single_qmux_ch_enabled" type="int"> 1 </data>
       <data name="single_qmux_ch_conn_id_str" type="string"> rmnet0 </data>
       <data name="single_qmux_ch_name" type="string"> DATA5_CNTL </data>
@@ -683,8 +683,9 @@
       <data name="dataformat_dl_data_aggregation_protocol" type="int"> 7 </data>
       <data name="dataformat_ul_data_aggregation_protocol" type="int"> 7 </data>
       <data name="dataformat_dl_gro_enabled" type="int"> 1 </data>
-      <data name="dataformat_ul_gso_enabled" type="int"> 0 </data>
+      <data name="dataformat_ul_gso_enabled" type="int"> 1 </data>
       <data name="pnd_rps_mask" type="int"> 16 </data>
+      <data name="vnd_rps_mask" type="int"> 32 </data>
       <data name="netdev_budget" type="int"> 9 </data>
       <data name="low_latency_filters" type="int"> 0 </data>
       <data name="qos_via_idl" type="int"> 1 </data>
@@ -718,7 +719,7 @@
          <data type="string"> rmnet_data7 </data>
       </list>
 
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -803,7 +804,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -944,7 +945,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -1026,7 +1027,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -1114,7 +1115,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -1155,6 +1156,7 @@
       <data name="single_qmux_ch_name" type="string"> DATA5_CNTL </data>
       <data name="tc_ul_baserate" type="int"> 155000000 </data>
       <data name="dynamic_tc_ul_baserate" type="int"> 1 </data>
+      <data name="tc_ul_burst" type="int"> 25000 </data>
       <data name="rmnet_data_enabled" type="int"> 1 </data>
       <data name="dataformat_agg_dl_pkt" type="int"> 10 </data>
       <data name="dataformat_agg_dl_size" type="int"> 8192 </data>
@@ -1169,6 +1171,7 @@
       <data name="pnd_rps_mask" type="int"> 2 </data>
       <data name="vnd_rps_mask" type="int"> 15 </data>
       <data name="netdev_budget" type="int"> 0 </data>
+      <data name="disable_tcp_hystart" type="int"> 1 </data>
       <data name="low_latency_filters" type="int"> 0 </data>
       <data name="qos_via_idl" type="int"> 1 </data>
 
@@ -1203,7 +1206,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
@@ -1290,7 +1293,7 @@
       <data type="string"> rmnet_data7 </data>
     </list>
 
-    <data name="iwlan_enable" type="int"> 0 </data>
+    <data name="iwlan_enable" type="int"> 1 </data>
     <data name="rev_control_ports_len" type="int"> 9 </data>
     <list name="rev_control_ports">
       <data type="string"> r_rmnet_data0 </data>
@@ -1405,7 +1408,9 @@
     <data name="pnd_rps_mask" type="int"> 0 </data>
     <data name="vnd_rps_mask" type="int"> 0 </data>
     <data name="netdev_budget" type="int"> 0 </data>
-    <data name="low_latency_filters" type="int"> 0 </data>
+    <data name="low_latency_filters" type="int"> 1 </data>
+    <data name="ibfc" type="int"> 1 </data>
+    <data name="qos_disabled" type="int"> 1 </data>
 
     <data name="num_modems" type="int"> 2 </data>
     <list name="modems_enabled">
@@ -1437,7 +1442,7 @@
       <data type="string"> rmnet_data7 </data>
     </list>
 
-    <data name="iwlan_enable" type="int"> 0 </data>
+    <data name="iwlan_enable" type="int"> 1 </data>
     <data name="rev_control_ports_len" type="int"> 9 </data>
     <list name="rev_control_ports">
       <data type="string"> r_rmnet_data0 </data>
@@ -1465,8 +1470,8 @@
     </list>
   </listitem>
 
-   <!-- MSM8998 parameters -->
-   <listitem name = "msm8998">
+   <!-- Cobalt parameters -->
+   <listitem name = "cobalt">
 
       <data name="qmi_dpm_enabled" type="int"> 1 </data>
       <data name="use_qmuxd" type="int"> 0 </data>
@@ -1476,7 +1481,9 @@
       <data name="single_qmux_ch_enabled" type="int"> 1 </data>
       <data name="single_qmux_ch_conn_id_str" type="string"> rmnet0 </data>
       <data name="single_qmux_ch_name" type="string"> DATA5_CNTL </data>
-
+      <data name="tc_ul_baserate" type="int"> 155000000 </data>
+      <data name="dynamic_tc_ul_baserate" type="int"> 1 </data>
+      <data name="tc_ul_burst" type="int"> 25000 </data>
       <data name="rmnet_data_enabled" type="int"> 1 </data>
       <data name="dataformat_agg_dl_pkt" type="int"> 10 </data>
       <data name="dataformat_agg_dl_size" type="int"> 8192 </data>
@@ -1485,7 +1492,7 @@
       <data name="dataformat_dl_data_aggregation_protocol" type="int"> 8 </data>
       <data name="dataformat_ul_data_aggregation_protocol" type="int"> 8 </data>
       <data name="dataformat_dl_gro_enabled" type="int"> 1 </data>
-      <data name="dataformat_ul_gso_enabled" type="int"> 0 </data>
+      <data name="dataformat_ul_gso_enabled" type="int"> 1 </data>
       <data name="phys_net_dev" type="string"> rmnet_ipa0 </data>
 
       <data name="pnd_rps_mask" type="int"> 2 </data>
@@ -1525,7 +1532,7 @@
       </list>
 
       <!-- iWLAN ports -->
-      <data name="iwlan_enable" type="int"> 0 </data>
+      <data name="iwlan_enable" type="int"> 1 </data>
       <data name="rev_control_ports_len" type="int"> 9 </data>
       <list name="rev_control_ports">
          <data type="string"> r_rmnet_data0 </data>
