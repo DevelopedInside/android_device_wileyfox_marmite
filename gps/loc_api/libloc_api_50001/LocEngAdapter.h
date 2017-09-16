@@ -33,7 +33,6 @@
 #include <hardware/gps.h>
 #include <loc.h>
 #include <loc_eng_log.h>
-#include <log_util.h>
 #include <LocAdapterBase.h>
 #include <LocDualContext.h>
 #include <UlpProxyBase.h>
@@ -80,11 +79,14 @@ class LocEngAdapter : public LocAdapterBase {
     unsigned int mPowerVote;
     static const unsigned int POWER_VOTE_RIGHT = 0x20;
     static const unsigned int POWER_VOTE_VALUE = 0x10;
-
+    /** Gnss sv used in position data */
+    GnssSvUsedInPosition mGnssSvIdUsedInPosition;
+    bool mGnssSvIdUsedInPosAvail;
 public:
     bool mSupportsAgpsRequests;
     bool mSupportsPositionInjection;
     bool mSupportsTimeInjection;
+    GnssSystemInfo mGnssInfo;
 
     LocEngAdapter(LOC_API_ADAPTER_EVENT_MASK_T mask,
                   void* owner, ContextBase* context,
@@ -105,7 +107,29 @@ public:
     inline bool hasCPIExtendedCapabilities() {
         return mContext->hasCPIExtendedCapabilities();
     }
+    inline bool hasNativeXtraClient() {
+        return mContext->hasNativeXtraClient();
+    }
     inline const MsgTask* getMsgTask() { return mMsgTask; }
+
+    inline void clearGnssSvUsedListData() {
+        mGnssSvIdUsedInPosAvail = false;
+        memset(&mGnssSvIdUsedInPosition, 0, sizeof (GnssSvUsedInPosition));
+    }
+
+    inline void setGnssSvUsedListData(GnssSvUsedInPosition gnssSvUsedIds) {
+        mGnssSvIdUsedInPosAvail = true;
+        memcpy(&mGnssSvIdUsedInPosition, &gnssSvUsedIds,
+                                    sizeof(GnssSvUsedInPosition));
+    }
+
+    inline GnssSvUsedInPosition getGnssSvUsedListData() {
+        return mGnssSvIdUsedInPosition;
+    }
+
+    inline bool isGnssSvIdUsedInPosAvail() {
+        return mGnssSvIdUsedInPosAvail;
+    }
 
     inline enum loc_api_adapter_err
         startFix()
@@ -227,14 +251,14 @@ public:
                                                   algorithmConfig);
     }
     inline virtual enum loc_api_adapter_err
-        setExtPowerConfig(int isBatteryCharging)
-    {
-        return mLocApi->setExtPowerConfig(isBatteryCharging);
-    }
-    inline virtual enum loc_api_adapter_err
         setAGLONASSProtocol(unsigned long aGlonassProtocol)
     {
         return mLocApi->setAGLONASSProtocol(aGlonassProtocol);
+    }
+    inline virtual enum loc_api_adapter_err
+        setLPPeProtocol(unsigned long lppeCP, unsigned long lppeUP)
+    {
+        return mLocApi->setLPPeProtocol(lppeCP, lppeUP);
     }
     inline virtual int initDataServiceClient()
     {
@@ -277,6 +301,8 @@ public:
     virtual void reportSv(GnssSvStatus &svStatus,
                           GpsLocationExtended &locationExtended,
                           void* svExt);
+    virtual void reportSvMeasurement(GnssSvMeasurementSet &svMeasurementSet);
+    virtual void reportSvPolynomial(GnssSvPolynomial &svPolynomial);
     virtual void reportStatus(GpsStatusValue status);
     virtual void reportNmea(const char* nmea, int length);
     virtual bool reportXtraServer(const char* url1, const char* url2,
@@ -289,7 +315,7 @@ public:
     virtual bool requestSuplES(int connHandle);
     virtual bool reportDataCallOpened();
     virtual bool reportDataCallClosed();
-    virtual void reportGpsMeasurementData(GpsData &gpsMeasurementData);
+    virtual void reportGnssMeasurementData(GnssData &gnssMeasurementData);
 
     inline const LocPosMode& getPositionMode() const
     {return mFixCriteria;}
@@ -340,12 +366,6 @@ public:
     {
         return mLocApi->getGpsLock();
     }
-
-    /*
-      Update Registration Mask
-     */
-    void updateRegistrationMask(LOC_API_ADAPTER_EVENT_MASK_T event,
-                                loc_registration_mask_status isEnabled);
 
     /*
       Set Gnss Constellation Config
