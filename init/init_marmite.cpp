@@ -1,7 +1,6 @@
 /*
    Copyright (c) 2016, The CyanogenMod Project
    Copyright (c) 2017, The LineageOS Project
-
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
    met:
@@ -14,7 +13,6 @@
     * Neither the name of The Linux Foundation nor the names of its
       contributors may be used to endorse or promote products derived
       from this software without specific prior written permission.
-
    THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
@@ -28,10 +26,12 @@
    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/sysinfo.h>
-
+#include <cstdlib>
+#include <unistd.h>
 #include <fcntl.h>
-#include <stdlib.h>
+#include <string>
+
+#include <sys/sysinfo.h>
 
 #include "vendor_init.h"
 #include "property_service.h"
@@ -129,14 +129,12 @@ void load_marmitePlus() {
 /* Wileyfox Swift 2X*/
 void load_marmiteX() {
     property_set("ro.sf.lcd_density", "440");
-    property_set("audio.acdb.name", "AW87319"); //Nextbit Robin (ether)
     //Based on: https://github.com/CyanogenMod/android_hardware_qcom_audio/commit/f6cfe88a8959aacbb0d1782265d4fba52c8854da
     property_set("ro.audio.customplatform", "AW87319");
 }
 
 void vendor_load_properties()
 {
-    char cmv[PROP_VALUE_MAX];
     check_device();
 
     property_set("dalvik.vm.heapstartsize", heapstartsize);
@@ -147,15 +145,17 @@ void vendor_load_properties()
     property_set("dalvik.vm.heapmaxfree", "8m");
 
     property_set("qemu.hw.mainkeys", "0");
-    property_get("ro.boot.cmv", cmv);
+    property_set("ro.audio.customplatform", "AW87319"); //test
 
-    if (!strcmp(cmv, "mv1")) {
+    std::string cmv = property_get("ro.boot.cmv");
+
+    if (cmv == "mv1") {
         /* Swift 2 */
         load_marmite();
-    } else if (!strcmp(cmv, "mv2")){
+    } else if (cmv == "mv2"){
         /* Swift 2 Plus*/
         load_marmitePlus();
-    } else if (!strcmp(cmv, "mv3")) {
+    } else if (cmv == "mv3") {
         /* Swift 2X */
         load_marmiteX();
     }
