@@ -33,7 +33,8 @@ extern "C" {
 #include <sys/time.h>
 }
 
-#include "QCameraHWI.h"
+#include <camera.h>
+//#include "QCamera2HWI.h"
 
 extern "C" {
 
@@ -42,7 +43,7 @@ extern "C" {
     int usbcam_get_number_of_cameras();
     int usbcam_get_camera_info(int camera_id, struct camera_info *info);
 
-    int usbcam_camera_device_open(const struct hw_module_t* module, const char* id,
+    int usbcam_camera_device_open(int id,
           struct hw_device_t** device);
 
     hw_device_t * usbcam_open_camera_device(int cameraId);

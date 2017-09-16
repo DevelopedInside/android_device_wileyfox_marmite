@@ -1910,7 +1910,6 @@ int QCameraMuxer::getCameraInfo(int camera_id,
 {
     int rc = NO_ERROR;
     LOGH("E, camera_id = %d", camera_id);
-    cam_sync_type_t cam_type = CAM_TYPE_MAIN;
 
     if (!m_nLogicalCameras || (camera_id >= m_nLogicalCameras) ||
             !info || (camera_id < 0)) {
@@ -2140,8 +2139,8 @@ int QCameraMuxer::cameraDeviceOpen(int camera_id,
             info.sync_control = CAM_SYNC_RELATED_SENSORS_ON;
             info.mode = m_pPhyCamera[phyId].mode;
             info.type = m_pPhyCamera[phyId].type;
-            info.is_frame_sync_enabled = m_bFrameSyncEnabled;
             rc = hw->setRelatedCamSyncInfo(&info);
+            hw->setFrameSyncEnabled(m_bFrameSyncEnabled);
             if (rc != NO_ERROR) {
                 LOGE("setRelatedCamSyncInfo failed %d", rc);
                 delete hw;

@@ -44,7 +44,7 @@
 #include <linux/android_pmem.h>
 #endif
 #include <linux/ioctl.h>
-#include <camera/QCameraParameters.h>
+#include <QCameraParameters.h>
 #include <media/mediarecorder.h>
 #include <gralloc_priv.h>
 
@@ -72,26 +72,37 @@ extern "C" {
 #include <stdlib.h>
 #include <linux/msm_ion.h>
 #include <camera.h>
-#include <cam_fifo.h>
-#include <jpege.h>
+//#include <cam_fifo.h>
+//#include <jpege.h>
 
 } // extern "C"
 
-#include "QCameraHWI.h"
+//#include "QCameraHWI.h"
 #include "QualcommUsbCamera.h"
 #include "QCameraUsbPriv.h"
 #include "QCameraUsbParm.h"
 
 namespace android {
 
+typedef struct {
+    const char* desc;
+    int value;
+}str_map;
+
+struct camera_size_type {
+  int width;
+  int height;
+};
+
+
 /********************************************************************/
 static const str_map preview_formats[] = {
     {QCameraParameters::PIXEL_FORMAT_YUV420SP, HAL_PIXEL_FORMAT_YCrCb_420_SP},
 };
 
-static const preview_format_info_t preview_format_info_list[] = {
+/*static const preview_format_info_t preview_format_info_list[] = {
     {HAL_PIXEL_FORMAT_YV12, CAMERA_YUV_420_YV12, CAMERA_PAD_TO_WORD, 3}
-};
+};*/
 
 static struct camera_size_type previewSizes[] = {
     { 1920, 1088}, //1080p
@@ -106,15 +117,15 @@ static struct camera_size_type previewSizes[] = {
 // to the min and max fps supported by hardware
 // this list must be sorted first by max_fps and then min_fps
 // fps values are multiplied by 1000
-static android::FPSRange prevFpsRanges[] = {
-    android::FPSRange(5000, 121000),
+static FPSRange prevFpsRanges[] = {
+    FPSRange(5000, 121000),
 };
 
 /* TBR: Is frame rate mode mandatory */
-static const str_map frame_rate_modes[] = {
-    {QCameraParameters::KEY_QC_PREVIEW_FRAME_RATE_AUTO_MODE, FPS_MODE_AUTO},
-    {QCameraParameters::KEY_QC_PREVIEW_FRAME_RATE_FIXED_MODE, FPS_MODE_FIXED}
-};
+/*static const str_map frame_rate_modes[] = {
+    {QCameraParameters::KEY_PREVIEW_FRAME_RATE_AUTO_MODE, 0},
+    {QCameraParameters::KEY_PREVIEW_FRAME_RATE_FIXED_MODE, 1}
+};*/
 
 static const str_map picture_formats[] = {
     {QCameraParameters::PIXEL_FORMAT_JPEG, PICTURE_FORMAT_JPEG},
@@ -122,10 +133,13 @@ static const str_map picture_formats[] = {
 };
 
 static camera_size_type picture_sizes[] = {
-    { 1920, 1088}, //HD1080
     { 1280, 720}, //HD720
     { 640, 480}, // VGA
     { 320, 240}, // QVGA
+};
+
+static camera_size_type video_sizes[] = {
+    { 640, 480}, // VGA
 };
 
 /* aspect ratio removed */
@@ -140,16 +154,16 @@ static camera_size_type thumbnail_sizes[] = {
     { 176, 144 }, //1.222222
 };
 
-static const str_map recording_Hints[] = {
-    {"false", FALSE},
-    {"true",  TRUE}
-};
+/*static const str_map recording_Hints[] = {
+    {"false", 0},
+    {"true",  1}
+};*/
 
 /* Static functions list */
 static String8 create_sizes_str(const camera_size_type *sizes, int len);
 static String8 create_values_str(const str_map *values, int len);
-static String8 create_fps_str(const android:: FPSRange* fps, int len);
-static String8 create_values_range_str(int min, int max);
+static String8 create_fps_str(const FPSRange* fps, int len);
+//static String8 create_values_range_str(int min, int max);
 static int usbCamSetPrvwSize(   camera_hardware_t           *camHal,
                                 const QCameraParameters&    params);
 static int usbCamSetPictSize(   camera_hardware_t           *camHal,
@@ -181,6 +195,10 @@ int usbCamInitDefaultParameters(camera_hardware_t *camHal)
     camHal->prevFormat          = DEFAULT_USBCAM_PRVW_FMT;
     camHal->prevWidth           = DEFAULT_USBCAM_PRVW_WD;
     camHal->prevHeight          = DEFAULT_USBCAM_PRVW_HT;
+
+    camHal->videoWidth           = DEFAULT_USBCAM_PRVW_WD;
+    camHal->videoHeight          = DEFAULT_USBCAM_PRVW_HT;
+
     camHal->dispFormat          = camHal->prevFormat;
     camHal->dispWidth           = camHal->prevWidth;
     camHal->dispHeight          = camHal->prevHeight;
@@ -201,7 +219,7 @@ int usbCamInitDefaultParameters(camera_hardware_t *camHal)
         picture_sizes, sizeof(picture_sizes) / sizeof(camera_size_type));
     camHal->qCamParams.set(QCameraParameters::KEY_SUPPORTED_PICTURE_SIZES,
         camHal->pictSizeValues.string());
-    camHal->qCamParams.setPictureSize(camHal->pictWidth, camHal->pictHeight);
+    camHal->qCamParams.CameraParameters::setPictureSize(camHal->pictWidth, camHal->pictHeight);
 
     //Set picture format
     camHal->pictFormatValues = create_values_str(
@@ -209,11 +227,26 @@ int usbCamInitDefaultParameters(camera_hardware_t *camHal)
     camHal->qCamParams.set(QCameraParameters::KEY_SUPPORTED_PICTURE_FORMATS,
                     camHal->pictFormatValues.string());
     if(PICTURE_FORMAT_JPEG == camHal->pictFormat)
-        camHal->qCamParams.setPictureFormat(QCameraParameters::PIXEL_FORMAT_JPEG);
+        camHal->qCamParams.CameraParameters::setPictureFormat(QCameraParameters::PIXEL_FORMAT_YUV420SP);
 
+    camHal->vidSizeValues = create_sizes_str(
+        video_sizes, sizeof(video_sizes) / sizeof(camera_size_type));
+    camHal->qCamParams.set(QCameraParameters::KEY_SUPPORTED_VIDEO_SIZES, camHal->vidSizeValues.string());
+    camera_size_type preferVideoSize = {camHal->pictWidth, camHal->pictHeight};
+    camHal->qCamParams.set(QCameraParameters::KEY_VIDEO_SIZE, create_sizes_str(&preferVideoSize, 1).string());
+    camHal->qCamParams.set(QCameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, create_sizes_str(&preferVideoSize, 1).string());
+    camHal->qCamParams.set(QCameraParameters::KEY_VIDEO_FRAME_FORMAT,QCameraParameters::PIXEL_FORMAT_YUV420SP);
+
+    camHal->qCamParams.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,"10,15,30,60");
+    camHal->qCamParams.set(CameraParameters::KEY_PREVIEW_FPS_RANGE,"5000,120000");
+    camHal->qCamParams.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,"(5000,120000)");
+    camHal->qCamParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE,30);
+    //camHal->qCamParams.setPreviewFrameRate(30);
     //Set picture quality
     sprintf(tempStr, "%d", camHal->pictJpegQlty);
     camHal->qCamParams.set(QCameraParameters::KEY_JPEG_QUALITY, tempStr);
+
+    camHal->qCamParams.set("camera-property","usb");
 
     //Set Thumbnail size
     camHal->thumbnailSizeValues = create_sizes_str(
@@ -238,22 +271,22 @@ int usbCamInitDefaultParameters(camera_hardware_t *camHal)
     camHal->qCamParams.set(QCameraParameters::KEY_SUPPORTED_PREVIEW_FORMATS,
         camHal->prevFormatValues.string());
     if(HAL_PIXEL_FORMAT_YCrCb_420_SP == camHal->prevFormat)
-        camHal->qCamParams.setPreviewFormat(QCameraParameters::PIXEL_FORMAT_YUV420SP);
+        camHal->qCamParams.CameraParameters::setPreviewFormat(QCameraParameters::PIXEL_FORMAT_YUV420SP);
 
     //Set Preview size
     camHal->prevSizeValues = create_sizes_str(
         previewSizes,  sizeof(previewSizes) / sizeof(camera_size_type));
     camHal->qCamParams.set(QCameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
                     camHal->prevSizeValues.string());
-    camHal->qCamParams.setPreviewSize(camHal->prevWidth, camHal->prevHeight);
+    camHal->qCamParams.CameraParameters::setPreviewSize(camHal->prevWidth, camHal->prevHeight);
 
     //Set Preivew fps range
     camHal->prevFpsRangesValues = create_fps_str(
-        prevFpsRanges, sizeof(prevFpsRanges) / sizeof(android::FPSRange));
+        prevFpsRanges, sizeof(prevFpsRanges) / sizeof(FPSRange));
 
     camHal->qCamParams.set(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
                         camHal->prevFpsRangesValues);
-    camHal->qCamParams.setPreviewFpsRange(MIN_PREV_FPS, MAX_PREV_FPS);
+    //camHal->qCamParams.CameraParameters::setPreviewFpsRange(MIN_PREV_FPS, MAX_PREV_FPS);
 
     ALOGD("%s: X", __func__);
 
@@ -320,9 +353,9 @@ char* usbCamGetParameters(camera_hardware_t *camHal)
     char* rc = NULL;
     String8 str;
 
-    QCameraParameters qParam = camHal->qCamParams;
+    //QCameraParameters qParam = camHal->qCamParams;
     //qParam.dump();
-    str = qParam.flatten( );
+    str = camHal->qCamParams.flatten( );
     rc = (char *)malloc(sizeof(char)*(str.length()+1));
     if(rc != NULL){
         memset(rc, 0, sizeof(char)*(str.length()+1));
@@ -352,7 +385,7 @@ char* usbCamGetParameters(camera_hardware_t *camHal)
  *****************************************************************************/
 void usbCamPutParameters(camera_hardware_t *camHal, char *parms)
 {
-    ALOGD("%s: E", __func__);
+    ALOGD("%s: camHal = %p E", __func__, camHal);
     if(parms)
         free(parms);
     parms = NULL;
@@ -426,7 +459,7 @@ static String8 create_values_str(const str_map *values, int len) {
  *      -1  Error
  * Notes: none
  *****************************************************************************/
-static String8 create_fps_str(const android:: FPSRange* fps, int len) {
+static String8 create_fps_str(const FPSRange* fps, int len) {
     String8 str;
     char buffer[32];
 
@@ -454,7 +487,7 @@ static String8 create_fps_str(const android:: FPSRange* fps, int len) {
  *      -1  Error
  * Notes: none
  *****************************************************************************/
-static String8 create_values_range_str(int min, int max){
+/*static String8 create_values_range_str(int min, int max){
     String8 str;
     char buffer[32];
 
@@ -468,7 +501,7 @@ static String8 create_values_range_str(int min, int max){
         }
     }
     return str;
-}
+}*/
 
 /******************************************************************************
  * Function: usbCamSetPrvwSize
@@ -501,7 +534,7 @@ static int usbCamSetPrvwSize(   camera_hardware_t           *camHal,
            && height ==  previewSizes[i].height) {
             validSize = 1;
 
-            camHal->qCamParams.setPreviewSize(width, height);
+            camHal->qCamParams.CameraParameters::setPreviewSize(width, height);
             ALOGD("%s: setPreviewSize:  width: %d   height: %d",
                 __func__, width, height);
 
@@ -555,7 +588,7 @@ static int usbCamSetPictSize(   camera_hardware_t           *camHal,
            && height ==  picture_sizes[i].height) {
             validSize = 1;
 
-            camHal->qCamParams.setPictureSize(width, height);
+            camHal->qCamParams.CameraParameters::setPictureSize(width, height);
             ALOGD("%s: setPictureSize:  width: %d   height: %d",
                 __func__, width, height);
 

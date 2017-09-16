@@ -411,6 +411,7 @@ int mm_app_stream_initbuf(cam_frame_len_offset_t *frame_offset_info,
                               -1,
                               pBufs[i].fd,
                               (uint32_t)pBufs[i].frame_len,
+                              NULL,
                               CAM_MAPPING_BUF_TYPE_STREAM_BUF, ops_tbl->userdata);
         if (rc != MM_CAMERA_OK) {
             LOGE("mapping buf[%d] err = %d",  i, rc);
@@ -530,7 +531,8 @@ int mm_app_open(mm_camera_app_t *cam_app,
     rc = test_obj->cam->ops->map_buf(test_obj->cam->camera_handle,
                                      CAM_MAPPING_BUF_TYPE_CAPABILITY,
                                      test_obj->cap_buf.mem_info.fd,
-                                     test_obj->cap_buf.mem_info.size);
+                                     test_obj->cap_buf.mem_info.size,
+                                     NULL);
     if (rc != MM_CAMERA_OK) {
         LOGE("map for capability error\n");
         goto error_after_cap_buf_alloc;
@@ -553,7 +555,8 @@ int mm_app_open(mm_camera_app_t *cam_app,
     rc = test_obj->cam->ops->map_buf(test_obj->cam->camera_handle,
                                      CAM_MAPPING_BUF_TYPE_PARM_BUF,
                                      test_obj->parm_buf.mem_info.fd,
-                                     test_obj->parm_buf.mem_info.size);
+                                     test_obj->parm_buf.mem_info.size,
+                                     NULL);
     if (rc != MM_CAMERA_OK) {
         LOGE("map getparm_buf error\n");
         goto error_after_getparm_buf_alloc;
@@ -766,7 +769,7 @@ mm_camera_stream_t * mm_app_add_stream(mm_camera_test_obj_t *test_obj,
                                             0,
                                             -1,
                                             stream->s_info_buf.mem_info.fd,
-                                            (uint32_t)stream->s_info_buf.mem_info.size);
+                                            (uint32_t)stream->s_info_buf.mem_info.size, NULL);
     if (rc != MM_CAMERA_OK) {
         LOGE("map setparm_buf error\n");
         mm_app_deallocate_ion_memory(&stream->s_info_buf);
@@ -1552,7 +1555,11 @@ ERROR:
     return rc;
 }
 
-
+int setEZTune(mm_camera_test_obj_t *test_obj, uint8_t enable)
+{
+    test_obj->enable_EZTune = enable;
+    return 0;
+}
 /** tuneserver_capture
  *    @lib_handle: the camera handle object
  *    @dim: snapshot dimensions
@@ -1875,14 +1882,26 @@ int mm_camera_lib_send_command(mm_camera_lib_handle *handle,
     camera_cap = (cam_capability_t *) handle->test_obj.cap_buf.mem_info.data;
 
     switch(cmd) {
-        case MM_CAMERA_LIB_FPS_RANGE:
-            if ( NULL != in_data ) {
-                cam_fps_range_t range = *(( cam_fps_range_t * )in_data);
-                rc = setFPSRange(&handle->test_obj, range);
-                if (rc != MM_CAMERA_OK) {
-                        LOGE("setFPSRange() err=%d\n",
+        case MM_CAMERA_LIB_EZTUNE_ENABLE:
+            if ( NULL != in_data) {
+                int enable_eztune = *(( int * )in_data);
+                if ( ( enable_eztune != handle->test_obj.enable_EZTune) &&
+                        handle->stream_running ) {
+                    rc = mm_camera_lib_stop_stream(handle);
+                    if (rc != MM_CAMERA_OK) {
+                        LOGE("mm_camera_lib_stop_stream() err=%d\n",
                                     rc);
                         goto EXIT;
+                    }
+                    handle->test_obj.enable_EZTune= enable_eztune;
+                    rc = mm_camera_lib_start_stream(handle);
+                    if (rc != MM_CAMERA_OK) {
+                        LOGE("mm_camera_lib_start_stream() err=%d\n",
+                                    rc);
+                        goto EXIT;
+                    }
+                } else {
+                    handle->test_obj.enable_EZTune= enable_eztune;
                 }
             }
             break;

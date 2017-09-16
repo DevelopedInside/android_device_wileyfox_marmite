@@ -29,6 +29,11 @@
 #ifndef ANDROID_HARDWARE_QCAMERA_USB_PRIV_H
 #define ANDROID_HARDWARE_QCAMERA_USB_PRIV_H
 
+#include <linux/videodev2.h>
+#include <QCameraParameters.h>
+#include <media/hardware/HardwareAPI.h>
+
+using namespace qcamera;
 namespace android {
 
 /* File name length in number of characters */
@@ -127,12 +132,47 @@ struct bufObj {
     int     len;
 };
 
+#define MAX_BUFFER_COUNT 16
+
+typedef struct {
+	int size;
+	int fd;
+	int main_ion_fd;
+	int handle;
+}QCameraHalMemInfo_t;
+
+typedef struct {
+	int size;
+	int fd;
+	int offset;
+}private_buffer_handle_t;
+
+
+typedef struct {
+	int buffer_count;
+	int stride[MAX_BUFFER_COUNT];
+	int local_flag[MAX_BUFFER_COUNT];
+	buffer_handle_t *buffer_handle[MAX_BUFFER_COUNT];
+	QCameraHalMemInfo_t mem_info[MAX_BUFFER_COUNT];
+	camera_memory_t *camera_memory[MAX_BUFFER_COUNT];
+	struct private_handle_t *private_buffer_handle[MAX_BUFFER_COUNT];
+}QCameraHalMemory_t;
+
+typedef enum {
+  JPEG_JOB_STATUS_DONE = 0,
+  JPEG_JOB_STATUS_ERROR
+} jpeg_job_status_t;
+
+
 typedef struct {
     camera_device                       hw_dev;
     Mutex                               lock;
     int                                 previewEnabledFlag;
+    int                                 videorecordingEnableFlag;
     int                                 prvwStoppedForPicture;
     int                                 msgEnabledFlag;
+    int                                 snapshotEnabledFlag;
+    int                                 preview_thread_enable;
     volatile int                        prvwCmdPending;
     volatile int                        prvwCmd;
     pthread_t                           previewThread;
@@ -150,6 +190,10 @@ typedef struct {
     int                                 prevFps;
     int                                 prevWidth;
     int                                 prevHeight;
+
+    int                                 videoWidth;
+    int                                 videoHeight;
+    QCameraHalMemory_t                  videoMem;
     /* captureFormat is internal setting for USB camera buffers */
     int                                 captureFormat;
     char                                dev_name[FILENAME_LENGTH];
@@ -193,6 +237,9 @@ typedef struct {
     String8                             pictFormatValues;
     String8                             prevFormatValues;
     String8                             prevFpsRangesValues;
+
+    camera_memory_t *mMetadata[MM_CAMERA_MAX_NUM_FRAMES];
+    native_handle_t *mNativeHandle[MM_CAMERA_MAX_NUM_FRAMES];
 
 } camera_hardware_t;
 

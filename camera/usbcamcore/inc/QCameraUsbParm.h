@@ -37,7 +37,7 @@
 #include <utils/threads.h>
 #include <cutils/properties.h>
 #include <camera/Camera.h>
-#include <camera/QCameraParameters.h>
+#include <QCameraParameters.h>
 #include <system/window.h>
 #include <system/camera.h>
 #include <hardware/camera.h>
@@ -48,7 +48,7 @@ extern "C" {
 #include <linux/android_pmem.h>
 #include <linux/msm_ion.h>
 #include <camera.h>
-#include <camera_defs_i.h>
+//#include <camera_defs_i.h>
 } //extern C
 
 //Error codes
@@ -62,10 +62,10 @@ static const int PICTURE_FORMAT_JPEG = 1;
 static const int PICTURE_FORMAT_RAW = 2;
 
 /* Default preview width in pixels */
-#define DEFAULT_USBCAM_PRVW_WD  1280//640
+#define DEFAULT_USBCAM_PRVW_WD  640//640
 
 /* Default preview height in pixels */
-#define DEFAULT_USBCAM_PRVW_HT  720//480
+#define DEFAULT_USBCAM_PRVW_HT  480//480
 
 /* Default picture format */
 #define DEFAULT_USBCAM_PICT_FMT     PICTURE_FORMAT_JPEG

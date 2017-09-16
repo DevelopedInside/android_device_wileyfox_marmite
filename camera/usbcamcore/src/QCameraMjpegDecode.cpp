@@ -29,673 +29,1506 @@
 //#define ALOG_NDEBUG 0
 #define ALOG_NIDEBUG 0
 #define LOG_TAG "QCameraMjpegDecode"
-#include <utils/Log.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-
-extern "C" {
-#include "jpeg_buffer.h"
-#include "jpeg_common.h"
-#include "jpegd.h"
-}
 
 #include "QCameraMjpegDecode.h"
 
+extern "C" {
+// #include "jpeg_buffer.h"
+// #include "jpeg_common.h"
+// #include "jpegd.h"
+#include "jpeglib.h"
+#include "setjmp.h"
+}
+
 /* TBDJ: Can be removed */
 #define MIN(a,b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a,b)  (((a) > (b)) ? (a) : (b))
 
-// Abstract the return type of the function to be run as a thread
-#define OS_THREAD_FUNC_RET_T            void *
+#define CLAMP(x,min,max) MIN(MAX((x),(min)),(max))
 
-// Abstract the argument type to the thread function
-#define OS_THREAD_FUNC_ARG_T            void *
+#define TIME_IN_US(r) ((int64_t)r.tv_sec * 1000000LL + r.tv_usec)
 
-// Helpful constants for return values in the thread functions
-#define OS_THREAD_FUNC_RET_SUCCEEDED    (OS_THREAD_FUNC_RET_T)0
-#define OS_THREAD_FUNC_RET_FAILED       (OS_THREAD_FUNC_RET_T)1
+#define EXT_LEN 4
+#define FILE_EXT "_%d_%d.jpg"
 
-// Abstract the function modifier placed in the beginning of the thread
-// declaration (empty for Linux)
-#define OS_THREAD_FUNC_MODIFIER
+/** STR_ADD_EXT:
+ *  @str_in: input string
+ *  @str_out: output string
+ *  @ind1: instance index
+ *  @ind2: buffer index
+ *
+ *  add addtional extension to the output string
+ **/
+#define STR_ADD_EXT(str_in, str_out, ind1, ind2) ({ \
+  snprintf(str_out, MAX_FN_LEN-1, "%s_%d_%d.jpg", str_in, ind1, ind2);\
+})
 
-#define os_mutex_init(a) pthread_mutex_init(a, NULL)
-#define os_cond_init(a)  pthread_cond_init(a, NULL)
-#define os_mutex_lock    pthread_mutex_lock
-#define os_mutex_unlock  pthread_mutex_unlock
-#define os_cond_wait     pthread_cond_wait
-#define os_cond_signal   pthread_cond_signal
+/*JPEG SW Decode*/
 
-const char event_to_string[4][14] =
+void* buffer_allocate(buffer_t *p_buffer)
 {
-    "EVENT_DONE",
-    "EVENT_WARNING",
-    "EVENT_ERROR",
+  void *l_buffer = NULL;
+
+  int lrc = 0;
+  struct ion_handle_data lhandle_data;
+
+   p_buffer->alloc.len = p_buffer->size;
+   p_buffer->alloc.align = 4096;
+   p_buffer->alloc.flags = 0;
+   p_buffer->alloc.heap_id_mask = 0x1 << ION_IOMMU_HEAP_ID;
+
+   p_buffer->ion_fd = open("/dev/ion", O_RDONLY);
+   if(p_buffer->ion_fd < 0) {
+    ALOGE("%s :Ion open failed", __func__);
+    goto ION_ALLOC_FAILED;
+  }
+
+  /* Make it page size aligned */
+  p_buffer->alloc.len = (p_buffer->alloc.len + 4095) & (~4095U);
+  lrc = ioctl(p_buffer->ion_fd, ION_IOC_ALLOC, &p_buffer->alloc);
+  if (lrc < 0) {
+    ALOGE("%s :ION allocation failed len %zu", __func__,
+      p_buffer->alloc.len);
+    goto ION_ALLOC_FAILED;
+  }
+
+  p_buffer->ion_info_fd.handle = p_buffer->alloc.handle;
+  lrc = ioctl(p_buffer->ion_fd, ION_IOC_SHARE,
+    &p_buffer->ion_info_fd);
+  if (lrc < 0) {
+    ALOGE("%s :ION map failed %s", __func__, strerror(errno));
+    goto ION_MAP_FAILED;
+  }
+
+  p_buffer->p_pmem_fd = (int)p_buffer->ion_info_fd.fd;
+
+  l_buffer = mmap(NULL, p_buffer->alloc.len, PROT_READ  | PROT_WRITE,
+    MAP_SHARED, p_buffer->p_pmem_fd, 0);
+
+  if (l_buffer == MAP_FAILED) {
+    ALOGE("%s :ION_MMAP_FAILED: %s (%d)", __func__,
+      strerror(errno), errno);
+    goto ION_MAP_FAILED;
+  }
+  ALOGE("%s:%d] fd %d", __func__, __LINE__, p_buffer->p_pmem_fd);
+
+  return l_buffer;
+
+ION_MAP_FAILED:
+  lhandle_data.handle = p_buffer->ion_info_fd.handle;
+  ioctl(p_buffer->ion_fd, ION_IOC_FREE, &lhandle_data);
+  return NULL;
+ION_ALLOC_FAILED:
+  return NULL;
+
+}
+
+int buffer_deallocate(buffer_t *p_buffer)
+{
+  int lrc = 0;
+  size_t lsize = (p_buffer->size + 4095) & (~4095U);
+
+  struct ion_handle_data lhandle_data;
+  lrc = munmap(p_buffer->addr, lsize);
+
+  close(p_buffer->ion_info_fd.fd);
+
+  lhandle_data.handle = p_buffer->ion_info_fd.handle;
+  ioctl(p_buffer->ion_fd, ION_IOC_FREE, &lhandle_data);
+
+  close(p_buffer->ion_fd);
+  return lrc;
+}
+
+struct jpeg_error_manager
+{
+    struct jpeg_error_mgr pub;    /* "public" fields */
+    jmp_buf setjmp_buffer;    /* for return to caller */
 };
 
-typedef struct
+typedef struct jpeg_error_manager * my_error_ptr;
+
+void my_error_exit (j_common_ptr cinfo)
 {
-    uint32_t   width;
-    uint32_t   height;
-    uint32_t   format;
-    uint32_t   preference;
-    uint32_t   abort_time;
-    uint16_t   back_to_back_count;
-    /* TBDJ: Is this required */
-    int32_t    rotation;
-    /* TBDJ: Is this required */
-    jpeg_rectangle_t region;
-    /* TBDJ: Is this required */
-    jpegd_scale_type_t scale_factor;
-    uint32_t   hw_rotation;
-
-    char*       inputMjpegBuffer;
-    int         inputMjpegBufferSize;
-    char*       outputYptr;
-    char*       outputUVptr;
-
-} test_args_t;
-
-typedef struct
-{
-    int                   tid;
-    pthread_t             thread;
-    jpegd_obj_t           decoder;
-    uint8_t               decoding;
-    uint8_t               decode_success;
-    pthread_mutex_t       mutex;
-    pthread_cond_t        cond;
-    test_args_t           *p_args;
-    jpegd_output_buf_t    *p_whole_output_buf;
-
-} thread_ctrl_blk_t;
-
-OS_THREAD_FUNC_RET_T OS_THREAD_FUNC_MODIFIER decoder_test(OS_THREAD_FUNC_ARG_T p_thread_args);
-void decoder_event_handler(void        *p_user_data,
-                           jpeg_event_t event,
-                           void        *p_arg);
-int decoder_output_handler(void               *p_user_data,
-                           jpegd_output_buf_t *p_output_buffer,
-                           uint32_t            first_row_id,
-                           uint8_t             is_last_buffer);
-uint32_t decoder_input_req_handler(void           *p_user_data,
-                                   jpeg_buffer_t   buffer,
-                                   uint32_t        start_offset,
-                                   uint32_t        length);
-static void* insertHuffmanTable(void *p, int size);
-
-static int mjpegd_timer_start(timespec *p_timer);
-static int mjpegd_timer_get_elapsed(timespec *p_timer, int *elapsed_in_ms, uint8_t reset_start);
-static int mjpegd_cond_timedwait(pthread_cond_t *p_cond, pthread_mutex_t *p_mutex, uint32_t ms);
-
-// Global variables
-/* TBDJ: can be removed */
-thread_ctrl_blk_t *thread_ctrl_blks = NULL;
-
-/*
- * This function initializes the mjpeg decoder and returns the object
- */
-MJPEGD_ERR mjpegDecoderInit(void** mjpegd_obj)
-{
-    test_args_t* mjpegd;
-
-    ALOGD("%s: E", __func__);
-
-    mjpegd = (test_args_t *)malloc(sizeof(test_args_t));
-    if(!mjpegd)
-        return MJPEGD_INSUFFICIENT_MEM;
-
-    memset(mjpegd, 0, sizeof(test_args_t));
-
-    /* Defaults */
-    /* Due to current limitation, s/w decoder is selected always */
-    mjpegd->preference          = JPEG_DECODER_PREF_HW_ACCELERATED_PREFERRED;
-    mjpegd->back_to_back_count  = 1;
-    mjpegd->rotation            = 0;
-    mjpegd->hw_rotation         = 0;
-    mjpegd->scale_factor        = (jpegd_scale_type_t)1;
-
-    /* TBDJ: can be removed */
-    mjpegd->width                 = 640;
-    mjpegd->height                = 480;
-    mjpegd->abort_time            = 0;
-
-    *mjpegd_obj = (void *)mjpegd;
-
-    ALOGD("%s: X", __func__);
-    return  MJPEGD_NO_ERROR;
+    my_error_ptr myerr = (my_error_ptr) cinfo->err;
+    (*cinfo->err->output_message) (cinfo);
+    longjmp(myerr->setjmp_buffer, 1);
 }
 
-MJPEGD_ERR mjpegDecode(
-            void*   mjpegd_obj,
-            char*   inputMjpegBuffer,
-            int     inputMjpegBufferSize,
-            char*   outputYptr,
-            char*   outputUVptr,
-            int     outputFormat)
-{
-    int rc, c, i;
-    test_args_t* mjpegd;
-    test_args_t  test_args;
+int JpegtoYUV(unsigned char*JpegBuf,int jpegsize,unsigned char* yuvBuf){
+    struct jpeg_decompress_struct cinfo;
+    struct jpeg_error_manager jerr;
+    int row_stride = 0;
+    FILE* fp = NULL;
+    unsigned int len;
+    unsigned char* rgb_buffer = NULL;
+    int rgb_size;
 
-    ALOGD("%s: E", __func__);
-    /* store input arguments in the context */
-    mjpegd = (test_args_t*) mjpegd_obj;
-    mjpegd->inputMjpegBuffer        = inputMjpegBuffer;
-    mjpegd->inputMjpegBufferSize    = inputMjpegBufferSize;
-    mjpegd->outputYptr              = outputYptr;
-    mjpegd->outputUVptr             = outputUVptr;
-    mjpegd->format                  = outputFormat;
-
-    /* TBDJ: can be removed */
-    memcpy(&test_args, mjpegd, sizeof(test_args_t));
-
-    // check the formats
-    if (((test_args.format == YCRCBLP_H1V2) || (test_args.format == YCBCRLP_H1V2) ||
-      (test_args.format == YCRCBLP_H1V1) || (test_args.format == YCBCRLP_H1V1)) &&
-      !(test_args.preference == JPEG_DECODER_PREF_HW_ACCELERATED_ONLY)) {
-        ALOGE("%s:These formats are not supported by SW format %d", __func__, test_args.format);
-        return 1;
+    ALOGD("%s: Jpeg start SW Decode E",__func__);
+    if(JpegBuf ==NULL || yuvBuf == NULL){
+        ALOGE("%s:JpegBuf yuvBuf is NULL",__func__);
+        return -1;
+    }
+    DUMP_TO_FILE("/data/misc/camera/dump_640_480_001.jpeg",JpegBuf,jpegsize);
+    fp = fopen("/data/misc/camera/dump_640_480_001.jpeg", "rb");
+    if (fp == NULL){
+        ALOGE("%s:open jpeg_file failed",__func__);
+        return -1;
     }
 
-    // Create thread control blocks
-    thread_ctrl_blks = (thread_ctrl_blk_t *)malloc( sizeof(thread_ctrl_blk_t));
-    if (!thread_ctrl_blks)
-    {
-        ALOGE("%s: decoder_test failed: insufficient memory in creating thread control blocks", __func__);
-        return 1;
+    cinfo.err = jpeg_std_error(&jerr.pub);
+    jerr.pub.error_exit = my_error_exit;
+
+    if (setjmp(jerr.setjmp_buffer)){
+        ALOGE("%s:Jpeg Decode setjmp_buffer error",__func__);
+        jpeg_destroy_decompress(&cinfo);
+        fclose(fp);
+        return -1;
     }
-    memset(thread_ctrl_blks, 0, sizeof(thread_ctrl_blk_t));
-    // Initialize the blocks and kick off the threads
-        thread_ctrl_blks[i].tid = i;
-        thread_ctrl_blks[i].p_args = &test_args;
-        os_mutex_init(&thread_ctrl_blks[i].mutex);
-        os_cond_init(&thread_ctrl_blks[i].cond);
+    jpeg_create_decompress(&cinfo);
 
-    rc = (int)decoder_test(&thread_ctrl_blks[i]);
+    jpeg_stdio_src(&cinfo, fp);
+    jpeg_read_header(&cinfo, TRUE);
+    jpeg_start_decompress(&cinfo);
+    row_stride = cinfo.output_width * cinfo.output_components;
+    int w  = cinfo.output_width;
+    int h  = cinfo.output_height;
+    rgb_size = row_stride * cinfo.output_height;
+    // ALOGE("RGB info:output_width=%d,output_width=%d,row_stride=%d,rgb_size=%d,color_space=%d",
+    //                     cinfo.output_width,
+    //                     cinfo.output_height,
+    //                     row_stride,
+    //                     rgb_size,
+    //                     cinfo.out_color_space);
+    rgb_buffer = (unsigned char *)malloc(sizeof(char) * rgb_size);
+    if(rgb_buffer == NULL){
+        ALOGE("rgb_buffer malloc failed");
+        jpeg_destroy_decompress(&cinfo);
+        fclose(fp);
+        return -1;
+    }
+    unsigned char* rowptr;
+    while (cinfo.output_scanline < cinfo.output_height){
+        rowptr = rgb_buffer + cinfo.output_scanline * row_stride;
+        jpeg_read_scanlines(&cinfo,&rowptr, 1);
+        rowptr += row_stride;
+    }
+    jpeg_finish_decompress(&cinfo);
+    fclose(fp);
+    jpeg_destroy_decompress(&cinfo);
 
-    if (!rc)
-        ALOGD("%s: decoder_test finished successfully ", __func__);
-    else
-        ALOGE("%s: decoder_test failed",__func__);
-
-    ALOGD("%s: X rc: %d", __func__, rc);
-
-    return rc;
+    ALOGD("%s: Jpeg SW Decode end X",__func__);
+    len = w*h*3/2;
+    RGB2YUV(rgb_buffer,w,h,yuvBuf,len);
+    free(rgb_buffer);
+    return 0;
 }
 
-OS_THREAD_FUNC_RET_T OS_THREAD_FUNC_MODIFIER decoder_test(OS_THREAD_FUNC_ARG_T arg)
-{
-    int rc, i;
-    jpegd_obj_t         decoder;
-    jpegd_src_t         source;
-    jpegd_dst_t         dest;
-    jpegd_cfg_t         config;
-    jpeg_hdr_t          header;
-    jpegd_output_buf_t  p_output_buffers;
-    uint32_t            output_buffers_count = 1; // currently only 1 buffer a time is supported
-    uint8_t use_pmem = true;
-    timespec os_timer;
-    thread_ctrl_blk_t *p_thread_arg = (thread_ctrl_blk_t *)arg;
-    test_args_t *p_args = p_thread_arg->p_args;
-    uint32_t            output_width;
-    uint32_t            output_height;
-    uint32_t total_time = 0;
+bool RGB2YUV(unsigned char* RgbBuf,int nWidth,int nHeight,unsigned char* yuvBuf,unsigned int len){
+    int i, j;
+    unsigned char*bufY, *bufU, *bufV,*bufRGB;
+    memset(yuvBuf,0,(unsigned int )len);
+    bufY = yuvBuf;
+    bufV = yuvBuf + nWidth * nHeight;
+    bufU = bufV+1;
+    unsigned char y, u, v, r, g, b;
 
-    ALOGD("%s: E", __func__);
-
-    // Determine whether pmem should be used (useful for pc environment testing where
-    // pmem is not available)
-    if ((jpegd_preference_t)p_args->preference == JPEG_DECODER_PREF_SOFTWARE_PREFERRED ||
-        (jpegd_preference_t)p_args->preference == JPEG_DECODER_PREF_SOFTWARE_ONLY) {
-        use_pmem = false;
-    }
-
-    if (((jpegd_preference_t)p_args->preference !=
-      JPEG_DECODER_PREF_HW_ACCELERATED_ONLY) &&
-      ((jpegd_preference_t)p_args->scale_factor > 0)) {
-        ALOGI("%s: Setting scale factor to 1x", __func__);
-    }
-
-    ALOGD("%s: before jpegd_init p_thread_arg: %p", __func__, p_thread_arg);
-
-    // Initialize decoder
-    rc = jpegd_init(&decoder,
-                    &decoder_event_handler,
-                    &decoder_output_handler,
-                    p_thread_arg);
-
-    if (JPEG_FAILED(rc)) {
-        ALOGE("%s: decoder_test: jpegd_init failed", __func__);
-        goto fail;
-    }
-    p_thread_arg->decoder = decoder;
-
-    // Set source information
-    source.p_input_req_handler = &decoder_input_req_handler;
-    source.total_length        = p_args->inputMjpegBufferSize & 0xffffffff;
-
-    rc = jpeg_buffer_init(&source.buffers[0]);
-    if (JPEG_SUCCEEDED(rc)) {
-        /* TBDJ: why buffer [1] */
-        rc = jpeg_buffer_init(&source.buffers[1]);
-    }
-    if (JPEG_SUCCEEDED(rc)) {
-#if 1
-        rc = jpeg_buffer_allocate(source.buffers[0], 0xA000, use_pmem);
-#else
-        rc = jpeg_buffer_use_external_buffer(source.buffers[0],
-                                             (uint8_t *)p_args->inputMjpegBuffer,
-                                             p_args->inputMjpegBufferSize,
-                                             0);
-#endif
-        ALOGD("%s: source.buffers[0]:%p compressed buffer ptr = %p", __func__,
-              source.buffers[0], p_args->inputMjpegBuffer);
-    }
-    if (JPEG_SUCCEEDED(rc)) {
-#if 1
-        rc = jpeg_buffer_allocate(source.buffers[1], 0xA000, use_pmem);
-#else
-         rc = jpeg_buffer_use_external_buffer(source.buffers[1],
-                                             (uint8_t *)p_args->inputMjpegBuffer,
-                                             p_args->inputMjpegBufferSize,
-                                             0);
-#endif
-        ALOGD("%s: source.buffers[1]:%p compressed buffer ptr  = %p", __func__,
-              source.buffers[1], p_args->inputMjpegBuffer);
-   }
-    if (JPEG_FAILED(rc)) {
-        jpeg_buffer_destroy(&source.buffers[0]);
-        jpeg_buffer_destroy(&source.buffers[1]);
-        goto fail;
-    }
-
-   ALOGI("%s: *** Starting back-to-back decoding of %d frame(s)***\n",
-                 __func__, p_args->back_to_back_count);
-
-	 // Loop to perform n back-to-back decoding (to the same output file)
-    for(i = 0; i < p_args->back_to_back_count; i++) {
-        if(mjpegd_timer_start(&os_timer) < 0) {
-            ALOGE("%s: failed to get start time", __func__);
-        }
-
-        /* TBDJ: Every frame? */
-        ALOGD("%s: before jpegd_set_source source.p_arg:%p", __func__, source.p_arg);
-        rc = jpegd_set_source(decoder, &source);
-        if (JPEG_FAILED(rc))
-        {
-            ALOGE("%s: jpegd_set_source failed", __func__);
-            goto fail;
-        }
-
-        rc = jpegd_read_header(decoder, &header);
-        if (JPEG_FAILED(rc))
-        {
-            ALOGE("%s: jpegd_read_header failed", __func__);
-            goto fail;
-        }
-        p_args->width = header.main.width;
-        p_args->height = header.main.height;
-        ALOGD("%s: main dimension: (%dx%d) subsampling: (%d)", __func__,
-                header.main.width, header.main.height, (int)header.main.subsampling);
-
-        // main image decoding:
-        // Set destination information
-        dest.width = (p_args->width) ? (p_args->width) : header.main.width;
-        dest.height = (p_args->height) ? (p_args->height) : header.main.height;
-        dest.output_format = (jpeg_color_format_t) p_args->format;
-        dest.region = p_args->region;
-
-        // if region is defined, re-assign the output width/height
-        output_width  = dest.width;
-        output_height = dest.height;
-
-        if (p_args->region.right || p_args->region.bottom)
-        {
-            if (0 == p_args->rotation || 180 == p_args->rotation)
-            {
-                output_width  = MIN((dest.width),
-                        (uint32_t)(dest.region.right  - dest.region.left + 1));
-                output_height = MIN((dest.height),
-                        (uint32_t)(dest.region.bottom - dest.region.top  + 1));
+    for (j = 0; j<nHeight;j++){
+        bufRGB = RgbBuf + nWidth * (nHeight - 1 - j) * 3 ;
+        for (i = 0;i<nWidth;i++){
+            r = *(bufRGB++);
+            g = *(bufRGB++);
+            b = *(bufRGB++);
+            y = (unsigned char)( ( 66 * r + 129 * g +  25 * b + 128) >> 8) + 16  ;
+            u = (unsigned char)( ( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128 ;
+            v = (unsigned char)( ( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128 ;
+            *(bufY++) = MAX( 0, MIN(y, 255 ));
+            if (j%2==0&&i%2 ==0){
+                if (u>255){
+                    u=255;
+                }
+                if (u<0){
+                     u = 0;
+                }
+                *(bufU) =u;
+                bufU += 2;
             }
-            // Swap output width/height for 90/270 rotation cases
-            else if (90 == p_args->rotation || 270 == p_args->rotation)
-            {
-                output_height  = MIN((dest.height),
-                        (uint32_t)(dest.region.right  - dest.region.left + 1));
-                output_width   = MIN((dest.width),
-                        (uint32_t)(dest.region.bottom - dest.region.top  + 1));
-            }
-            // Unsupported rotation cases
-            else
-            {
-                goto fail;
-            }
-        }
-
-        if (dest.output_format == YCRCBLP_H2V2 || dest.output_format == YCBCRLP_H2V2 ||
-            dest.output_format == YCRCBLP_H2V1 || dest.output_format == YCBCRLP_H2V1 ||
-            dest.output_format == YCRCBLP_H1V2 || dest.output_format == YCBCRLP_H1V2 ||
-            dest.output_format == YCRCBLP_H1V1 || dest.output_format == YCBCRLP_H1V1) {
-            jpeg_buffer_init(&p_output_buffers.data.yuv.luma_buf);
-            jpeg_buffer_init(&p_output_buffers.data.yuv.chroma_buf);
-        } else {
-            jpeg_buffer_init(&p_output_buffers.data.rgb.rgb_buf);
-
-        }
-
-        {
-            // Assign 0 to tile width and height
-            // to indicate that no tiling is requested.
-            p_output_buffers.tile_width  = 0;
-            p_output_buffers.tile_height = 0;
-        }
-        p_output_buffers.is_in_q = 0;
-
-        switch (dest.output_format)
-        {
-        case YCRCBLP_H2V2:
-        case YCBCRLP_H2V2:
-//        case YCRCBLP_H2V1:
-//        case YCBCRLP_H2V1:
-//        case YCRCBLP_H1V2:
-//        case YCBCRLP_H1V2:
-//        case YCRCBLP_H1V1:
-//        case YCBCRLP_H1V1:
-            jpeg_buffer_use_external_buffer(
-               p_output_buffers.data.yuv.luma_buf,
-               (uint8_t*)p_args->outputYptr,
-               p_args->width * p_args->height * SQUARE(p_args->scale_factor),
-               0);
-            jpeg_buffer_use_external_buffer(
-                p_output_buffers.data.yuv.chroma_buf,
-                (uint8_t*)p_args->outputUVptr,
-                p_args->width * p_args->height / 2 * SQUARE(p_args->scale_factor),
-                0);
-            break;
-
-        default:
-            ALOGE("%s: decoder_test: unsupported output format", __func__);
-            goto fail;
-        }
-
-        // Set up configuration
-        memset(&config, 0, sizeof(jpegd_cfg_t));
-        config.preference = (jpegd_preference_t) p_args->preference;
-        config.decode_from = JPEGD_DECODE_FROM_AUTO;
-        config.rotation = p_args->rotation;
-        config.scale_factor = p_args->scale_factor;
-        config.hw_rotation = p_args->hw_rotation;
-        dest.back_to_back_count = p_args->back_to_back_count;
-
-        // Start decoding
-        p_thread_arg->decoding = true;
-
-        rc = jpegd_start(decoder, &config, &dest, &p_output_buffers, output_buffers_count);
-        dest.back_to_back_count--;
-
-        if(JPEG_FAILED(rc)) {
-            ALOGE("%s: decoder_test: jpegd_start failed (rc=%d)\n",
-                    __func__, rc);
-            goto fail;
-        }
-
-        ALOGD("%s: decoder_test: jpegd_start succeeded", __func__);
-
-        // Do abort
-        if (p_args->abort_time) {
-            os_mutex_lock(&p_thread_arg->mutex);
-            while (p_thread_arg->decoding)
-            {
-                rc = mjpegd_cond_timedwait(&p_thread_arg->cond, &p_thread_arg->mutex, p_args->abort_time);
-                if (rc == JPEGERR_ETIMEDOUT)
-                {
-                    // Do abort
-                    os_mutex_unlock(&p_thread_arg->mutex);
-                    rc = jpegd_abort(decoder);
-                    if (rc)
-                    {
-                        ALOGE("%s: decoder_test: jpegd_abort failed: %d", __func__, rc);
-                        goto fail;
+            else{
+                if (i%2==0){
+                    if (v>255){
+                        v = 255;
                     }
-                    break;
-                }
-            }
-            if (p_thread_arg->decoding)
-                os_mutex_unlock(&p_thread_arg->mutex);
-        } else {
-            // Wait until decoding is done or stopped due to error
-            os_mutex_lock(&p_thread_arg->mutex);
-            while (p_thread_arg->decoding)
-            {
-                os_cond_wait(&p_thread_arg->cond, &p_thread_arg->mutex);
-            }
-            os_mutex_unlock(&p_thread_arg->mutex);
-        }
-
-        int diff;
-        // Display the time elapsed
-        if (mjpegd_timer_get_elapsed(&os_timer, &diff, 0) < 0) {
-            ALOGE("%s: decoder_test: failed to get elapsed time", __func__);
-        } else {
-            if(p_args->abort_time) {
-                if(p_thread_arg->decoding) {
-                    ALOGI("%s: decoder_test: decoding aborted successfully after %d ms", __func__, diff);
-                    goto buffer_clean_up;
-                }
-                else
-                {
-                    ALOGI("%s: decoder_test: decoding stopped before abort is issued. "
-                                    "decode time: %d ms", __func__, diff);
-                }
-            }
-            else {
-                if(p_thread_arg->decode_success) {
-                    total_time += diff;
-                    ALOGI("%s: decode time: %d ms (%d frame(s), total=%dms, avg=%dms/frame)",
-                            __func__, diff, i+1, total_time, total_time/(i+1));
-                }
-                else
-                {
-                    fprintf(stderr, "decoder_test: decode failed\n");
+                    if (v<0){
+                        v = 0;
+                    }
+                *(bufV) =v;
+                bufV += 2;
                 }
             }
         }
     }
-
-    if(p_thread_arg->decode_success) {
-        ALOGD("%s: Frame(s) = %d, Total Time = %dms, Avg. decode time = %dms/frame)\n",
-                 __func__, p_args->back_to_back_count, total_time, total_time/p_args->back_to_back_count);
-    }
-
-buffer_clean_up:
-    // Clean up decoder and allocate buffers
-    jpeg_buffer_destroy(&source.buffers[0]);
-    jpeg_buffer_destroy(&source.buffers[1]);
-    switch (dest.output_format)
-    {
-    case YCRCBLP_H2V2:
-    case YCBCRLP_H2V2:
-    case YCRCBLP_H2V1:
-    case YCBCRLP_H2V1:
-    case YCRCBLP_H1V2:
-    case YCBCRLP_H1V2:
-    case YCRCBLP_H1V1:
-    case YCBCRLP_H1V1:
-        jpeg_buffer_destroy(&p_output_buffers.data.yuv.luma_buf);
-        jpeg_buffer_destroy(&p_output_buffers.data.yuv.chroma_buf);
-        break;
-    default:
-        break;
-    }
-    jpegd_destroy(&decoder);
-
-    if (!p_thread_arg->decode_success)
-    {
-        goto fail;
-    }
-
-    ALOGD("%s: X", __func__);
-    return OS_THREAD_FUNC_RET_SUCCEEDED;
-fail:
-
-    ALOGD("%s: X", __func__);
-    return OS_THREAD_FUNC_RET_FAILED;
+    return true;
 }
 
-void decoder_event_handler(void        *p_user_data,
-                           jpeg_event_t event,
-                           void        *p_arg)
+// /*JPEG HW Encode*/
+
+void omx_enc_get_buffer_offset(OMX_U32 width, OMX_U32 height,
+  OMX_U32* p_y_offset, OMX_U32* p_cbcr_offset, OMX_U32* p_buf_size,
+  int usePadding,
+  int rotation,
+  OMX_U32 *p_cbcrStartOffset,
+  float chroma_wt)
 {
-    thread_ctrl_blk_t *p_thread_arg = (thread_ctrl_blk_t *)p_user_data;
-
-    ALOGD("%s: E", __func__);
-
-    ALOGD("%s: Event: %s\n", __func__, event_to_string[event]);
-    if (event == JPEG_EVENT_DONE)
-    {
-        p_thread_arg->decode_success = true;
-        ALOGD("%s: decode_success: %d\n", __func__, p_thread_arg->decode_success);
+  ALOGD("omx_enc_get_buffer_offset width=%d,height=%d,chroma_wt=%f",width,height,chroma_wt);
+  if (usePadding) {
+    //int cbcr_offset = 0;
+    uint32_t actual_size = width * height;
+    uint32_t padded_size = CEILING16(width) * CEILING16(height);
+    *p_y_offset = 0;
+    *p_cbcr_offset = padded_size;
+    if ((rotation == 90) || (rotation == 180)) {
+      *p_y_offset += padded_size - actual_size;
+      *p_cbcr_offset += ((padded_size - actual_size) >> 1);
     }
-    // If it is not a warning event, decoder has stopped; Signal
-    // main thread to clean up
-    if (event != JPEG_EVENT_WARNING)
-    {
-        os_mutex_lock(&p_thread_arg->mutex);
-        p_thread_arg->decoding = false;
-        os_cond_signal(&p_thread_arg->cond);
-        os_mutex_unlock(&p_thread_arg->mutex);
-    }
-    ALOGD("%s: X", __func__);
-
+    *p_buf_size = PAD_TO_4K((uint32_t)((float)padded_size * chroma_wt));
+  } else {
+    *p_y_offset = 0;
+    *p_cbcr_offset = 0;
+    *p_buf_size = PAD_TO_4K((uint32_t)((float)(width*height) * chroma_wt));
+    *p_cbcrStartOffset = PAD_TO_WORD((uint32_t)(width*height));
+  }
+  ALOGD("p_buf_size=%d,p_cbcrStartOffset =%d",*p_buf_size,*p_cbcrStartOffset);
 }
 
-// consumes the output buffer.
-/*TBDJ: Can be removed. Is this related to tiling */
-int decoder_output_handler(void *p_user_data,
-                           jpegd_output_buf_t *p_output_buffer,
-                           uint32_t first_row_id,
-                           uint8_t is_last_buffer)
+OMX_ERRORTYPE omx_enc_deallocate_buffer(buffer_t *p_buffer,
+  int use_pmem)
 {
-    uint8_t* whole_output_buf_ptr, *tiling_buf_ptr;
-
-    ALOGD("%s: E", __func__);
-
-    thread_ctrl_blk_t *p_thread_arg = (thread_ctrl_blk_t *)p_user_data;
-
-    jpeg_buffer_get_addr(p_thread_arg->p_whole_output_buf->data.rgb.rgb_buf, &whole_output_buf_ptr);
-    jpeg_buffer_get_addr(p_output_buffer->data.rgb.rgb_buf, &tiling_buf_ptr);
-
-    if (p_output_buffer->tile_height != 1)
-        return JPEGERR_EUNSUPPORTED;
-
-    // testing purpose only
-    // This is to simulate that the user needs to bail out when error happens
-    // in the middle of decoding
-    //if (first_row_id == 162)
-     //   return JPEGERR_EFAILED;
-
-    // do not enqueue any buffer if it reaches the last buffer
-    if (!is_last_buffer)
-    {
-        jpegd_enqueue_output_buf(p_thread_arg->decoder, p_output_buffer, 1);
-    }
-    ALOGD("%s: X", __func__);
-
-    return JPEGERR_SUCCESS;
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  int rc = 0;
+  if (!p_buffer->addr) {
+    /* buffer not allocated */
+    return ret;
+  }
+  if (use_pmem) {
+    rc = buffer_deallocate(p_buffer);
+    memset(p_buffer, 0x0, sizeof(buffer_t));
+  } else {
+    free(p_buffer->addr);
+    p_buffer->addr = NULL;
+  }
+  return ret;
 }
 
-//      p_reader->p_input_req_handler(p_reader->decoder,
-//                                    p_reader->p_input_buf,
-//                                    p_reader->next_byte_offset,
-//                                    MAX_BYTES_TO_FETCH);
-
-uint32_t decoder_input_req_handler(void           *p_user_data,
-                                   jpeg_buffer_t   buffer,
-                                   uint32_t        start_offset,
-                                   uint32_t        length)
+OMX_ERRORTYPE omx_enc_send_buffers(void *data)
 {
-    uint32_t buf_size;
-    uint8_t *buf_ptr;
-    int bytes_to_read, bytes_read, rc;
-    thread_ctrl_blk_t *p_thread_arg = (thread_ctrl_blk_t *)p_user_data;
-    thread_ctrl_blk_t *thread_ctrl_blk = (thread_ctrl_blk_t *)p_user_data;
-    test_args_t*    mjpegd = (test_args_t*) thread_ctrl_blk->p_args;
+  omx_enc_t *p_client = (omx_enc_t *)data;
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  uint32_t i = 0;
+  QOMX_BUFFER_INFO lbuffer_info;
 
-    ALOGD("%s: E", __func__);
-
-    jpeg_buffer_get_max_size(buffer, &buf_size);
-    jpeg_buffer_get_addr(buffer, &buf_ptr);
-    bytes_to_read = (length < buf_size) ? length : buf_size;
-    bytes_read = 0;
-
-    ALOGD("%s: buf_ptr = %p, start_offset = %d, length = %d buf_size = %d bytes_to_read = %d", __func__, buf_ptr, start_offset, length, buf_size, bytes_to_read);
-    if (bytes_to_read)
-    {
-        /* TBDJ: Should avoid this Mem copy */
-#if 1
-        memcpy(buf_ptr, (char *)mjpegd->inputMjpegBuffer + start_offset, bytes_to_read);
-#else
-        if(JPEGERR_SUCCESS != jpeg_buffer_set_start_offset(buffer, start_offset))
-            ALOGE("%s: jpeg_buffer_set_start_offset failed", __func__);
-#endif
-        bytes_read = bytes_to_read;
+  memset(&lbuffer_info, 0x0, sizeof(QOMX_BUFFER_INFO));
+  for (i = 0; i < (uint32_t)p_client->buf_count; i++) {
+    lbuffer_info.fd = (uint32_t)p_client->in_buffer[i].p_pmem_fd;
+    ALOGD("%s:%d] buffer %d fd - %d", __func__, __LINE__, i,
+      (int)lbuffer_info.fd);
+    ret = OMX_UseBuffer(p_client->p_handle, &(p_client->p_in_buffers[i]), 0,
+      &lbuffer_info, p_client->total_size,
+      p_client->in_buffer[i].addr);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
     }
 
-    ALOGD("%s: X", __func__);
-    return bytes_read;
-}
-
-static int mjpegd_timer_start(timespec *p_timer)
-{
-    if (!p_timer)
-        return JPEGERR_ENULLPTR;
-
-    if (clock_gettime(CLOCK_REALTIME, p_timer))
-        return JPEGERR_EFAILED;
-
-    return JPEGERR_SUCCESS;
-}
-
-static int mjpegd_timer_get_elapsed(timespec *p_timer, int *elapsed_in_ms, uint8_t reset_start)
-{
-    timespec now;
-    long diff;
-    int rc = mjpegd_timer_start(&now);
-
-    if (JPEG_FAILED(rc))
-        return rc;
-
-    diff = (long)(now.tv_sec - p_timer->tv_sec) * 1000;
-    diff += (long)(now.tv_nsec - p_timer->tv_nsec) / 1000000;
-    *elapsed_in_ms = (int)diff;
-
-    if (reset_start)
-        *p_timer = now;
-
-    return JPEGERR_SUCCESS;
-}
-
-int mjpegd_cond_timedwait(pthread_cond_t *p_cond, pthread_mutex_t *p_mutex, uint32_t ms)
-{
-    struct timespec ts;
-    int rc = clock_gettime(CLOCK_REALTIME, &ts);
-    if (rc < 0) return rc;
-
-    if (ms >= 1000) {
-       ts.tv_sec += (ms/1000);
-       ts.tv_nsec += ((ms%1000) * 1000000);
-    } else {
-        ts.tv_nsec += (ms * 1000000);
+    ret = OMX_UseBuffer(p_client->p_handle, &(p_client->p_out_buffers[i]),
+      1, NULL, p_client->total_size, p_client->out_buffer[i].addr);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
     }
 
-    rc = pthread_cond_timedwait(p_cond, p_mutex, &ts);
-    if (rc == ETIMEDOUT)
-    {
-        rc = JPEGERR_ETIMEDOUT;
+    ret = OMX_UseBuffer(p_client->p_handle, &(p_client->p_thumb_buf[i]), 2,
+      &lbuffer_info, p_client->total_size,
+      p_client->in_buffer[i].addr);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
     }
+
+  }
+  ALOGD("%s:%d]", __func__, __LINE__);
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_free_buffers(void *data)
+{
+  omx_enc_t *p_client = (omx_enc_t *)data;
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  uint32_t i = 0;
+
+  for (i = 0; i < (uint32_t)p_client->buf_count; i++) {
+    ALOGD("%s:%d] buffer %d", __func__, __LINE__, i);
+    ret = OMX_FreeBuffer(p_client->p_handle, 0, p_client->p_in_buffers[i]);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
+    }
+    ret = OMX_FreeBuffer(p_client->p_handle, 2 , p_client->p_thumb_buf[i]);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
+    }
+    ret = OMX_FreeBuffer(p_client->p_handle, 1 , p_client->p_out_buffers[i]);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
+    }
+  }
+  ALOGD("%s:%d]", __func__, __LINE__);
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_change_state(omx_enc_t *p_client,
+  OMX_STATETYPE new_state, omx_pending_func_t p_exec)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  ALOGD("%s:%d] new_state %d p_exec %p", __func__, __LINE__,
+    new_state, p_exec);
+
+  pthread_mutex_lock(&p_client->lock);
+
+
+  if (p_client->aborted) {
+    ALOGD("%s:%d] Abort has been requested, quiting!!", __func__, __LINE__);
+    pthread_mutex_unlock(&p_client->lock);
+    return OMX_ErrorNone;
+  }
+
+  if (p_client->omx_state != new_state) {
+    p_client->state_change_pending = OMX_TRUE;
+  } else {
+    ALOGD("%s:%d] new_state is the same: %d ", __func__, __LINE__,
+    new_state);
+
+    pthread_mutex_unlock(&p_client->lock);
+
+    return OMX_ErrorNone;
+  }
+  ALOGD("%s:%d] **** Before send command", __func__, __LINE__);
+  ret = OMX_SendCommand(p_client->p_handle, OMX_CommandStateSet,
+    new_state, NULL);
+  ALOGD("%s:%d] **** After send command", __func__, __LINE__);
+
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    pthread_mutex_unlock(&p_client->lock);
+    return OMX_ErrorIncorrectStateTransition;
+  }
+  ALOGD("%s:%d] ", __func__, __LINE__);
+  if (p_client->error_flag) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    pthread_mutex_unlock(&p_client->lock);
+    return OMX_ErrorIncorrectStateTransition;
+  }
+  if (p_exec) {
+    ret = p_exec(p_client);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      pthread_mutex_unlock(&p_client->lock);
+      return OMX_ErrorIncorrectStateTransition;
+    }
+  }
+  ALOGD("%s:%d] ", __func__, __LINE__);
+  if (p_client->state_change_pending) {
+    ALOGD("%s:%d] before wait", __func__, __LINE__);
+    pthread_cond_wait(&p_client->cond, &p_client->lock);
+    ALOGD("%s:%d] after wait", __func__, __LINE__);
+    p_client->omx_state = new_state;
+  }
+  pthread_mutex_unlock(&p_client->lock);
+  ALOGD("%s:%d] ", __func__, __LINE__);
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_set_io_ports(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+
+  ALOGD("%s:%d: E", __func__, __LINE__);
+
+  p_client->inputPort = (OMX_PARAM_PORTDEFINITIONTYPE *)malloc(sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
+  if (NULL == p_client->inputPort) {
+    ALOGE("%s: Error in malloc for inputPort",__func__);
+    return OMX_ErrorInsufficientResources;
+  }
+
+  p_client->outputPort = (OMX_PARAM_PORTDEFINITIONTYPE *)malloc(sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
+  if (NULL == p_client->outputPort) {
+    free(p_client->inputPort);
+    ALOGE("%s: Error in malloc for outputPort ",__func__);
+    return OMX_ErrorInsufficientResources;
+  }
+  p_client->thumbPort =(OMX_PARAM_PORTDEFINITIONTYPE *) malloc(sizeof(OMX_PARAM_PORTDEFINITIONTYPE));
+  if (NULL == p_client->thumbPort) {
+  free(p_client->inputPort);
+  free(p_client->outputPort);
+    ALOGE("%s: Error in malloc for thumbPort",__func__);
+    return OMX_ErrorInsufficientResources;
+  }
+
+  p_client->inputPort->nPortIndex = 0;
+  p_client->outputPort->nPortIndex = 1;
+  p_client->thumbPort->nPortIndex = 2;
+
+  ret = OMX_GetParameter(p_client->p_handle, OMX_IndexParamPortDefinition,
+    p_client->inputPort);
+  if (ret) {
+    ALOGE("%s:%d] failed", __func__, __LINE__);
+    return ret;
+  }
+
+  ret = OMX_GetParameter(p_client->p_handle, OMX_IndexParamPortDefinition,
+    p_client->thumbPort);
+  if (ret) {
+    ALOGE("%s:%d] failed", __func__, __LINE__);
+    return ret;
+  }
+
+  ret = OMX_GetParameter(p_client->p_handle, OMX_IndexParamPortDefinition,
+    p_client->outputPort);
+  if (ret) {
+    ALOGE("%s:%d] failed", __func__, __LINE__);
+    return ret;
+  }
+
+  p_client->inputPort->format.image.nFrameWidth =
+    p_client->main.width;
+  p_client->inputPort->format.image.nFrameHeight =
+    p_client->main.height;
+  p_client->inputPort->format.image.nStride =
+    p_client->main.width;
+  p_client->inputPort->format.image.nSliceHeight =
+    p_client->main.height;
+  p_client->inputPort->format.image.eColorFormat =
+    (OMX_COLOR_FORMATTYPE) p_client->main.eColorFormat;
+  p_client->inputPort->nBufferSize = p_client->total_size;
+  p_client->inputPort->nBufferCountActual = p_client->buf_count;
+  ret = OMX_SetParameter(p_client->p_handle, OMX_IndexParamPortDefinition,
+    p_client->inputPort);
+  if (ret) {
+    ALOGE("%s:%d] failed", __func__, __LINE__);
+    return ret;
+  }
+
+  p_client->thumbPort->format.image.nFrameWidth =
+    p_client->thumbnail.width;
+  p_client->thumbPort->format.image.nFrameHeight =
+    p_client->thumbnail.height;
+  p_client->thumbPort->format.image.nStride =
+    (int32_t)p_client->thumbnail.width;
+  p_client->thumbPort->format.image.nSliceHeight =
+    p_client->thumbnail.height;
+  p_client->thumbPort->format.image.eColorFormat =
+    (OMX_COLOR_FORMATTYPE) p_client->thumbnail.eColorFormat;
+  p_client->thumbPort->nBufferSize = p_client->total_size;
+  p_client->thumbPort->nBufferCountActual = p_client->buf_count;
+  ret = OMX_SetParameter(p_client->p_handle, OMX_IndexParamPortDefinition,
+    p_client->thumbPort);
+  if (ret) {
+    ALOGE("%s:%d] failed", __func__, __LINE__);
+    return ret;
+  }
+
+  // Enable thumbnail port
+  if (p_client->thumbPort) {
+  ret = OMX_SendCommand(p_client->p_handle, OMX_CommandPortEnable,
+      p_client->thumbPort->nPortIndex, NULL);
+  }
+
+  p_client->outputPort->nBufferSize = p_client->total_size;
+  p_client->outputPort->nBufferCountActual = p_client->buf_count;
+  ret = OMX_SetParameter(p_client->p_handle, OMX_IndexParamPortDefinition,
+    p_client->outputPort);
+  if (ret) {
+    ALOGE("%s:%d] failed", __func__, __LINE__);
+    return ret;
+  }
+
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_configure_buffer_ext(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  OMX_INDEXTYPE buffer_index;
+
+  ALOGD("%s:%d: E", __func__, __LINE__);
+
+  omx_enc_get_buffer_offset(p_client->main.width,
+    p_client->main.height,
+    &p_client->frame_info.yOffset,
+    &p_client->frame_info.cbcrOffset[0],
+    &p_client->total_size,
+    p_client->usePadding,
+    p_client->rotation,
+    &p_client->frame_info.cbcrStartOffset[0],
+    p_client->main.chroma_wt);
+
+  ret = OMX_GetExtensionIndex(p_client->p_handle,
+    (OMX_STRING)"OMX.QCOM.image.exttype.bufferOffset", &buffer_index);
+  if (ret != OMX_ErrorNone) {
+    ALOGE("%s: %d] Failed", __func__, __LINE__);
+    return ret;
+  }
+  ALOGD("%s:%d] yOffset = %u, cbcrOffset = %u, totalSize = %u,"
+    "cbcrStartOffset = %u", __func__, __LINE__,
+    (uint32_t)(p_client->frame_info.yOffset),
+    (uint32_t)(p_client->frame_info.cbcrOffset[0]),
+    (uint32_t)(p_client->total_size),
+    (uint32_t)(p_client->frame_info.cbcrStartOffset[0]));
+
+  ret = OMX_SetParameter(p_client->p_handle, buffer_index,
+    &p_client->frame_info);
+  if (ret != OMX_ErrorNone) {
+    ALOGE("%s: %d] Failed", __func__, __LINE__);
+    return ret;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_allocate_buffer(buffer_t *p_buffer,
+  int use_pmem)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  /*Allocate buffers*/
+  if (use_pmem) {
+    p_buffer->addr = (uint8_t *)buffer_allocate(p_buffer);
+    if (NULL == p_buffer->addr) {
+      ALOGE("%s:%d] Error",__func__, __LINE__);
+      return OMX_ErrorUndefined;
+    }
+  } else {
+    /* Allocate heap memory */
+    p_buffer->addr = (uint8_t *)malloc(p_buffer->size);
+    if (NULL == p_buffer->addr) {
+      ALOGE("%s:%d] Error",__func__, __LINE__);
+      return OMX_ErrorUndefined;
+    }
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_set_exif_info(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  OMX_INDEXTYPE exif_indextype;
+  QOMX_EXIF_INFO exif_info;
+  QEXIF_INFO_DATA exif_data[MAX_EXIF_ENTRIES];
+  uint32_t num_exif_values = 0;
+
+  ret = OMX_GetExtensionIndex(p_client->p_handle,
+    (OMX_STRING)"OMX.QCOM.image.exttype.exif", &exif_indextype);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    return ret;
+  }
+
+  exif_data[num_exif_values].tag_id = EXIFTAGID_GPS_LONGITUDE_REF;
+  exif_data[num_exif_values].tag_entry.type = EXIF_ASCII;
+  exif_data[num_exif_values].tag_entry.count = 2;
+  exif_data[num_exif_values].tag_entry.copy = 1;
+
+  sprintf(exif_data[num_exif_values].tag_entry.data._ascii,"%s","se");
+  //exif_data[num_exif_values].tag_entry.data._ascii = "se";
+  num_exif_values++;
+
+  exif_data[num_exif_values].tag_id = EXIFTAGID_GPS_LONGITUDE;
+  exif_data[num_exif_values].tag_entry.type = EXIF_RATIONAL;
+  exif_data[num_exif_values].tag_entry.count = 1;
+  exif_data[num_exif_values].tag_entry.copy = 1;
+  exif_data[num_exif_values].tag_entry.data._rat.num = 31;
+  exif_data[num_exif_values].tag_entry.data._rat.denom = 1;
+  num_exif_values++;
+
+  exif_info.numOfEntries = num_exif_values;
+  exif_info.exif_data = exif_data;
+
+  ret = OMX_SetParameter(p_client->p_handle, exif_indextype,
+    &exif_info);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    return ret;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_set_thumbnail_data(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  QOMX_THUMBNAIL_INFO thumbnail_info;
+  OMX_INDEXTYPE thumb_indextype;
+
+  if (p_client->encode_thumbnail) {
+    ret = OMX_GetExtensionIndex(p_client->p_handle,
+      (OMX_STRING)"OMX.QCOM.image.exttype.thumbnail",
+      &thumb_indextype);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
+    }
+
+    /* fill thumbnail info*/
+    thumbnail_info.scaling_enabled = p_client->tn_scale_cfg.enable;
+    thumbnail_info.input_width = p_client->thumbnail.width;
+    thumbnail_info.input_height = p_client->thumbnail.height;
+    thumbnail_info.crop_info.nWidth = p_client->tn_scale_cfg.input_width;
+    thumbnail_info.crop_info.nHeight = p_client->tn_scale_cfg.input_height;
+    thumbnail_info.crop_info.nLeft = (int32_t)p_client->tn_scale_cfg.h_offset;
+    thumbnail_info.crop_info.nTop = (int32_t)p_client->tn_scale_cfg.v_offset;
+    thumbnail_info.output_width = p_client->tn_scale_cfg.output_width;
+    thumbnail_info.output_height = p_client->tn_scale_cfg.output_height;
+    thumbnail_info.tmbOffset = p_client->frame_info;
+
+    ret = OMX_SetParameter(p_client->p_handle, thumb_indextype,
+      &thumbnail_info);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      return ret;
+    }
+  }
+
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_set_quality(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  OMX_IMAGE_PARAM_QFACTORTYPE quality;
+
+  quality.nPortIndex = 0;
+  quality.nQFactor = p_client->main.quality;
+  ALOGD("%s:%d] Setting main image quality %d",
+    __func__, __LINE__, p_client->main.quality);
+  ret = OMX_SetParameter(p_client->p_handle, OMX_IndexParamQFactor,
+    &quality);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    return ret;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_encoding_mode(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE rc = OMX_ErrorNone;
+  OMX_INDEXTYPE indextype;
+  QOMX_ENCODING_MODE encoding_mode;
+
+  rc = OMX_GetExtensionIndex(p_client->p_handle,
+    (OMX_STRING)QOMX_IMAGE_EXT_ENCODING_MODE_NAME, &indextype);
+  if (rc != OMX_ErrorNone) {
+    ALOGE("%s:%d] Failed", __func__, __LINE__);
     return rc;
+  }
+
+  /* hardcode to parallel encoding */
+
+  if (p_client->encode_thumbnail) {
+    encoding_mode = OMX_Parallel_Encoding;
+  } else {
+    encoding_mode = OMX_Serial_Encoding;
+  }
+  ALOGE("%s:%d] encoding mode = %d ", __func__, __LINE__,
+    (int)encoding_mode);
+  rc = OMX_SetParameter(p_client->p_handle, indextype, &encoding_mode);
+  if (rc != OMX_ErrorNone) {
+    ALOGE("%s:%d] Failed", __func__, __LINE__);
+    return rc;
+  }
+  return rc;
 }
+
+static OMX_ERRORTYPE omx_enc_set_workbuf(
+  omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  QOMX_WORK_BUFFER work_buffer;
+  OMX_INDEXTYPE work_buffer_index;
+  //int i;
+
+  if (!p_client->work_buf.addr || !p_client->work_buf.size) {
+    ALOGE("%s:%d] Error invalid input %d",
+      __func__, __LINE__, ret);
+    return OMX_ErrorUndefined;
+  }
+  //Pass the ION buffer to be used as o/p for HW
+  memset(&work_buffer, 0x0, sizeof(QOMX_WORK_BUFFER));
+  ret = OMX_GetExtensionIndex(p_client->p_handle,
+    (OMX_STRING)QOMX_IMAGE_EXT_WORK_BUFFER_NAME,
+    &work_buffer_index);
+  if (ret) {
+    ALOGE("%s:%d] Error getting work buffer index %d",
+      __func__, __LINE__, ret);
+    return ret;
+  }
+  work_buffer.fd = p_client->work_buf.p_pmem_fd;
+  work_buffer.vaddr = p_client->work_buf.addr;
+  work_buffer.length = (uint32_t)p_client->work_buf.size;
+  ALOGE("%s:%d] Work buffer %d %p WorkBufSize: %d", __func__, __LINE__,
+    work_buffer.fd, work_buffer.vaddr, work_buffer.length);
+
+  ret = OMX_SetConfig(p_client->p_handle, work_buffer_index,
+    &work_buffer);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    return ret;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_set_rotation_angle(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  OMX_CONFIG_ROTATIONTYPE rotType;
+  rotType.nPortIndex = 0;
+  rotType.nRotation = p_client->rotation;
+  ret = OMX_SetConfig(p_client->p_handle, OMX_IndexConfigCommonRotate,
+    &rotType);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    return ret;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_set_scaling_params(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  OMX_CONFIG_RECTTYPE recttype;
+  OMX_CONFIG_RECTTYPE rect_type_in;
+
+  memset(&rect_type_in, 0, sizeof(rect_type_in));
+  rect_type_in.nPortIndex = 0;
+  rect_type_in.nWidth = p_client->main_scale_cfg.input_width;
+  rect_type_in.nHeight = p_client->main_scale_cfg.input_height;
+  rect_type_in.nLeft = (int32_t)p_client->main_scale_cfg.h_offset;
+  rect_type_in.nTop = (int32_t)p_client->main_scale_cfg.v_offset;
+
+  ALOGD("%s:%d] OMX_IndexConfigCommonInputCrop w = %d, h = %d, l = %d, t = %d,"
+    " port_idx = %d", __func__, __LINE__,
+    (int)p_client->main_scale_cfg.input_width, (int)p_client->main_scale_cfg.input_height,
+    (int)p_client->main_scale_cfg.h_offset, (int)p_client->main_scale_cfg.v_offset,
+    (int)rect_type_in.nPortIndex);
+
+  ret = OMX_SetConfig(p_client->p_handle, OMX_IndexConfigCommonInputCrop,
+    &rect_type_in);
+  if (OMX_ErrorNone != ret) {
+    ALOGE("%s:%d] Error in setting input crop params", __func__, __LINE__);
+    return ret;
+  }
+
+  recttype.nLeft = (int32_t)p_client->main_scale_cfg.h_offset;
+  recttype.nTop = (int32_t)p_client->main_scale_cfg.v_offset;
+  recttype.nWidth = p_client->main_scale_cfg.output_width;
+  recttype.nHeight = p_client->main_scale_cfg.output_height;
+  recttype.nPortIndex = 0;
+  ALOGD("%s:%d] OMX_IndexConfigCommonOutputCrop w = %d, h = %d, l = %d, t = %d,"
+    " port_idx = %d", __func__, __LINE__,
+    (int)p_client->main_scale_cfg.output_width, (int)p_client->main_scale_cfg.output_height,
+    (int)p_client->main_scale_cfg.h_offset, (int)p_client->main_scale_cfg.v_offset,
+    (int)rect_type_in.nPortIndex);
+
+  ret = OMX_SetConfig(p_client->p_handle, OMX_IndexConfigCommonOutputCrop,
+    &recttype);
+  if (ret) {
+    ALOGE("%s:%d] Error in setting output crop params", __func__, __LINE__);
+    return ret;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_enc_read_file(const char *filename,
+  buffer_t *p_buffer,
+  omx_image_t *p_image __unused)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  FILE *fp = NULL;
+  size_t file_size = 0;
+  fp = fopen(filename, "rb");
+  if (!fp) {
+    ALOGE("%s:%d] error", __func__, __LINE__);
+    return OMX_ErrorUndefined;
+  }
+  fseek(fp, 0, SEEK_END);
+  file_size = (size_t)ftell(fp);
+  fseek(fp, 0, SEEK_SET);
+  ALOGE("%s:%d] input file size is %zu buf_size %zu",
+    __func__, __LINE__, file_size, p_buffer->size);
+
+  if (p_buffer->size < file_size) {
+    ALOGE("%s:%d] error %d %d", __func__, __LINE__,
+      p_buffer->size,
+      file_size);
+    fclose(fp);
+    return ret;
+  }
+  fread(p_buffer->addr, 1, p_buffer->size, fp);
+  fclose(fp);
+  return ret;
+}
+
+OMX_BOOL omx_enc_check_for_completion(omx_enc_t *p_client)
+{
+  if ((p_client->ebd_count == p_client->total_ebd_count) &&
+    (p_client->fbd_count == p_client->buf_count)) {
+    return OMX_TRUE;
+  }
+  return OMX_FALSE;
+}
+
+OMX_ERRORTYPE omx_enc_ebd(OMX_OUT OMX_HANDLETYPE hComponent __unused,
+  OMX_OUT OMX_PTR pAppData, OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer __unused)
+{
+  omx_enc_t *p_client = (omx_enc_t *) pAppData;
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+
+  ALOGD("%s:%d] ebd count %d ", __func__, __LINE__, p_client->ebd_count);
+  pthread_mutex_lock(&p_client->lock);
+  p_client->ebd_count++;
+  if (omx_enc_check_for_completion(p_client) == OMX_TRUE) {
+    pthread_cond_signal(&p_client->cond);
+  } else if (p_client->ebd_count < p_client->buf_count) {
+    ret = OMX_EmptyThisBuffer(p_client->p_handle,
+      p_client->p_in_buffers[p_client->ebd_count]);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      pthread_mutex_unlock(&p_client->lock);
+      return ret;
+    }
+
+    ret = OMX_EmptyThisBuffer(p_client->p_handle,
+      p_client->p_thumb_buf[p_client->ebd_count]);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      pthread_mutex_unlock(&p_client->lock);
+      return ret;
+    }
+  }
+  pthread_mutex_unlock(&p_client->lock);
+  return OMX_ErrorNone;
+}
+
+OMX_ERRORTYPE omx_enc_fbd(OMX_OUT OMX_HANDLETYPE hComponent __unused,
+  OMX_OUT OMX_PTR pAppData, OMX_OUT OMX_BUFFERHEADERTYPE* pBuffer)
+{
+  omx_enc_t *p_client = (omx_enc_t *) pAppData;
+  //int rc = 0;
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+
+  ALOGD("%s:%d] length = %d", __func__, __LINE__,
+    (int)pBuffer->nFilledLen);
+  *p_client->jpegLength = (int)pBuffer->nFilledLen;
+  ALOGD("%s:%d] file = %s", __func__, __LINE__,
+    p_client->output_file[p_client->fbd_count]);
+  if(p_client->outputaddr == NULL){
+      DUMP_TO_FILE(p_client->output_file[p_client->fbd_count], pBuffer->pBuffer,(size_t)pBuffer->nFilledLen);
+  }
+  else{
+      memcpy(p_client->outputaddr,pBuffer->pBuffer,(size_t)pBuffer->nFilledLen);
+  }
+
+  ALOGD("%s:%d] fbd count %d buf_count %d ebd %d %d",
+    __func__, __LINE__,
+    p_client->fbd_count,
+    p_client->buf_count,
+    p_client->ebd_count,
+    p_client->total_ebd_count);
+  pthread_mutex_lock(&p_client->lock);
+  p_client->fbd_count++;
+  if (omx_enc_check_for_completion(p_client) == OMX_TRUE) {
+    pthread_cond_signal(&p_client->cond);
+  } else if (p_client->ebd_count < p_client->buf_count) {
+    ret = OMX_FillThisBuffer(p_client->p_handle,
+      p_client->p_out_buffers[p_client->fbd_count]);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      pthread_mutex_unlock(&p_client->lock);
+      return ret;
+    }
+  }
+  pthread_mutex_unlock(&p_client->lock);
+  ALOGD("%s:%d] X", __func__, __LINE__);
+
+  return OMX_ErrorNone;
+}
+
+OMX_ERRORTYPE omx_enc_event_handler(
+  OMX_IN OMX_HANDLETYPE hComponent __unused,
+  OMX_IN OMX_PTR pAppData,
+  OMX_IN OMX_EVENTTYPE eEvent,
+  OMX_IN OMX_U32 nData1,
+  OMX_IN OMX_U32 nData2,
+  OMX_IN OMX_PTR pEventData __unused)
+{
+  omx_enc_t *p_client = (omx_enc_t *)pAppData;
+
+  ALOGD("%s:%d] %d %d %d", __func__, __LINE__, eEvent, (int)nData1,
+    (int)nData2);
+
+  if (eEvent == OMX_EventError) {
+    pthread_mutex_lock(&p_client->lock);
+    p_client->error_flag = OMX_TRUE;
+    pthread_cond_signal(&p_client->cond);
+    pthread_mutex_unlock(&p_client->lock);
+  } else if (eEvent == OMX_EventCmdComplete) {
+    pthread_mutex_lock(&p_client->lock);
+    if (p_client->state_change_pending == OMX_TRUE) {
+      p_client->state_change_pending = OMX_FALSE;
+      pthread_cond_signal(&p_client->cond);
+    }
+    pthread_mutex_unlock(&p_client->lock);
+  }
+  ALOGD("%s:%d]", __func__, __LINE__);
+  return OMX_ErrorNone;
+}
+
+OMX_ERRORTYPE omx_enc_deinit(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  uint32_t i = 0;
+  ALOGD("%s:%d] encoding %d", __func__, __LINE__, p_client->encoding);
+
+  if (p_client->encoding) {
+    p_client->encoding = 0;
+    //Reseting error flag since we are deining the component
+    p_client->error_flag = OMX_FALSE;
+
+    ret = omx_enc_change_state(p_client, OMX_StateIdle, NULL);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      p_client->last_error = (OMX_ERRORTYPE)ret;
+      goto error;
+    }
+    ALOGD("%s:%d] ", __func__, __LINE__);
+    ret = omx_enc_change_state(p_client, OMX_StateLoaded,
+      omx_enc_free_buffers);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      p_client->last_error =(OMX_ERRORTYPE) ret;
+      goto error;
+    }
+  }
+
+error:
+
+  for (i = 0; i < p_client->buf_count; i++) {
+    p_client->in_buffer[i].size = p_client->total_size;
+    ret = omx_enc_deallocate_buffer(&p_client->in_buffer[i],
+      p_client->use_pmem);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+    }
+
+    p_client->out_buffer[i].size = p_client->total_size;
+    ret = omx_enc_deallocate_buffer(&p_client->out_buffer[i],
+      1);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+    }
+  }
+
+  ret = omx_enc_deallocate_buffer(&p_client->work_buf,
+    TRUE);
+  if (ret) {
+    ALOGE("%s:%d] Error %d", __func__, __LINE__, ret);
+  }
+
+  if (p_client->inputPort) {
+    free(p_client->inputPort);
+    p_client->inputPort = NULL;
+  }
+
+  if (p_client->outputPort) {
+    free(p_client->outputPort);
+    p_client->outputPort = NULL;
+  }
+
+  if (p_client->thumbPort) {
+    free(p_client->thumbPort);
+    p_client->thumbPort = NULL;
+  }
+
+  if (p_client->p_handle) {
+    OMX_FreeHandle(p_client->p_handle);
+    p_client->p_handle = NULL;
+  }
+  return ret;
+}
+
+OMX_ERRORTYPE omx_issue_abort(omx_enc_t *p_client)
+{
+  OMX_ERRORTYPE ret = OMX_ErrorNone;
+  pthread_mutex_lock(&p_client->lock);
+
+  p_client->aborted = OMX_TRUE;
+
+  if (p_client->omx_state == OMX_StateExecuting) {
+    // Abort
+    //
+    ALOGD("%s:%d] **** Abort requested & State is Executing -> ABORTING",
+        __func__, __LINE__);
+    ALOGD("%s:%d] **** Before abort send command", __func__, __LINE__);
+    p_client->state_change_pending = OMX_TRUE;
+    ret = OMX_SendCommand(p_client->p_handle, OMX_CommandStateSet,
+        OMX_StateIdle, NULL);
+    ALOGD("%s:%d] **** After abort send command", __func__, __LINE__);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      goto error;
+    }
+  } else {
+    ALOGD("%s:%d] **** Abort rquested but state is not Executing",
+        __func__, __LINE__);
+
+  }
+
+  pthread_mutex_unlock(&p_client->lock);
+  return OMX_ErrorNone;
+
+error:
+  pthread_mutex_unlock(&p_client->lock);
+  return ret;
+}
+
+OMX_BOOL omx_abort_is_pending(omx_enc_t *p_client)
+{
+  OMX_BOOL ret;
+
+  pthread_mutex_lock(&p_client->lock);
+
+  ret = p_client->aborted;
+
+  pthread_mutex_unlock(&p_client->lock);
+
+  return ret;
+}
+
+void *omx_abort_thread(void *data)
+{
+  omx_enc_t *p_client = (omx_enc_t *)data;
+  struct timespec lTs;
+  long int aMs = (long int)p_client->abort_time;
+  int ret = clock_gettime(CLOCK_REALTIME, &lTs);
+
+  if (ret < 0)
+    goto error;
+
+  if (aMs >= 1000) {
+    lTs.tv_sec += (aMs / 1000);
+    lTs.tv_nsec += ((aMs % 1000) * 1000000);
+  } else {
+    lTs.tv_nsec += (aMs * 1000000);
+  }
+
+  if (lTs.tv_nsec > 1E9) {
+    lTs.tv_sec++;
+    lTs.tv_nsec -= 1E9L;
+  }
+
+  ALOGD("%s:%d] **** ABORT THREAD ****", __func__, __LINE__);
+
+  pthread_mutex_lock(&p_client->abort_mutx);
+
+  ALOGD("%s:%d] before wait", __func__, __LINE__);
+  ret = pthread_cond_timedwait(&p_client->abort_cond, &p_client->abort_mutx,
+      &lTs);
+  ALOGD("%s:%d] after wait", __func__, __LINE__);
+
+  pthread_mutex_unlock(&p_client->abort_mutx);
+
+  if (ret == ETIMEDOUT) {
+
+    ALOGD("%s:%d] ****Issuing abort", __func__, __LINE__);
+    ret = omx_issue_abort(p_client);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      goto error;
+    }
+  }
+
+  return NULL;
+
+
+error:
+  p_client->last_error = (OMX_ERRORTYPE)ret;
+  ALOGE("%s:%d] Error", __func__, __LINE__);
+  return NULL;
+
+}
+
+void *omx_enc_encode(void *data)
+{
+  omx_enc_t *p_client = (omx_enc_t *)data;
+  int ret = 0;
+  uint32_t i = 0;
+  struct timeval time[2];
+
+  char name[40];
+  memset(name,0,sizeof(name));
+  sprintf(name,"%s","OMX.qcom.image.jpeg.encoder\0");
+  ALOGE("%s:%d: E", __func__, __LINE__);
+  ret = OMX_GetHandle(&p_client->p_handle,name, (void*)p_client, &p_client->callbacks);
+
+  if ((ret != OMX_ErrorNone) || (p_client->p_handle == NULL)) {
+    ALOGE("%s:%d] ", __func__, __LINE__);
+    goto error;
+  }
+
+  if (p_client->abort_time) {
+    ret = pthread_create(&p_client->abort_thread_id, NULL,
+        omx_abort_thread,
+        p_client);
+
+    if (ret != 0) {
+      fprintf(stderr, "Error in thread creation\n");
+      return 0;
+    }
+  }
+
+  ret = omx_enc_configure_buffer_ext(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  ret = omx_enc_set_io_ports(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  ret = omx_enc_set_quality(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  /* set encoding mode */
+  omx_encoding_mode(p_client);
+
+  /* set work buffer */
+  if (p_client->use_workbuf) {
+    p_client->work_buf.size = p_client->total_size;
+    ret = omx_enc_allocate_buffer(&p_client->work_buf, TRUE);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      goto error;
+    }
+    omx_enc_set_workbuf(p_client);
+  }
+
+  /*Allocate input buffer*/
+  for (i = 0; i < p_client->buf_count; i++) {
+    p_client->in_buffer[i].size = p_client->total_size;
+    ret = omx_enc_allocate_buffer(&p_client->in_buffer[i],
+      p_client->use_pmem);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      goto error;
+    }
+
+    p_client->in_buffer[i].size = p_client->total_size;
+    if(p_client->inputaddr == NULL)
+      ret = omx_enc_read_file(p_client->main.file_name,
+      &p_client->in_buffer[i],
+      &p_client->main);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      goto error;
+    }
+    else{
+        memcpy(p_client->in_buffer[i].addr,p_client->inputaddr,p_client->total_size);
+    }
+
+
+    p_client->out_buffer[i].size = p_client->total_size;
+    ret = omx_enc_allocate_buffer(&p_client->out_buffer[i],
+      1);
+    if (ret) {
+      ALOGE("%s:%d] Error", __func__, __LINE__);
+      goto error;
+    }
+    if (omx_abort_is_pending(p_client))
+      goto abort;
+  }
+
+  // /*set exif info*/
+  // ret = omx_enc_set_exif_info(p_client);
+  // if (ret) {
+  //   ALOGE("%s:%d] Error", __func__, __LINE__);
+  //   goto error;
+  // }
+
+  /*Set thumbnail data*/
+  ret = omx_enc_set_thumbnail_data(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  if (omx_abort_is_pending(p_client))
+      goto abort;
+
+  /*Set rotation angle*/
+  ret = omx_enc_set_rotation_angle(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  /*Set scaling parameters*/
+  ret = omx_enc_set_scaling_params(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  if (omx_abort_is_pending(p_client))
+      goto abort;
+
+  ret = omx_enc_change_state(p_client, OMX_StateIdle,
+    omx_enc_send_buffers);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  if (omx_abort_is_pending(p_client))
+      goto abort;
+
+  gettimeofday(&time[0], NULL);
+
+  p_client->encoding = 1;
+  ret = omx_enc_change_state(p_client, OMX_StateExecuting, NULL);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+#ifdef DUMP_INPUT
+  DUMP_TO_FILE("/data/misc/camera/test.yuv",
+    p_client->p_in_buffers[p_client->ebd_count]->pBuffer,
+    (int)p_client->p_in_buffers[p_client->ebd_count]->nAllocLen);
+#endif
+
+#ifdef DUMP_THUMBNAIL
+  DUMP_TO_FILE("/data/misc/camera/testThumbnail.yuv",
+    p_client->p_thumb_buf[p_client->ebd_count]->pBuffer,
+    (int)p_client->p_thumb_buf[p_client->ebd_count]->nAllocLen);
+#endif
+
+  gettimeofday(&time[0], NULL);
+  ret = OMX_EmptyThisBuffer(p_client->p_handle,
+    p_client->p_in_buffers[p_client->ebd_count]);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  ret = OMX_EmptyThisBuffer(p_client->p_handle,
+    p_client->p_thumb_buf[p_client->ebd_count]);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  ret = OMX_FillThisBuffer(p_client->p_handle,
+    p_client->p_out_buffers[p_client->fbd_count]);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+
+  if (omx_abort_is_pending(p_client))
+    goto abort;
+
+
+  /* wait for the events*/
+
+  pthread_mutex_lock(&p_client->lock);
+  if (omx_enc_check_for_completion(p_client) == OMX_FALSE) {
+    if (p_client->aborted) {
+      goto abort;
+    }
+    ALOGD("%s:%d] before wait", __func__, __LINE__);
+    pthread_cond_wait(&p_client->cond, &p_client->lock);
+    ALOGD("%s:%d] after wait", __func__, __LINE__);
+  }
+
+  pthread_mutex_unlock(&p_client->lock);
+
+
+abort:
+
+  pthread_mutex_unlock(&p_client->lock);
+  gettimeofday(&time[1], NULL);
+  p_client->encode_time = (uint64_t)(TIME_IN_US(time[1]) - TIME_IN_US(time[0]));
+  p_client->encode_time /= 1000LL;
+
+  ALOGD("%s:%d] ", __func__, __LINE__);
+  /*invoke OMX deinit*/
+  ret = omx_enc_deinit(p_client);
+  if (ret) {
+    ALOGE("%s:%d] Error", __func__, __LINE__);
+    goto error;
+  }
+  ALOGD("%s:%d] ", __func__, __LINE__);
+
+  // Signal and join abort thread
+  if (p_client->abort_time) {
+    pthread_mutex_lock(&p_client->abort_mutx);
+    pthread_cond_signal(&p_client->abort_cond);
+    pthread_mutex_unlock(&p_client->abort_mutx);
+    pthread_join(p_client->abort_thread_id, NULL);
+  }
+
+  return NULL;
+
+error:
+  p_client->last_error = (OMX_ERRORTYPE)ret;
+  ALOGE("%s:%d] Error", __func__, __LINE__);
+  return NULL;
+}
+
+void omx_enc_init(omx_enc_t *p_client, omx_enc_args_t *p_test,
+  int id)
+{
+  uint32_t i = 0;
+
+  ALOGD("%s:%d: E", __func__, __LINE__);
+
+  memset(p_client, 0x0, sizeof(omx_enc_t));
+  p_client->abort_time = p_test->abort_time;
+  p_client->main = p_test->main;
+  p_client->thumbnail = p_test->thumbnail;
+  p_client->rotation = p_test->rotation;
+  p_client->encode_thumbnail = p_test->encode_thumbnail;
+  p_client->use_pmem = p_test->use_pmem;
+  p_client->main_scale_cfg = p_test->main_scale_cfg;
+  p_client->tn_scale_cfg = p_test->tn_scale_cfg;
+  p_client->buf_count = p_test->burst_count;
+  p_client->usePadding = 0;
+  p_client->use_workbuf = p_test->use_workbuf;
+
+  if(p_test->encode_thumbnail) {
+    p_client->total_ebd_count = p_client->buf_count * 2;
+  } else {
+    p_client->total_ebd_count = p_client->buf_count;
+  }
+
+  if ((p_client->buf_count == 1) && (p_test->instance_cnt == 1)) {
+    strlcpy(p_client->output_file[0], p_test->output_file,
+      strlen(p_test->output_file)+1);
+  } else {
+    for (i = 0; i < p_client->buf_count; i++)
+      STR_ADD_EXT(p_test->output_file, p_client->output_file[i], id, i);
+  }
+  /*Set function callbacks*/
+  p_client->callbacks.EmptyBufferDone = omx_enc_ebd;
+  p_client->callbacks.FillBufferDone = omx_enc_fbd;
+  p_client->callbacks.EventHandler = omx_enc_event_handler;
+
+  pthread_mutex_init(&p_client->lock, NULL);
+  pthread_cond_init(&p_client->cond, NULL);
+
+  pthread_mutex_init(&p_client->abort_mutx, NULL);
+  pthread_cond_init(&p_client->abort_cond, NULL);
+
+  p_client->omx_state = OMX_StateInvalid;
+  p_client->aborted = OMX_FALSE;
+  ALOGD("%s:%d: X", __func__, __LINE__);
+}
+
+void omx_enc_init_args(omx_enc_args_t *p_test)
+{
+  /*Initialize the test argument structure*/
+  memset(p_test, 0, sizeof(omx_enc_args_t));
+ // p_test->output_file = output_file;
+  //p_test->main.file_name = input_file;
+  sprintf(p_test->output_file,"%s","data/misc/camera/dump_test.jpg");
+  sprintf(p_test->main.file_name,"%s","data/misc/camera/dump_640_480_001_yuyv");
+ // p_test->thumbnail.file_name = "thumbnaildump.yuv";
+
+  p_test->main.width = 640;
+  p_test->main.height = 480;
+  p_test->thumbnail.width  = 160;
+  p_test->thumbnail.height = 120;
+  p_test->rotation = 0;
+  p_test->encode_thumbnail = 0;
+  p_test->main.eColorFormat = col_formats[0].eColorFormat;
+  p_test->main.quality = 75;
+  p_test->thumbnail.eColorFormat = col_formats[0].eColorFormat;
+  p_test->thumbnail.quality = 75;
+  p_test->main_scale_cfg.enable = 0;
+  p_test->tn_scale_cfg.enable = 0;
+  p_test->use_pmem = 1;
+  p_test->instance_cnt = 1;
+  p_test->burst_count = 1;
+  p_test->abort_time = 0;
+  p_test->auto_pad = 0;
+  p_test->main.chroma_wt = col_formats[0].chroma_wt;
+  p_test->use_workbuf = 1;
+}
+
+int encodeJpeg(unsigned char* inbuffer,unsigned char* outbuffer,int* length){
+  int ret = 0;
+  omx_enc_args_t test_args;
+  //omx_enc_t client[MAX_INSTANCES];
+  omx_enc_t* client;
+  int i = 0;
+
+  client = (omx_enc_t*)malloc(sizeof(omx_enc_t));
+  ALOGD("%s:%d] enter", __func__, __LINE__);
+
+  /*Initialize OMX Component*/
+  if(OMX_ErrorNone !=OMX_Init()){
+    ALOGD("OMX_Init failed");
+    return -1;
+  }
+
+  /*Init test args struct with default values*/
+  omx_enc_init_args(&test_args);
+
+  /*Get Command line input and fill test args struct*/
+
+  //for (i = 0; i < test_args.instance_cnt; i++) {
+    //omx_enc_init(&client[i], &test_args, i);
+  //client->outputaddr = outbuffer;
+    omx_enc_init(client, &test_args, 0);
+    client->inputaddr = inbuffer;
+    client->outputaddr = outbuffer;
+    client->jpegLength = length;
+    //ret = pthread_create(&client[i].thread_id, NULL, omx_enc_encode,&client[i]);
+    ret = pthread_create(&client->thread_id, NULL, omx_enc_encode,client);
+    if (ret != 0) {
+      fprintf(stderr, "Error in thread creation\n");
+      return -1;
+    }
+ // }
+
+  for (i = 0; i < test_args.instance_cnt; i++) {
+    ALOGD("%s:%d] thread id > 0", __func__, __LINE__);
+    pthread_join(client->thread_id, NULL);
+  }
+
+  free(client);
+  OMX_Deinit();
+  return 0;
+}
+
+
+
+
+
+
+
 
