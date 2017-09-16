@@ -12,6 +12,9 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_CLANG_CFLAGS += \
+        -Wno-error=unused-variable
+
 LOCAL_COPY_HEADERS_TO := qcom/camera
 LOCAL_COPY_HEADERS := QCameraFormat.h
 
@@ -94,8 +97,8 @@ LOCAL_C_INCLUDES := \
         $(LOCAL_PATH)/HAL3 \
         $(LOCAL_PATH)/../usbcamcore/inc \
         hardware/libhardware/include/hardware \
-        hardware/qcom/media/libstagefrighthw \
-        hardware/qcom/media/mm-core/inc \
+        $(call project-path-for,qcom-media)/libstagefrighthw \
+        $(call project-path-for,qcom-media)/mm-core/inc \
         system/core/include/cutils \
         system/core/include/system \
         system/media/camera/include/system \
@@ -103,7 +106,7 @@ LOCAL_C_INCLUDES := \
 
 #HAL 1.0 Include paths
 LOCAL_C_INCLUDES += \
-        hardware/qcom/camera/QCamera2/HAL
+        $(call project-path-for,qcom-camera)/QCamera2/HAL
 
 ifeq ($(TARGET_COMPILE_WITH_MSM_KERNEL),true)
 LOCAL_C_INCLUDES += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
@@ -125,11 +128,11 @@ endif
 LOCAL_C_INCLUDES += \
         $(TARGET_OUT_HEADERS)/qcom/display
 LOCAL_C_INCLUDES += \
-        hardware/qcom/display/libqservice
+        $(call project-path-for,qcom-display)/libqservice
 LOCAL_SHARED_LIBRARIES := libcamera_client liblog libhardware libutils libcutils libdl libsync libgui
 LOCAL_SHARED_LIBRARIES += libmmcamera_interface libmmjpeg_interface libui libcamera_metadata
 LOCAL_SHARED_LIBRARIES += libqdMetaData libqservice libbinder
-LOCAL_SHARED_LIBRARIES += libcutils libdl libmmjpeg libqomx_core  libjpeg
+LOCAL_SHARED_LIBRARIES += libcutils libdl libmmjpeg libqomx_core libjpeg
 ifeq ($(strip $(USES_GEMINI)),true)
     LOCAL_SHARED_LIBRARIES += libgemini
 else

@@ -4,6 +4,10 @@ LOCAL_PATH := $(call my-dir)
 include $(LOCAL_PATH)/../../../common.mk
 include $(CLEAR_VARS)
 
+LOCAL_CLANG_CFLAGS += \
+        -Wno-error=unused-variable \
+        -Wno-error=unused-parameter
+
 MM_CAM_FILES := \
         src/mm_camera_interface.c \
         src/mm_camera.c \
