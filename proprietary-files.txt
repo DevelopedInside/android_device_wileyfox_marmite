@@ -136,16 +136,16 @@ vendor/lib64/libwqe.so
 vendor/lib64/libxml.so
 
 # Camera
-#bin/mm-qcamera-app
+bin/mm-qcamera-app
 bin/mm-qcamera-daemon
-#lib/hw/camera.msm8937.so
-#lib/libmmcamera_interface.so
-#lib/libmmjpeg_interface.so
-#lib/libmm-qcamera.so
-#lib/libqomx_core.so
-#lib/libmm-omxcore.so
+lib/hw/camera.msm8937.so
+lib/libmmcamera_interface.so
+lib/libmmjpeg_interface.so
+lib/libmm-qcamera.so
+lib/libqomx_core.so
+lib/libmm-omxcore.so
 
-#lib64/libmm-omxcore.so
+lib64/libmm-omxcore.so
 
 lib64/libfilterpack_facedetect.so
 
