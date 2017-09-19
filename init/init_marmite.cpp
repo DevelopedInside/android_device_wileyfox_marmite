@@ -129,6 +129,8 @@ void load_marmitePlus() {
 /* Wileyfox Swift 2X*/
 void load_marmiteX() {
     property_set("ro.sf.lcd_density", "440");
+    property_set("persist.bootanimation.scale", "1.5");
+    property_set("sys.lights.capabilities", "3");
     //Based on: https://github.com/CyanogenMod/android_hardware_qcom_audio/commit/f6cfe88a8959aacbb0d1782265d4fba52c8854da
     property_set("ro.audio.customplatform", "AW87319");
 }
@@ -161,3 +163,4 @@ void vendor_load_properties()
 
     init_alarm_boot_properties();
 }
+
