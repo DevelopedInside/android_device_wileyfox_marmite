@@ -1,2 +1,1 @@
-allow fsck box_block_device:blk_file rw_file_perms;
-
+allow fsck persist_block_device:blk_file { ioctl open read write };

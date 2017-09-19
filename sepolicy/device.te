@@ -1,2 +1,0 @@
-type box_block_device, dev_type;
-type smartamp_device, dev_type;
