@@ -1,3 +1,10 @@
-allow fingerprintd gx_fpd_service:service_manager { find };
-allow fingerprintd fingerprint_service:service_manager { find };
-set_prop(fingerprintd, system_prop)
+allow fingerprintd tee_device:chr_file { open read write ioctl };
+allow fingerprintd fingerprint_data_file:dir rw_dir_perms;
+allow fingerprintd fingerprint_data_file:file rw_file_perms;
+allow fingerprintd fingerprint_data_file:sock_file { create unlink rw_file_perms };
+allow fingerprintd fingerprint_socket:file rw_file_perms;
+allow fingerprintd firmware_file:file { read getattr open };
+allow fingerprintd firmware_file:dir { search r_dir_perms };
+allow fingerprintd sysfs_devices_fingerprint:dir r_dir_perms;
+allow fingerprintd sysfs_devices_fingerprint:file { open read write };
+allow fingerprintd uhid_device:chr_file { ioctl open read write };

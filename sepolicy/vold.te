@@ -1,0 +1,2 @@
+allow vold firmware_file:dir { search };
+allow vold firmware_file:file { read open getattr };
