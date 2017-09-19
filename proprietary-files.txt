@@ -144,6 +144,7 @@ lib/libmmjpeg_interface.so
 lib/libmm-qcamera.so
 lib/libqomx_core.so
 lib/libmm-omxcore.so
+lib/libremosaic_daemon.so
 
 lib64/libmm-omxcore.so
 
