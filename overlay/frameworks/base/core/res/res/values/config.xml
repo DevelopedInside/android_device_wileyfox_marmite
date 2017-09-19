@@ -115,28 +115,6 @@
     <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveBatteryLed">true</bool>
 
-    <!-- What can the LEDs on this device do? If defined, this overrides all of the
-         older settings:
-         com.android.internal.R.bool.config_multiColorNotificationLed
-         com.android.internal.R.bool.config_multiColorBatteryLed
-         org.cyanogenmod.platform.internal.R.bool.config_multipleNotificationLeds
-         com.android.internal.R.bool.config_ledCanPulse
-         org.cyanogenmod.platform.internal.R.bool.config_useSegmentedBatteryLed
-         org.cyanogenmod.platform.internal.R.bool.config_adjustableNotificationLedBrightness
-         Use the following values from NotificationManager:
-         LIGHTS_RGB_NOTIFICATION = 0
-         LIGHTS_RGB_BATTERY = 1
-         LIGHTS_MULTIPLE_LED = 2
-         LIGHTS_LED_PULSE = 3
-         LIGHTS_SEGMENTED_BATTERY_LIGHTS = 4
-         LIGHTS_ADJUSTABLE_NOTIFICATION_BRIGHTNESS = 5
-    -->
-    <integer-array translatable="false" name="config_deviceLightCapabilities">
-        <item>0</item>
-        <item>1</item>
-        <item>3</item>
-    </integer-array>
-
     <!-- Hardware keys present on the device, stored as a bit field.
          This integer should equal the sum of the corresponding value for each
          of the following keys present:
@@ -219,10 +197,6 @@
     <!-- Is the device capable of hot swapping an UICC Card -->
     <bool name="config_hotswapCapable">true</bool>
 
-    <!-- Flag indicating emergency calls will always use IMS irrespective of the state of
-    the IMS connection -->
-    <bool name="useImsAlwaysForEmergencyCall">false</bool>
-
     <!-- Flag indicating if the speed up audio on mt call code should be executed -->
     <bool name="config_speed_up_audio_on_mt_calls">true</bool>
 
@@ -246,13 +220,6 @@
 
     <!-- Boolean indicating whether Hotspot 2.0/Passpoint and ANQP queries is enabled -->
     <bool translatable="false" name="config_wifi_hotspot2_enabled">true</bool>
-
-    <!-- IpReachability monitor enable/disable -->
-    <bool translatable="false" name="config_wifi_ipreachability_monitor">false</bool>
-
-    <!-- Support in Surfaceflinger for blur layers.
-         NOTE: This requires additional hardware-specific code. -->
-    <bool name="config_ui_blur_enabled">true</bool>
 
     <!-- SD card is hot-pluggable on this device -->
     <bool name="config_batterySdCardAccessibility">true</bool>
