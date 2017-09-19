@@ -10,12 +10,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_BOOT_JARS += \
     com.qti.location.sdk
 
-PRODUCT_PACKAGES += \
-    libcurl
-
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8937
+    libcurl \
+    libgnsspps
 
 # Permissions
 PRODUCT_COPY_FILES += \
