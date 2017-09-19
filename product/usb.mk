@@ -10,15 +10,4 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.usb.id.ums_adb=2285 \
     ro.usb.vid=2970
 
-# USB Secure
-ADDITIONAL_DEFAULT_PROPERTIES += \
-    ro.secure=0 \
-    ro.adb.secure=0 \
-    ro.allow.mock.location=0 \
-    ro.config.always_show_roaming=true
-
-# Set default USB interface
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp
-
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
