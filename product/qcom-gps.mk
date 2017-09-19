@@ -12,7 +12,7 @@ PRODUCT_BOOT_JARS += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.msm8937
+    gps.msm8937 \
     libcurl \
     libgnsspps
 
