@@ -15,18 +15,13 @@
 # limitations under the License.
 #
 
-# Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+$(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
 
 # Inherit some common LineageOS stuff
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
 # Must define platform variant before including any common things
 TARGET_BOARD_PLATFORM_VARIANT := msm8937
-
-# Inherit from marmite device
-$(call inherit-product, $(LOCAL_PATH)/device.mk)
 
 # Set those variables here to overwrite the inherited values.
 PRODUCT_NAME := lineage_marmite
@@ -36,9 +31,13 @@ PRODUCT_DEVICE := marmite
 PRODUCT_GMS_CLIENTID_BASE := android-wileyfox
 
 PRODUCT_MANUFACTURER := Wileyfox
+PRODUCT_MODEL := Wileyfox Swift 2
 
 PRODUCT_BRAND := Wileyfox
 TARGET_VENDOR := wileyfox
 TARGET_VENDOR_PRODUCT_NAME := Swift2
 TARGET_VENDOR_DEVICE_NAME := marmite
 
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    BUILD_FINGERPRINT=Wileyfox/Swift2/marmite:7.1.2/N2G47Z/0fcf4099d0:user/release-keys \
+    PRIVATE_BUILD_DESC="marmite-user 7.1.2 N2G47Z 0fcf4099d0 release-keys"
