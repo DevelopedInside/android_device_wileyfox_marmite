@@ -6,3 +6,4 @@ ifeq ($(HOST_OS),linux)
     endif
   endif
 endif
+WITH_DEXPREOPT_BOOT_IMG_ONLY ?= true
