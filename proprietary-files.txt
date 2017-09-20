@@ -988,8 +988,8 @@ vendor/lib64/libsystem_health_mon.so
 
 vendor/qcril.db
 
-#lib/librilqmiservices.so
-#lib64/librilqmiservices.so
+lib/librilqmiservices.so
+lib64/librilqmiservices.so
 
 # Radio - IMS
 bin/ims_rtp_daemon
