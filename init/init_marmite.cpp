@@ -148,7 +148,7 @@ void vendor_load_properties()
 
     property_set("qemu.hw.mainkeys", "0");
 
-    std::string cmv = property_get("androidboot.cmv");
+    std::string cmv = property_get("ro.boot.cmv");
 
     if (cmv == "mv1") {
         /* Swift 2 */

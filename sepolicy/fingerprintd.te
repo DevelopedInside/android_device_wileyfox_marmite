@@ -8,3 +8,6 @@ allow fingerprintd firmware_file:dir { search r_dir_perms };
 allow fingerprintd sysfs_devices_fingerprint:dir r_dir_perms;
 allow fingerprintd sysfs_devices_fingerprint:file { open read write };
 allow fingerprintd uhid_device:chr_file { ioctl open read write };
+allow fingerprintd gx_fpd_service:service_manager { find };
+allow fingerprintd fingerprint_service:service_manager { find };
+set_prop(fingerprintd, system_prop)
