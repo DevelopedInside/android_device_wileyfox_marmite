@@ -29,7 +29,6 @@
 
 #include <cstdlib>
 #include <string>
-#include <iostream>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -134,7 +133,6 @@ void check_aw87319(){
     if (dir)
     {
         /* Directory exists. */
-        std::cout << "AW87319 has been found.";
         //Based on: https://github.com/CyanogenMod/android_hardware_qcom_audio/commit/f6cfe88a8959aacbb0d1782265d4fba52c8854da
         property_set("ro.audio.customplatform", "AW87319");
         property_set("audio.acdb.name", "AW87319");
@@ -170,16 +168,13 @@ void vendor_load_properties()
 
     if (cmv == "mv1") {
         /* Swift 2 */
-        std::cout << "Detected Swift 2";
         property_set("ro.sf.lcd_density", "320");
         property_set("ro.media.maxmem", "10590068224");
     } else if (cmv == "mv2"){
         /* Swift 2 Plus*/
-        std::cout << "Detected Swift 2 Plus";
         property_set("ro.sf.lcd_density", "320");
     } else if (cmv == "mv3") {
         /* Swift 2 X */
-        std::cout << "Detected Swift 2 X";
         property_set("ro.sf.lcd_density", "440");
         property_set("persist.bootanimation.scale", "1.5");
         property_set("sys.lights.capabilities", "3");
