@@ -144,7 +144,6 @@ lib/libmmjpeg_interface.so
 lib/libmm-qcamera.so
 lib/libqomx_core.so
 lib/libmm-omxcore.so
-lib/libremosaic_daemon.so
 
 lib64/libmm-omxcore.so
 
@@ -792,21 +791,22 @@ vendor/lib/libsmwrapper.so
 
 # Media
 etc/firmware/DE.o.msm8937
+
+lib/libOmxVpp.so
 lib/libvpplibrary.so
 lib/libOmxSwVdec.so
 lib/libOmxSwVencMpeg4.so
-lib/libOmxVpp.so
 
+lib64/libOmxVpp.so
 lib64/libvpplibrary.so
 lib64/libOmxSwVdec.so
 lib64/libOmxSwVencMpeg4.so
-lib64/libOmxVpp.so
 
 vendor/lib/libAlacSwDec.so
 vendor/lib/libApeSwDec.so
-vendor/lib/libFlacSwDec.so
 vendor/lib/libI420colorconvert.so
 -vendor/lib/libMpeg4SwEncoder.so
+vendor/lib/libFlacSwDec.so
 vendor/lib/libOmxAacDec.so
 vendor/lib/libOmxAlacDec.so
 vendor/lib/libOmxAlacDecSw.so
@@ -814,6 +814,7 @@ vendor/lib/libOmxAmrwbplusDec.so
 vendor/lib/libOmxApeDec.so
 vendor/lib/libOmxApeDecSw.so
 vendor/lib/libOmxEvrcDec.so
+vendor/lib/libOmxMux.so
 vendor/lib/libOmxQcelp13Dec.so
 vendor/lib/libOmxWmaDec.so
 vendor/lib/libmm-color-convertor.so
@@ -826,9 +827,9 @@ vendor/lib/libvqzip.so
 
 vendor/lib64/libAlacSwDec.so
 vendor/lib64/libApeSwDec.so
-vendor/lib64/libFlacSwDec.so
 vendor/lib64/libI420colorconvert.so
 -vendor/lib64/libMpeg4SwEncoder.so
+vendor/lib64/libFlacSwDec.so
 vendor/lib64/libOmxAacDec.so
 vendor/lib64/libOmxAlacDec.so
 vendor/lib64/libOmxAlacDecSw.so
@@ -836,6 +837,7 @@ vendor/lib64/libOmxAmrwbplusDec.so
 vendor/lib64/libOmxApeDec.so
 vendor/lib64/libOmxApeDecSw.so
 vendor/lib64/libOmxEvrcDec.so
+vendor/lib64/libOmxMux.so
 vendor/lib64/libOmxQcelp13Dec.so
 vendor/lib64/libOmxWmaDec.so
 vendor/lib64/libmm-color-convertor.so
