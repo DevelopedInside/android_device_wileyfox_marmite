@@ -1,3 +1,6 @@
 allow fingerprintd gx_fpd_service:service_manager { find };
 allow fingerprintd fingerprint_service:service_manager { find };
+allow fingerprintd firmware_file:file { getattr open read };
+allow fingerprintd gx_fpd:binder { call transfer };
+allow fingerprintd tee_device:chr_file { ioctl open read write };
 set_prop(fingerprintd, system_prop)
