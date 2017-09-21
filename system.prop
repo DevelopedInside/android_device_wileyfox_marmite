@@ -228,3 +228,5 @@ camera.display.lmax=1280x720
 #add for cit: nfc
 ro.product.nfc=true
 
+persist.sys.strictmode.visual=0
+persist.sys.strictmode.disable=1
