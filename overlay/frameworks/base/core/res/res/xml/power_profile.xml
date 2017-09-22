@@ -55,5 +55,5 @@
   <!-- Current when CPU is idle -->
   <item name="cpu.idle">1.6</item>
   <!-- This is the battery capacity in mAh (measured at nominal voltage) -->
-  <item name="battery.capacity">2900</item>
+  <item name="battery.capacity">3010</item>
 </device>
