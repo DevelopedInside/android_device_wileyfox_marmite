@@ -1,0 +1,1 @@
+allow rmt_storage self:capability { net_raw setuid setgid dac_override sys_admin setpcap };
