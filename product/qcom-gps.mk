@@ -7,9 +7,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps/sap.conf:system/etc/sap.conf \
     $(LOCAL_PATH)/configs/gps/xtwifi.conf:system/etc/xtwifi.conf
 
-PRODUCT_BOOT_JARS += \
-    com.qti.location.sdk
-
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8937 \
