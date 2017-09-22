@@ -817,6 +817,7 @@ vendor/lib/libOmxEvrcDec.so
 vendor/lib/libOmxMux.so
 vendor/lib/libOmxQcelp13Dec.so
 vendor/lib/libOmxWmaDec.so
+vendor/lib/libOmxVideoDSMode.so
 vendor/lib/libmm-color-convertor.so
 vendor/lib/libmmosal.so
 vendor/lib/libmmsw_detail_enhancement.so
