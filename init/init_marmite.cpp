@@ -129,7 +129,7 @@ void check_device()
  * @Author BeYkeRYkt (21-09-2017)
  */
 void check_aw87319(){
-	DIR* dir = opendir("/sys/bus/i2c/drivers/AW87319_PA/2-0058");
+    DIR* dir = opendir("/sys/bus/i2c/drivers/AW87319_PA/2-0058");
     if (dir)
     {
         /* Directory exists. */
@@ -145,15 +145,12 @@ void check_aw87319(){
         property_set("persist.audio.calfile6", "/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb");
         closedir(dir);
     }
-    else if (ENOENT == errno)
-    {
-        /* Directory does not exist. */
-    }
 }
 
 void vendor_load_properties()
 {
     check_device();
+    check_aw87319();
 
     property_set("dalvik.vm.heapstartsize", heapstartsize);
     property_set("dalvik.vm.heapgrowthlimit", heapgrowthlimit);
@@ -180,7 +177,6 @@ void vendor_load_properties()
         property_set("sys.lights.capabilities", "3");
     }
 
-    check_aw87319();
     init_alarm_boot_properties();
 }
 
