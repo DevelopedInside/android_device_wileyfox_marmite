@@ -1,3 +1,6 @@
 type fpc_data_file, file_type, data_file_type;
 type fpc_socket, file_type;
 type fpc_sysfs, fs_type, sysfs_type;
+type sysfs_devices_fingerprint, sysfs_type, file_type;
+type fingerprint_data_file, file_type, data_file_type;
+type fingerprint_socket, file_type;
