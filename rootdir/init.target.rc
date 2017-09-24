@@ -46,6 +46,12 @@ on fs
     # Keeping following partitions outside fstab file. As user may not have
     # these partition flashed on the device. Failure to mount any partition in fstab file
     # results in failure to launch late-start class.
+    wait /dev/block/bootdevice/by-name/cache
+    mount ext4 /dev/block/bootdevice/by-name/cache /cache nosuid nodev barrier=1
+ 
+    wait /dev/block/bootdevice/by-name/persist
+    mount ext4 /dev/block/bootdevice/by-name/persist /persist nosuid nodev barrier=1
+    mkdir /persist/bms 0700 root system
 
     wait /dev/block/bootdevice/by-name/dsp
     mount ext4 /dev/block/bootdevice/by-name/dsp /dsp ro nosuid nodev barrier=1
@@ -110,7 +116,6 @@ service qrngp /system/bin/qrngp -f
 on property:sys.boot_completed=1
    start qrngp
 
-
 service thermal-engine /system/vendor/bin/thermal-engine
    class main
    user root
@@ -137,6 +142,31 @@ on boot
     write /dev/cpuset/foreground/boost/cpus 0-3
     write /dev/cpuset/background/cpus 4
     write /dev/cpuset/system-background/cpus 4-7
+    
+service ppd /system/vendor/bin/mm-pp-dpps 
+    class late_start 
+    disabled 
+    user system 
+    socket pps stream 0660 system system 
+    group system graphics 
+ 
+on property:init.svc.surfaceflinger=stopped 
+    stop ppd 
+ 
+on property:init.svc.surfaceflinger=running 
+    start ppd 
+ 
+on property:init.svc.surfaceflinger=restarting 
+    stop ppd 
+ 
+on property:init.svc.zygote=stopped 
+    stop ppd 
+ 
+on property:init.svc.zygote=running 
+    start ppd 
+ 
+on property:init.svc.zygote=restarting 
+    stop ppd 
 
 #on property:vold.decrypt=trigger_restart_framework
 #    stop imsqmidaemon
@@ -221,6 +251,18 @@ service hvdcp_opti /system/bin/hvdcp_opti
     class main
     user root
     group root
+
+service per_proxy /system/bin/pm-proxy 
+    class core 
+    user system 
+    group system 
+    disabled
+
+on property:init.svc.per_mgr=running 
+    start per_proxy
+
+on property:sys.shutdown.requested=* 
+    stop per_proxy
 
 on boot
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/fw_name PR1702898-s3528t_00260005_00380008.img
