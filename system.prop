@@ -16,7 +16,7 @@ persist.rild.nitz_short_ons_3=
 ril.subscription.types=NV,RUIM
 DEVICE_PROVISIONED=1
 # Start in cdma mode
-ro.telephony.default_network=9
+ro.telephony.default_network=9,9
 persist.radio.multisim.config=dsds
 persist.radio.aosp_usr_pref_sel=true
 
@@ -229,6 +229,7 @@ camera.display.lmax=1280x720
 
 #add for cit: nfc
 ro.product.nfc=true
+persist.nfc.smartcard.config=SIM1,eSE1
 
 persist.sys.strictmode.visual=0
 persist.sys.strictmode.disable=1
