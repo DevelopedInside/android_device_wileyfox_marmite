@@ -38,10 +38,11 @@ allow gx_fpd ion_device:chr_file rw_file_perms;
 allow gx_fpd self:socket create_socket_perms;
 allow gx_fpd self:{ netlink_socket netlink_generic_socket } create_socket_perms;
 
-#allow read/write property
-set_prop(gx_fpd, system_prop)
-
 allow gx_fpd gx_fpd_service:service_manager { add find };
 allow gx_fpd fingerprintd:binder { transfer call };
 allow gx_fpd system_data_file:file { open read };
+allow gx_fpd system_data_file:dir write;
+#allow read/write property
+set_prop(gx_fpd, system_prop)
+
 
