@@ -82,7 +82,6 @@ audio.parser.ip.buffer.size=262144
 persist.camera.is_type=1
 
 persist.camera.HAL3.enabled=true
-media.camera.ts.monotonic=0
 
 #
 # system props for the data modules
