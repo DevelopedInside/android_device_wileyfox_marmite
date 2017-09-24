@@ -1,1 +1,1 @@
-allow wcnss_service self:capability {net_raw dac_override chown setgid};
+allow wcnss_service self:capability {net_raw dac_override chown setgid setuid};
