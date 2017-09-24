@@ -57,6 +57,9 @@ swvenc.mpeg4.batch_size=2
 # system prop for UBWC
 video.disable.ubwc=1
 
+# system prop to disable split mode
+vidc.disable.split.mode=1
+
 # system property to accelerate Progressive Download using STA
 persist.mm.sta.enable=0
 
