@@ -1,0 +1,3 @@
+allow kernel platform_app:process setsched;
+allow kernel priv_app:process setsched;
+allow kernel system_app:process setsched;
