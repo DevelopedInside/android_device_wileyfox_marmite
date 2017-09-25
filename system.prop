@@ -16,8 +16,12 @@ persist.rild.nitz_short_ons_3=
 ril.subscription.types=NV,RUIM
 DEVICE_PROVISIONED=1
 # Start in cdma mode
-ro.telephony.default_network=9,9
+persist.radio.custom_ecc=1
+persist.radio.ecc_hard_1=998
+persist.radio.ecc_hard_2=997
+persist.radio.ecc_hard_count=2
 persist.radio.multisim.config=dsds
+ro.telephony.default_network=9,9
 persist.radio.aosp_usr_pref_sel=true
 
 debug.sf.hw=0
@@ -35,6 +39,7 @@ debug.enable.sglscale=1
 #lpa.use-stagefright=true
 persist.speaker.prot.enable=false
 qcom.hw.aac.encoder=true
+flac.sw.decoder.24bit.support=true
 
 #
 # system props for the cne module
@@ -79,9 +84,11 @@ audio.parser.ip.buffer.size=262144
 # preferred IS type for 8937 is IS_TYPE_DIS i.e, 1
 # IS_TYPE_NONE=0, IS_TYPE_DIS=1, IS_TYPE_GA_DIS=2, IS_TYPE_EIS_1_0=3, IS_TYPE_EIS_2_0=4 IS_TYPE_MAX=5
 #
-persist.camera.is_type=1
+persist.camera.is_type=2
+persist.camera.is_type_preview=3
 
-persist.camera.HAL3.enabled=true
+# Disable Camera2API
+persist.camera.HAL3.enabled=0
 
 #
 # system props for the data modules
@@ -180,6 +187,9 @@ persist.debug.coresight.config=stm-events
 ro.vendor.at_library=libqti-at.so
 ro.vendor.gt_library=libqti-gt.so
 
+#property for game detection feature
+debug.enable.gamed=0
+
 #property to enable narrow search range for video encoding
 vidc.enc.narrow.searchrange=1
 
@@ -211,8 +221,8 @@ ro.am.reschedule_service=true
 #Optimal dex2oat threads for faster app installation
 ro.sys.fw.dex2oat_thread_count=4
 
-# set cutoff voltage to 3200mV
-ro.cutoff_voltage_mv=3200
+# set cutoff voltage to 3400mV
+ro.cutoff_voltage_mv=3400
 
 #set device emmc size
 ro.emmc_size=16GB
