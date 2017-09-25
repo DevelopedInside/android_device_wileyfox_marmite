@@ -276,10 +276,6 @@ on boot
     chown system system /sys/class/leds/green/led_time
     chown system system /sys/class/leds/blue/led_time
 
-service usb-config /system/bin/sh /init.marmite.usb.sh
-    class core
-    user root
-    oneshot
 
 # fingerprint daemon
 service fingerprintd /system/bin/fingerprintd
