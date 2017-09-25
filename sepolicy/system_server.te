@@ -1,2 +1,0 @@
-allow system_server unlabeled:file unlink;
-allow system_server user_profile_data_file:dir { open read };
