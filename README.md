@@ -1,4 +1,4 @@
-Common Device Tree for Wileyfox Swift 2/Plus/X
+Device Tree for Wileyfox Swift 2/Plus/X
 ==============================================
 
 Wileyfox Swift 2/Plus/X (codenamed "marmite") is a mid-range smartphone from Wileyfox.
