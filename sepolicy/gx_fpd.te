@@ -40,7 +40,7 @@ allow gx_fpd self:{ netlink_socket netlink_generic_socket } create_socket_perms;
 
 allow gx_fpd gx_fpd_service:service_manager { add find };
 allow gx_fpd fingerprintd:binder { transfer call };
-allow gx_fpd system_data_file:file { open read create getattr unlink write };
+allow gx_fpd system_data_file:file { open read getattr };
 allow gx_fpd system_data_file:dir { write add_name create remove_name };
 
 #allow read/write property
