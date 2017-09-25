@@ -282,30 +282,7 @@ service fingerprintd /system/bin/fingerprintd
     class late_start
     user system
 
-on post-fs data
-    mkdir /data/goodix 0700 system system
-
-on boot
-    chown system system  /dev/goodix_fp
-    chmod 0644 /dev/goodix_fp
-
-on property:ro.boot.fpsensor=fpc
-    setprop persist.sys.fp.goodix 0
-    setprop ro.hardware.fingerprint fpc
-
-on property:ro.boot.fpsensor=gdx
-    setprop persist.sys.fp.goodix 1
-    setprop ro.hardware.fingerprint gdx
-
 service gx_fpd /system/bin/gx_fpd
     class late_start
-    user system
-    group system
-    disabled
-    writepid /dev/cpuset/system-background/tasks
-
-on property:persist.sys.fp.goodix=0
-    stop gx_fpd
-
-on property:persist.sys.fp.goodix=1
-    start gx_fpd
+    user root
+    group root system
