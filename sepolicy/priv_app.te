@@ -1,4 +1,0 @@
-allow priv_app device:dir { open read };
-allow priv_app proc_iomem:file getattr;
-allow priv_app proc_sysrq:file getattr;
-allow priv_app rfs_system_file:dir getattr;
