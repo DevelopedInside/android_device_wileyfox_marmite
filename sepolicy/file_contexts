@@ -6,3 +6,7 @@
 /data/system/fingerprint(/.*)?                                        u:object_r:gx_fpd_data_file:s0
 /persist/data/gxfp(/.*)?                                              u:object_r:gx_fpd_data_file:s0
 /data/goodix(/.*)?                                                    u:object_r:gx_fpd_data_file:s0
+
+# Data files
+/data/misc/netmgr/log\.txt u:object_r:netmgrd_data_file:s0
+

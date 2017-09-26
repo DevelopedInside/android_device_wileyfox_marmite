@@ -1,1 +1,2 @@
 type gx_fpd_data_file, file_type, data_file_type;
+type netmgrd_data_file, file_type;
