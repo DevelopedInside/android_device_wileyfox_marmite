@@ -196,7 +196,7 @@ on boot
     chown system system /dev/goodix_fp
     chmod 0644 /dev/goodix_fp
 
-service wcnss-service /system/bin/wcnss_service
+service wcnss-service /system/vendor/bin/wcnss_service
     class main
     user system
     group system wifi radio
