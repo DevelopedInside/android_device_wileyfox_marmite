@@ -1,11 +1,4 @@
-# Fingerprint
-/dev/socket/fpce                                                      u:object_r:fpc_socket:s0
-/data/fpc(/.*)?                                                       u:object_r:fpc_data_file:s0
-/sys/devices/soc.0/fpc_fpc1020.*/hw_reset                             u:object_r:fpc_sysfs:s0
-/sys/devices/soc.0/fpc_fpc1020.*/irq                                  u:object_r:fpc_sysfs:s0
-/sys/devices/soc.0/fpc_fpc1020.*/wakeup_enable                        u:object_r:fpc_sysfs:s0
-
-# Goodix
+# Goodix Fingerprint
 /dev/gf66xx-spi                                                       u:object_r:gx_fpd_device:s0
 /dev/ttyACM[0-9]*                                                     u:object_r:gx_fpd_device:s0
 /dev/goodix_fp*                                                       u:object_r:gx_fpd_device:s0
