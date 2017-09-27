@@ -16,8 +16,6 @@
 
 DEVICE_PATH := device/wileyfox/marmite
 
-include device/cyanogen/msm8937-common/BoardConfigCommon.mk
-
 # Inherit device-specific board fragments
 include $(DEVICE_PATH)/board/*.mk
 

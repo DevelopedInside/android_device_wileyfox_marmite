@@ -20,9 +20,6 @@ $(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
 # Inherit some common LineageOS stuff
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
-# Must define platform variant before including any common things
-TARGET_BOARD_PLATFORM_VARIANT := msm8937
-
 # Set those variables here to overwrite the inherited values.
 PRODUCT_NAME := lineage_marmite
 BOARD_VENDOR := wileyfox
