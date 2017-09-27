@@ -15,3 +15,15 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Hdmi_cal.acdb:system/etc/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Hdmi_cal.acdb \
     $(LOCAL_PATH)/audio/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Headset_cal.acdb:system/etc/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Headset_cal.acdb \
     $(LOCAL_PATH)/audio/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Speaker_cal.acdb:system/etc/acdbdata/$(ACDB_TARGET)/$(ACDB_TARGET)_Speaker_cal.acdb
+
+# Audio
+PRODUCT_PACKAGES += \
+    audio.a2dp.default \
+    audio.r_submix.default \
+    audio.usb.default \
+    tinymix
+
+# Permissions
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.software.midi.xml:system/etc/permissions/android.software.midi.xml \
+    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml
