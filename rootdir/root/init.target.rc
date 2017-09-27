@@ -27,7 +27,7 @@
 #
 #
 
-import init.carrier.rc
+import /init.variant.${ro.boot.cmv}.rc
 
 on early-init
     mkdir /firmware 0771 system system
@@ -158,10 +158,10 @@ service audiod /system/bin/audiod
 
 on boot
     start rmt_storage
-    insmod /system/lib/modules/adsprpc.ko
+
     # enable sched boost in order to schedule tasks on perf cluster
     write /proc/sys/kernel/sched_boost 1
-# access permission for secure touch
+    # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
     chmod 0660 /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch_enable
@@ -184,6 +184,14 @@ on boot
     write /dev/cpuset/foreground/boost/cpus 0-3
     write /dev/cpuset/background/cpus 4
     write /dev/cpuset/system-background/cpus 4-7
+
+    # Glove mode
+    chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+    chmod 0660 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+
+    # Fingerprint
+    mkdir /data/system/fingerprint 0770 system system
+    restorecon /data/system/fingerprint
 
 service wcnss-service /system/bin/wcnss_service
     class main
