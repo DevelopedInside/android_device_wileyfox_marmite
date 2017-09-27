@@ -2,6 +2,8 @@
 PRODUCT_PACKAGES += \
     audiod \
     audio.primary.msm8937 \
+    audio.usb.default \
+    libaudio-resampler \
     libqcompostprocbundle \
     libqcomvisualizer \
     libqcomvoiceprocessing
