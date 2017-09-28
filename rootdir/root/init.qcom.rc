@@ -597,7 +597,6 @@ service port-bridge /system/bin/port-bridge
     class main
     user radio system
     group radio system inet
-    disabled
     oneshot
 
 service qmiproxy /system/bin/qmiproxy
