@@ -309,8 +309,6 @@ drm.service.enabled=1
 persist.nfc.smartcard.config=SIM1,eSE1
 
 # Performance
-ro.min_freq_0=960000
-ro.min_freq_4=800000
 ro.vendor.extension_library=libqti-perfd-client.so
 
 # RIL
