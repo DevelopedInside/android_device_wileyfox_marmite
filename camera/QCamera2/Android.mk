@@ -15,10 +15,7 @@ LOCAL_SRC_FILES := \
         util/QCameraQueue.cpp \
         util/QCameraCommon.cpp \
         QCamera2Hal.cpp \
-        QCamera2Factory.cpp \
-        ../usbcamcore/src/QualcommUsbCamera.cpp \
-        ../usbcamcore/src/QCameraUsbParm.cpp    \
-        ../usbcamcore/src/QCameraMjpegDecode.cpp
+        QCamera2Factory.cpp
 
 #HAL 3.0 source
 LOCAL_SRC_FILES += \

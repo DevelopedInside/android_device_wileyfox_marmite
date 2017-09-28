@@ -68,8 +68,6 @@ public:
     static struct hw_module_methods_t mModuleMethods;
 
 private:
-	int mNumOfCSICamera;
-	int mNumOfUSBCamera;
     int mNumOfCameras;
     hal_desc *mHalDescriptors;
     const camera_module_callbacks_t *mCallbacks;

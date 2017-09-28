@@ -79,12 +79,8 @@ QCamera2Factory::QCamera2Factory()
 {
     mHalDescriptors = NULL;
     mCallbacks = NULL;
-    mNumOfCSICamera = get_num_of_cameras();
-    if(mNumOfCSICamera > 1) {
-    }
-    mNumOfUSBCamera = usbcam_get_number_of_cameras();
-    mNumOfCameras = mNumOfCSICamera + mNumOfUSBCamera;
-    ALOGI("QCamera2Factory mNumOfUSBCamera=%d, mNumOfCSICamera=%d,mNumOfCameras=%d",mNumOfUSBCamera,mNumOfCSICamera,mNumOfCameras);
+    mNumOfCameras = get_num_of_cameras();
+    ALOGI("QCamera2Factory mNumOfCameras=%d",mNumOfCameras);
     int bDualCamera = 0;
     char propDefault[PROPERTY_VALUE_MAX];
     char prop[PROPERTY_VALUE_MAX];
@@ -330,9 +326,6 @@ int QCamera2Factory::getCameraInfo(int camera_id, struct camera_info *info)
 {
     int rc;
     ALOGI("getCameraInfo camera_id==%d",camera_id);
-    if(camera_id >=  mNumOfCSICamera) {
-        return usbcam_get_camera_info(camera_id, info);
-    }
     if (!mNumOfCameras || camera_id >= mNumOfCameras || !info ||
         (camera_id < 0)) {
         LOGE("Error getting camera info!! mNumOfCameras = %d,"
@@ -406,12 +399,6 @@ int QCamera2Factory::cameraDeviceOpen(int camera_id,
     if (camera_id < 0 || camera_id >= mNumOfCameras)
         return -ENODEV;
     ALOGI("cameraDeviceOpen camera_id = %d", camera_id);
-    if(camera_id  >=  mNumOfCSICamera) {
-        ALOGE("cameraDeviceOpen camera_id = %d use usb driver", camera_id);
-        return usbcam_camera_device_open(camera_id, hw_device);
-    } else {
-        ALOGE("cameraDeviceOpen camera_id = %d use csi driver", camera_id);
-    }
     if ( NULL == mHalDescriptors ) {
         ALOGE("Hal descriptor table is not initialized!");
         return NO_INIT;
