@@ -1080,6 +1080,15 @@ static void add_water_to_nv12_image(unsigned char* y,
 
 void add_time_water_marking_to_frame(mm_camera_buf_def_t* frame, cam_frame_len_offset_t frame_offset)
 {
+    //BeYkeRYkt: add watermark feature
+    char prop[PROPERTY_VALUE_MAX];
+    property_get("persist.camera.watermark.enabled", prop, "0");
+    int isWatermarkEnabled = atoi(prop);
+    
+    if(!isWatermarkEnabled){
+        return;
+    }
+
     int width = frame_offset.mp[0].width;
     int stride = frame_offset.mp[0].stride;
     int height = frame_offset.mp[0].height;
