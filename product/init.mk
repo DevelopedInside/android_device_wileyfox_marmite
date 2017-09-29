@@ -1,6 +1,7 @@
 # Init scripts
 PRODUCT_PACKAGES += \
     fstab.qcom \
+    init.class_main.sh \
     init.marmite.usb.sh \
     init.qcom.early_boot.sh \
     init.qcom.rc \
