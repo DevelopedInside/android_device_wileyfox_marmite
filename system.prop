@@ -323,6 +323,7 @@ persist.radio.jbims=0
 persist.radio.csvt.enabled=false
 persist.radio.rat_on=combine
 persist.radio.mt_sms_ack=20
+service.qti.ims.enabled=1
 
 # Wi-Fi
 wifi.interface=wlan0
