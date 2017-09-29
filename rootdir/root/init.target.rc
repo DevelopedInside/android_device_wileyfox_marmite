@@ -70,6 +70,10 @@ on post-fs-data
     mkdir /data/misc/hbtp 0750 system system
     mkdir /data/misc/dts 0770 media audio
 
+    # Fingerprint
+    mkdir /data/system/fingerprint 0770 system system
+    restorecon /data/system/fingerprint
+
 #start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
@@ -188,10 +192,6 @@ on boot
     # Glove mode
     chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
     chmod 0660 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
-
-    # Fingerprint
-    mkdir /data/system/fingerprint 0770 system system
-    restorecon /data/system/fingerprint
 
 service wcnss-service /system/bin/wcnss_service
     class main
