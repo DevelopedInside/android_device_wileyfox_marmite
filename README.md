@@ -1,4 +1,4 @@
-Common Device Tree for Wileyfox Swift 2/Plus/X
+Device Tree for Wileyfox Swift 2/Plus/X
 ==============================================
 
 Wileyfox Swift 2/Plus/X (codenamed "marmite") is a mid-range smartphone from Wileyfox.
@@ -10,7 +10,7 @@ CPU     | 4 Cortex-A53 cores clocked at 1.4 GHz & 4 other Cortex-A53 cores clock
 Chipset | Qualcomm MSM8937 Snapdragon 430
 GPU     | Adreno 505
 Memory  | 2/3 GB RAM
-Android Version | CyanogenOS 13 (6.0.1)
+Android Version | CyanogenOS 13 (6.0.1), Android 7.1.2 (2017)
 Storage | 16/32 GB
 MicroSD | Up to 64/128 GB
 Battery | Li-Ion 2700/3010mAh battery

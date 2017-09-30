@@ -17,12 +17,6 @@ vendor/lib/rfsa/adsp/libfastcvadsp.so
 vendor/lib/rfsa/adsp/libfastcvadsp_skel.so
 vendor/lib/rfsa/adsp/libFastRPC_AUE_Forward_skel.so
 vendor/lib/rfsa/adsp/libFastRPC_UTF_Forward_skel.so
-#vendor/lib/rfsa/adsp/libobjectMattingApp_skel.so
-#vendor/lib/rfsa/adsp/libscveBlobDescriptor_skel.so
-#vendor/lib/rfsa/adsp/libscveCleverCapture_skel.so
-#vendor/lib/rfsa/adsp/libscveObjectSegmentation_skel.so
-#vendor/lib/rfsa/adsp/libscveT2T_skel.so
-#vendor/lib/rfsa/adsp/libscveTextReco_skel.so
 
 # Audio
 etc/drc/drc_cfg_AZ.txt
@@ -43,7 +37,6 @@ vendor/lib/libdrc.so
 vendor/lib/libhwdaphal.so
 vendor/lib/libqct_resampler.so
 vendor/lib/libsurround_3mic_proc.so
-#vendor/lib/libswvdec.so
 vendor/lib/soundfx/libqcbassboost.so
 vendor/lib/soundfx/libqcreverb.so
 vendor/lib/soundfx/libqcvirt.so
@@ -57,7 +50,6 @@ vendor/lib64/libaudcal.so
 vendor/lib64/libaudioalsa.so
 vendor/lib64/libaudiodevarb.so
 vendor/lib64/libhwdaphal.so
-#vendor/lib64/libswvdec.so
 vendor/lib64/soundfx/libqcbassboost.so
 vendor/lib64/soundfx/libqcreverb.so
 vendor/lib64/soundfx/libqcvirt.so
@@ -73,7 +65,6 @@ etc/acdbdata/MTP/MTP_Speaker_cal.acdb
 
 # Bluetooth
 bin/btnvtool
-bin/dun-server
 bin/hci_qcomm_init
 bin/wcnss_filter
 
@@ -136,16 +127,13 @@ vendor/lib64/libwqe.so
 vendor/lib64/libxml.so
 
 # Camera
-bin/mm-qcamera-app
+#bin/mm-qcamera-app
 bin/mm-qcamera-daemon
-lib/hw/camera.msm8937.so
-lib/libmmcamera_interface.so
-lib/libmmjpeg_interface.so
-lib/libmm-qcamera.so
-lib/libqomx_core.so
-#lib/libmm-omxcore.so
-
-#lib64/libmm-omxcore.so
+#lib/hw/camera.msm8937.so
+#lib/libmmcamera_interface.so
+#lib/libmmjpeg_interface.so
+#lib/libmm-qcamera.so
+#lib/libqomx_core.so
 
 lib64/libfilterpack_facedetect.so
 
@@ -479,10 +467,10 @@ etc/dpm/dpm.conf
 etc/dpm/nsrm/NsrmConfiguration.xml
 etc/permissions/com.qti.dpmframework.xml
 etc/permissions/dpmapi.xml
--framework/com.qti.dpmframework.jar
--framework/dpmapi.jar
--framework/tcmclient.jar
--priv-app/dpmserviceapp/dpmserviceapp.apk
+framework/com.qti.dpmframework.jar
+framework/dpmapi.jar
+framework/tcmclient.jar
+#priv-app/dpmserviceapp/dpmserviceapp.apk
 vendor/lib/libdpmctmgr.so
 vendor/lib/libdpmfdmgr.so
 vendor/lib/libdpmframework.so
@@ -499,7 +487,6 @@ vendor/lib64/libdpmtcm.so
 bin/qseecomd
 vendor/bin/qseeproxydaemon
 vendor/lib/libcppf.so
-#vendor/lib/liboemcrypto.so
 vendor/lib/lib-sec-disp.so
 vendor/lib/libGPreqcancel.so
 vendor/lib/libGPreqcancel_svc.so
@@ -517,7 +504,6 @@ vendor/lib/libsecureuisvc_jni.so
 vendor/lib/libssd.so
 vendor/lib/libtzdrmgenprov.so
 
-#vendor/lib64/liboemcrypto.so
 vendor/lib64/lib-sec-disp.so
 vendor/lib64/libGPreqcancel.so
 vendor/lib64/libGPreqcancel_svc.so
@@ -534,17 +520,6 @@ vendor/lib64/libsecureui_svcsock.so
 vendor/lib64/libsecureuisvc_jni.so
 vendor/lib64/libssd.so
 vendor/lib64/libtzdrmgenprov.so
-
-# FIDO
-#vendor/lib/libFidoCrypto.so
-#vendor/lib/libFidoCryptoJNI.so
-#vendor/lib/libFIDOKeyProvisioning.so
-#vendor/lib/libFidoSuiJNI.so
-
-#vendor/lib64/libFidoCrypto.so
-#vendor/lib64/libFidoCryptoJNI.so
-#vendor/lib64/libFIDOKeyProvisioning.so
-#vendor/lib64/libFidoSuiJNI.so
 
 # Fingerprint
 bin/gx_fpd
@@ -563,28 +538,27 @@ vendor/lib/hw/gatekeeper.msm8937.so
 vendor/lib64/hw/gatekeeper.msm8937.so
 
 # GPS
-bin/garden_app
 bin/loc_launcher
 bin/lowi-server
 bin/xtwifi-client
 bin/xtwifi-inet-agent
 etc/cacert_location.pem
-etc/xtra_root_cert.pem
 etc/permissions/com.qti.location.sdk.xml
 etc/permissions/com.qualcomm.location.xml
 etc/permissions/com.qualcomm.location.vzw_library.xml
 etc/permissions/izat.xt.srv.xml
+etc/xtra_root_cert.pem
 -framework/com.qti.location.sdk.jar
 -framework/com.qualcomm.location.vzw_library.jar
 framework/izat.xt.srv.jar
 -priv-app/com.qualcomm.location/com.qualcomm.location.apk
 -lib/libloc_api_v02.so
 lib/libloc_ds_api.so
-lib/libgnsspps.so
+#lib/libgnsspps.so
 
 -lib64/libloc_api_v02.so
 lib64/libloc_ds_api.so
-lib64/libgnsspps.so
+#lib64/libgnsspps.so
 
 vendor/bin/slim_daemon
 vendor/lib/hw/flp.default.so
@@ -692,7 +666,7 @@ vendor/lib/libscale.so
 vendor/lib/libsd_sdk_display.so
 vendor/lib/libsdm-color.so
 vendor/lib/libsdm-diag.so
-vendor/lib/libsdm-disp-apis.so
+-vendor/lib/libsdm-disp-apis.so
 vendor/lib/libsdmextension.so
 
 vendor/lib64/hw/vulkan.msm8937.so
@@ -738,7 +712,7 @@ vendor/lib64/libscale.so
 vendor/lib64/libsd_sdk_display.so
 vendor/lib64/libsdm-color.so
 vendor/lib64/libsdm-diag.so
-vendor/lib64/libsdm-disp-apis.so
+-vendor/lib64/libsdm-disp-apis.so
 vendor/lib64/libsdmextension.so
 
 # Graphics firmware
@@ -760,22 +734,6 @@ etc/firmware/a530v2_seq.fw2
 etc/firmware/a530v3_gpmu.fw2
 etc/firmware/a530v3_seq.fw2
 etc/firmware/a540_gpmu.fw2
-
-# HBTP
-#vendor/lib/libhbtpclient.so
-#vendor/lib/libhbtpdsp.so
-#vendor/lib/libhbtpfrmwk.so
-#vendor/lib/libhbtpjni.so
-
-#vendor/lib64/libhbtpclient.so
-#vendor/lib64/libhbtpdsp.so
-#vendor/lib64/libhbtpfrmwk.so
-#vendor/lib64/libhbtpjni.so
-
-# HBTP Firmware
-#etc/firmware/hbtp/hbtpcfg.dat
-#etc/firmware/hbtp/hbtpcfg_8917.dat
-#etc/firmware/hbtp/qtc800s_dsp.bin
 
 # Ipacm
 bin/ipacm-diag
@@ -871,22 +829,14 @@ vendor/firmware/libpn548ad_fw.so
 bin/iop
 bin/msm_irqbalance
 
-#lib64/libqti-iop.so
-
 vendor/bin/perfd
 #vendor/lib/libqti_performance.so
 vendor/lib/libqti-iop-client.so
 vendor/lib/libqti-perfd-client.so
-#vendor/lib/libqti-at.so
-#vendor/lib/libqti-gt.so
-#vendor/lib/libqti-wl.so
 
 #vendor/lib64/libqti_performance.so
 vendor/lib64/libqti-iop-client.so
 vendor/lib64/libqti-perfd-client.so
-#vendor/lib64/libqti-at.so
-#vendor/lib64/libqti-gt.so
-#vendor/lib64/libqti-wl.so
 
 # Peripheral manager
 bin/pm-proxy
@@ -903,7 +853,6 @@ vendor/lib/libdisp-aba.so
 vendor/lib64/libdisp-aba.so
 
 # QMI
-#bin/ATFWD-daemon
 bin/irsc_util
 etc/permissions/qti_permissions.xml
 -vendor/lib/libdiag.so
@@ -957,11 +906,9 @@ bin/rmt_storage
 bin/port-bridge
 bin/tftp_server
 etc/permissions/embms.xml
-#etc/permissions/qcnvitems.xml
 etc/permissions/qcrilhook.xml
 etc/permissions/telephonyservice.xml
 -framework/embmslibrary.jar
-#-framework/qcnvitems.jar
 -framework/qcrilhook.jar
 -framework/qti-telephony-common.jar
 -framework/QtiTelephonyServicelibrary.jar
@@ -1057,7 +1004,7 @@ vendor/lib64/librcc.so
 vendor/lib64/libvoice-svc.so
 
 etc/permissions/qti-vzw-ims-internal.xml
--vendor/framework/qti-vzw-ims-internal.jar
+vendor/framework/qti-vzw-ims-internal.jar
 
 # Sensors
 bin/sensors.qcom
@@ -1078,9 +1025,9 @@ bin/ssr_diag
 
 # Thermal
 vendor/bin/thermal-engine
--vendor/lib/libthermalclient.so
+vendor/lib/libthermalclient.so
 
--vendor/lib64/libthermalclient.so
+vendor/lib64/libthermalclient.so
 vendor/lib64/libthermalioctl.so
 
 # Time services
@@ -1095,59 +1042,13 @@ vendor/lib64/libTimeService.so
 # USB
 etc/firmware/ice40.bin
 
-# WFD
-#bin/wfdservice
-
-#vendor/lib/libwfdavenhancements.so
-#vendor/lib/libwfdcommonutils.so
-#vendor/lib/libwfdhdcpcp.so
-#vendor/lib/libwfdmmservice.so
-#vendor/lib/libwfdmmsink.so
-#vendor/lib/libwfdmmsrc.so
-#vendor/lib/libwfdnative.so
-#vendor/lib/libwfdrtsp.so
-#vendor/lib/libwfdservice.so
-#vendor/lib/libwfdsm.so
-#vendor/lib/libwfduibcinterface.so
-#vendor/lib/libwfduibcsink.so
-#vendor/lib/libwfduibcsinkinterface.so
-#vendor/lib/libwfduibcsrc.so
-#vendor/lib/libwfduibcsrcinterface.so
-
-#vendor/lib64/libwfdavenhancements.so
-#vendor/lib64/libwfdcommonutils.so
-#vendor/lib64/libwfdhdcpcp.so
-#vendor/lib64/libwfdmmservice.so
-#vendor/lib64/libwfdmmsink.so
-#vendor/lib64/libwfdmmsrc.so
-#vendor/lib64/libwfdnative.so
-#vendor/lib64/libwfdrtsp.so
-#vendor/lib64/libwfdservice.so
-#vendor/lib64/libwfdsm.so
-#vendor/lib64/libwfduibcinterface.so
-#vendor/lib64/libwfduibcsink.so
-#vendor/lib64/libwfduibcsinkinterface.so
-#vendor/lib64/libwfduibcsrc.so
-#vendor/lib64/libwfduibcsrcinterface.so
-
 # Widevine
 vendor/lib/libWVStreamControlAPI_L3.so
 vendor/lib/libwvdrm_L3.so
 vendor/lib/mediadrm/libwvdrmengine.so
 
 # Wi-Fi
-bin/cnss-daemon
-bin/cnss_diag
+#bin/cnss-daemon
+#bin/cnss_diag
 bin/wcnss_service
-bin/fstman
-#lib/modules/pronto/pronto_wlan.ko
-#lib/modules/pronto/pronto_wlan.ko:lib/modules/wlan.ko
-
-# ???
-vendor/bin/audioflacapp
-vendor/bin/chamomile_provision
-vendor/bin/esepmdaemon
-vendor/bin/hbtp_daemon
-bin/qcom-system-daemon
-bin/ptt_socket_app
-
+#bin/fstman

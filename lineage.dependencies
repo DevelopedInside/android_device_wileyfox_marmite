@@ -1,9 +1,5 @@
 [
   {
-    "repository": "android_device_cyanogen_msm8937-common",
-    "target_path": "device/cyanogen/msm8937-common"
-  },
-  {
     "repository": "android_device_qcom_common",
     "target_path": "device/qcom/common"
   },

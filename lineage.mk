@@ -20,9 +20,6 @@ $(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
 # Inherit some common LineageOS stuff
 $(call inherit-product, vendor/cm/config/common_full_phone.mk)
 
-# Must define platform variant before including any common things
-TARGET_BOARD_PLATFORM_VARIANT := msm8937
-
 # Set those variables here to overwrite the inherited values.
 PRODUCT_NAME := lineage_marmite
 BOARD_VENDOR := wileyfox
@@ -39,5 +36,5 @@ TARGET_VENDOR_PRODUCT_NAME := Swift2
 TARGET_VENDOR_DEVICE_NAME := marmite
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BUILD_FINGERPRINT=Wileyfox/Swift2/marmite:7.1.2/N2G47Z/0fcf4099d0:user/release-keys \
-    PRIVATE_BUILD_DESC="marmite-user 7.1.2 N2G47Z 0fcf4099d0 release-keys"
+    BUILD_FINGERPRINT=Wileyfox/Swift2/marmite:7.1.2/N2G48B/625e6a323f:user/release-keys \
+    PRIVATE_BUILD_DESC="marmite-user 7.1.2 N2G48B 625e6a323f release-keys"

@@ -1,0 +1,2 @@
+# Glove Mode
+genfscon proc /class/ms-touchscreen-msg20xx/device/glove_mode u:object_r:proc_glove_mode:s0
