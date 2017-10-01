@@ -144,9 +144,6 @@ ro.config.zram=true
 # Create Swap disk, if below sys-prop enabled & also if device has lower (< 1 GB) RAM
 ro.config.swap=true
 
-# set cutoff voltage to 3200mV
-ro.cutoff_voltage_mv=3200
-
 #set device emmc size
 ro.emmc_size=16GB
 
