@@ -274,12 +274,6 @@ ro.product.first_api_level=23
 qcom.bluetooth.soc=smd
 ro.qualcomm.bt.hci_transport=smd
 
-# Display
-debug.composition.type=c2d
-debug.sf.gpu_comp_tiling=1
-debug.mdpcomp.idletime=600
-persist.hwc.ptor.enable=true
-
 # FRP
 ro.frp.pst=/dev/block/bootdevice/by-name/config
 
