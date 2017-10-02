@@ -46,7 +46,9 @@ extern "C" {
 #include "mm_camera_dbg.h"
 }
 
+#ifndef ENABLE_MODEL_INFO_EXIF
 #define ENABLE_MODEL_INFO_EXIF
+#endif
 
 namespace qcamera {
 
