@@ -400,15 +400,15 @@ vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800.so
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800_x50l.so
 
 # Camera configs
-etc/camera/camera_config.xml
-etc/camera/csidtg_camera.xml
-etc/camera/csidtg_chromatix.xml
-etc/camera/ov8856_chromatix.xml
-etc/camera/ov8865_chromatix.xml
-etc/camera/s5k3l8_chromatix.xml
-etc/camera/s5k3l8_f3l8yam_chromatix.xml
-etc/camera/s5k3p3_chromatix.xml
-etc/camera/s5k3p3_x50l_chromatix.xml
+#etc/camera/camera_config.xml
+#etc/camera/csidtg_camera.xml
+#etc/camera/csidtg_chromatix.xml
+#etc/camera/ov8856_chromatix.xml
+#etc/camera/ov8865_chromatix.xml
+#etc/camera/s5k3l8_chromatix.xml
+#etc/camera/s5k3l8_f3l8yam_chromatix.xml
+#etc/camera/s5k3p3_chromatix.xml
+#etc/camera/s5k3p3_x50l_chromatix.xml
 
 # Camera firmware
 etc/firmware/cpp_firmware_v1_1_1.fw
