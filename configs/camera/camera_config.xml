@@ -140,7 +140,7 @@ LensInfo : Information of the lens present in the module.
     <ActuatorName>ak7345</ActuatorName>
     <EepromName>qtech_f3l8yam</EepromName>
     <FlashName>pmic</FlashName>
-    <ChromatixName>s5k3l8_f3l8yam_chromatix</ChromatixName>
+    <ChromatixName>s5k3l8_chromatix</ChromatixName>
     <ModesSupported>1</ModesSupported>
     <Position>BACK</Position>
     <MountAngle>90</MountAngle>
