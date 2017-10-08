@@ -31,7 +31,7 @@ public class HighTouchSensitivity {
      * @return boolean Supported devices must return always true
      */
     public static boolean isSupported() {
-	    return FileUtils.isFileWritable(CONTROL_PATH);
+        return FileUtils.isFileWritable(CONTROL_PATH);
     }
 
     /** This method returns the current activation status of high touch sensitivity
