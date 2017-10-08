@@ -127,13 +127,7 @@ vendor/lib64/libwqe.so
 vendor/lib64/libxml.so
 
 # Camera
-#bin/mm-qcamera-app
 bin/mm-qcamera-daemon
-#lib/hw/camera.msm8937.so
-#lib/libmmcamera_interface.so
-#lib/libmmjpeg_interface.so
-#lib/libmm-qcamera.so
-#lib/libqomx_core.so
 
 lib64/libfilterpack_facedetect.so
 
@@ -399,17 +393,6 @@ vendor/lib/libchromatix_s5k3p3_zsl_preview_dw9800_x50l.so
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800.so
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800_x50l.so
 
-# Camera configs
-#etc/camera/camera_config.xml
-#etc/camera/csidtg_camera.xml
-#etc/camera/csidtg_chromatix.xml
-#etc/camera/ov8856_chromatix.xml
-#etc/camera/ov8865_chromatix.xml
-#etc/camera/s5k3l8_chromatix.xml
-#etc/camera/s5k3l8_f3l8yam_chromatix.xml
-#etc/camera/s5k3p3_chromatix.xml
-#etc/camera/s5k3p3_x50l_chromatix.xml
-
 # Camera firmware
 etc/firmware/cpp_firmware_v1_1_1.fw
 etc/firmware/cpp_firmware_v1_1_6.fw
@@ -470,7 +453,7 @@ etc/permissions/dpmapi.xml
 framework/com.qti.dpmframework.jar
 framework/dpmapi.jar
 framework/tcmclient.jar
-#priv-app/dpmserviceapp/dpmserviceapp.apk
+-priv-app/dpmserviceapp/dpmserviceapp.apk
 vendor/lib/libdpmctmgr.so
 vendor/lib/libdpmfdmgr.so
 vendor/lib/libdpmframework.so
@@ -554,11 +537,9 @@ framework/izat.xt.srv.jar
 -priv-app/com.qualcomm.location/com.qualcomm.location.apk
 -lib/libloc_api_v02.so
 lib/libloc_ds_api.so
-#lib/libgnsspps.so
 
 -lib64/libloc_api_v02.so
 lib64/libloc_ds_api.so
-#lib64/libgnsspps.so
 
 vendor/bin/slim_daemon
 vendor/lib/hw/flp.default.so
@@ -830,11 +811,9 @@ bin/iop
 bin/msm_irqbalance
 
 vendor/bin/perfd
-#vendor/lib/libqti_performance.so
 vendor/lib/libqti-iop-client.so
 vendor/lib/libqti-perfd-client.so
 
-#vendor/lib64/libqti_performance.so
 vendor/lib64/libqti-iop-client.so
 vendor/lib64/libqti-perfd-client.so
 
@@ -1048,7 +1027,4 @@ vendor/lib/libwvdrm_L3.so
 vendor/lib/mediadrm/libwvdrmengine.so
 
 # Wi-Fi
-#bin/cnss-daemon
-#bin/cnss_diag
 bin/wcnss_service
-#bin/fstman
