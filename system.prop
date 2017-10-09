@@ -74,6 +74,7 @@ ro.use_data_netmgrd=true
 
 # Display
 debug.enable.sglscale=1
+sdm.debug.disable_skip_validate=1
 debug.gralloc.enable_fb_ubwc=1
 debug.mdpcomp.logs=0
 dev.pm.dyn_samplingrate=1
