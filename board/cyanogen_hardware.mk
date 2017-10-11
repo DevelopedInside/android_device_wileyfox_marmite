@@ -1,5 +1,5 @@
-# CM Hardware
-BOARD_USES_CYANOGEN_HARDWARE := true
+# Lineage Hardware
 BOARD_HARDWARE_CLASS += \
-    hardware/cyanogen/cmhw \
-    $(DEVICE_PATH)/cmhw
+    $(DEVICE_PATH)/lineagehw
+
+BOARD_USES_CYANOGEN_HARDWARE := true
