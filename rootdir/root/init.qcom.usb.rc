@@ -1615,6 +1615,7 @@ on property:sys.usb.config=diag,adb,video && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/idProduct 90CB
     write /sys/class/android_usb/android0/f_diag/clients diag
     write /sys/class/android_usb/android0/functions diag,adb,video
+    write /sys/module/dwc3/parameters/high_bw_ep_in_num 4
     write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state ${sys.usb.config}
@@ -1625,6 +1626,7 @@ on property:sys.usb.config=diag,adb,uac2,video && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/idProduct 90CC
     write /sys/class/android_usb/android0/f_diag/clients diag
     write /sys/class/android_usb/android0/functions diag,adb,uac2_func,video
+    write /sys/module/dwc3/parameters/high_bw_ep_in_num 5
     write /sys/class/android_usb/android0/enable 1
     start adbd
     setprop sys.usb.state ${sys.usb.config}
