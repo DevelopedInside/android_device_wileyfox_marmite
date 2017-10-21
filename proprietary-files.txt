@@ -696,6 +696,9 @@ vendor/lib64/libsdm-diag.so
 -vendor/lib64/libsdm-disp-apis.so
 vendor/lib64/libsdmextension.so
 
+# Graphics - from mido (Redmi Note 4)
+vendor/lib64/libuiblur.so|4b3fabf5ded7c4af531abde681676fc5e9248494
+
 # Graphics firmware
 etc/firmware/a225_pfp.fw
 etc/firmware/a225_pm4.fw
