@@ -148,7 +148,7 @@ ro.config.swap=true
 ro.emmc_size=16GB
 
 #force HAL1 for below packages
-camera.hal1.packagelist=com.skype.raider,com.google.android.talk,com.whatsapp
+camera.hal1.packagelist=com.skype.raider,com.google.android.talk,com.whatsapp,org.telegram.messenger
 
 # disable HAL3
 #persist.camera.HAL3.enabled=0
