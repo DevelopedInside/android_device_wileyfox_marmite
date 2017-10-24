@@ -151,7 +151,7 @@ ro.emmc_size=16GB
 camera.hal1.packagelist=com.skype.raider,com.google.android.talk,com.whatsapp,org.telegram.messenger
 
 # disable HAL3
-#persist.camera.HAL3.enabled=0
+persist.camera.HAL3.enabled=0
 
 #properties for limiting preview size in camera
 camera.display.umax=1920x1080
