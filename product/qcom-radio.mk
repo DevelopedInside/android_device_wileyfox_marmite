@@ -17,6 +17,7 @@ PRODUCT_PACKAGES += \
 # Net
 PRODUCT_PACKAGES += \
     android.system.net.netd@1.0 \
+    libandroid_net \
     netutils-wrapper-1.0
 
 # Permissions
