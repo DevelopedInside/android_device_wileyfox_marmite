@@ -18,4 +18,4 @@ Display | 720 x 1280 pixels, 5.0 inches / 1080 x 1920 pixels, 5.2 inches
 Camera  | 13/16 MP, autofocus, flash LED
 
 
-![Wileyfox Swift 2](https://www.wileyfox.com/media/wysiwyg/ProductImages/Swift2X/SWIFT_2X_CHAMPAGNE_FRONT_BACK.png "Wileyfox Swift 2")
+![Wileyfox Swift 2](https://www.wileyfox.com/uploads/product/31/medium/Swift_2_Midnight.jpg "Wileyfox Swift 2")
