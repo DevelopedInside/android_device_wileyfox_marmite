@@ -184,6 +184,7 @@ vendor/lib/libmmcamera_sunny_8865_eeprom.so
 vendor/lib/libmmcamera_sunny_gt24c64_eeprom.so
 vendor/lib/libmmcamera_le2464c_eeprom.so 
 vendor/lib/libmmcamera_le2464c_master_eeprom.so 
+vendor/lib/libmmcamera_ofilm_bl24c64a_eeprom.so
 
 vendor/lib/libmmcamera_llvd.so
 vendor/lib/libmmcamera_optizoom_lib.so
@@ -514,7 +515,7 @@ lib64/libfp_client.so
 lib64/libfpservice.so
 
 # FM
-bin/fm_qsoc_patches
+#bin/fm_qsoc_patches
 
 # Gatekeeper
 vendor/lib/hw/gatekeeper.msm8937.so
@@ -541,6 +542,9 @@ lib/libloc_ds_api.so
 -lib64/libloc_api_v02.so
 lib64/libloc_ds_api.so
 
+lib/liblistenjni.so
+lib64/liblistenjni.so
+
 vendor/bin/slim_daemon
 vendor/lib/hw/flp.default.so
 vendor/lib/libalarmservice_jni.so
@@ -557,7 +561,6 @@ vendor/lib/libgeofence.so
 vendor/lib/libizat_client_api.so
 vendor/lib/libizat_core.so
 vendor/lib/liblbs_core.so
-vendor/lib/liblistenjni.so
 vendor/lib/liblistensoundmodel2.so
 vendor/lib/libloc_ext.so
 vendor/lib/libloc_externalDr.so
@@ -921,8 +924,8 @@ vendor/lib64/libsystem_health_mon.so
 
 vendor/qcril.db
 
-lib/librilqmiservices.so
-lib64/librilqmiservices.so
+vendor/lib/librilqmiservices.so
+vendor/lib64/librilqmiservices.so
 
 # Radio - IMS
 bin/ims_rtp_daemon
