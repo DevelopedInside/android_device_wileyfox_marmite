@@ -35,5 +35,5 @@ TARGET_VENDOR_PRODUCT_NAME := Swift2
 TARGET_VENDOR_DEVICE_NAME := marmite
 
 PRODUCT_BUILD_PROP_OVERRIDES += \
-    BUILD_FINGERPRINT=Wileyfox/Swift2/marmite:7.1.2/N2G48B/625e6a323f:user/release-keys \
-    PRIVATE_BUILD_DESC="marmite-user 7.1.2 N2G48B 625e6a323f release-keys"
+    BUILD_FINGERPRINT=Wileyfox/Swift2/marmite:7.1.2/N2G48B/4fcd81f0a8:user/release-keys \
+    PRIVATE_BUILD_DESC="marmite-user 7.1.2 N2G48B 4fcd81f0a8 release-keys"
