@@ -1,6 +1,5 @@
 #!/bin/bash
 #
-# Copyright (C) 2016 The CyanogenMod Project
 # Copyright (C) 2017 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,14 +38,13 @@ CLEAN_VENDOR=true
 
 while [ "$1" != "" ]; do
     case $1 in
-        -p | --path )           shift
-                                SRC=$1
+        -n | --no-cleanup )     CLEAN_VENDOR=false
                                 ;;
         -s | --section )        shift
                                 SECTION=$1
                                 CLEAN_VENDOR=false
                                 ;;
-        -n | --no-cleanup )     CLEAN_VENDOR=false
+        * )                     SRC=$1
                                 ;;
     esac
     shift
