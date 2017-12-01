@@ -1,5 +1,5 @@
 # Filesystem
-TARGET_ANDROID_FILESYSTEM_CONFIG_H := $(DEVICE_PATH)/android_filesystem_config.h
+TARGET_FS_CONFIG_GEN := $(DEVICE_PATH)/config.fs
 TARGET_USERIMAGES_USE_EXT4 := true
 
 # Partitions
