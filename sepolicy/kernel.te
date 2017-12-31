@@ -4,3 +4,4 @@ allow kernel domain:process setsched;
 allow kernel platform_app:process setsched;
 allow kernel priv_app:process setsched;
 allow kernel system_app:process setsched;
+allow kernel debugfs_wlan:dir search;
