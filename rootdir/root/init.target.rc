@@ -163,8 +163,6 @@ service audiod /system/bin/audiod
 on boot
     start rmt_storage
 
-    # enable sched boost in order to schedule tasks on perf cluster
-    write /proc/sys/kernel/sched_boost 1
     # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
@@ -182,12 +180,6 @@ on boot
     chown system system /sys/class/leds/red/led_time
     chown system system /sys/class/leds/green/led_time
     chown system system /sys/class/leds/blue/led_time
-
-    # update foreground cpuset now that processors are up
-    write /dev/cpuset/foreground/cpus 0-7
-    write /dev/cpuset/foreground/boost/cpus 0-3
-    write /dev/cpuset/background/cpus 4
-    write /dev/cpuset/system-background/cpus 4-7
 
     # Glove mode
     chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
