@@ -182,7 +182,7 @@ void QCamera2HardwareInterface::zsl_channel_cb(mm_camera_super_buf_t *recvd_fram
     }
     //
     // whether need FD Metadata along with Snapshot frame in ZSL mode
-    if(pme->needFDMetadata(QCAMERA_CH_TYPE_ZSL)||pme->mParameters.getDualCameraMode()) {
+    if(pme->needFDMetadata(QCAMERA_CH_TYPE_ZSL)) {
         //Need Face Detection result for snapshot frames
         //Get the Meta Data frames
         mm_camera_buf_def_t *pMetaFrame = NULL;
@@ -220,59 +220,6 @@ void QCamera2HardwareInterface::zsl_channel_cb(mm_camera_super_buf_t *recvd_fram
                     }
                 } else {
                     LOGE("No memory for face_detection_result qcamera_sm_internal_evt_payload_t");
-                }
-            }
-            if (pme->mParameters.getDualCameraMode()) {
-                cam_reprocess_info_t repro_info;
-                memset(&repro_info, 0, sizeof(cam_reprocess_info_t));
-                IF_META_AVAILABLE(cam_stream_crop_info_t, sensorCropInfo,
-                        CAM_INTF_META_SNAP_CROP_INFO_SENSOR, pMetaData) {
-                    memcpy(&(repro_info.sensor_crop_info), sensorCropInfo,
-                    sizeof(cam_stream_crop_info_t));
-                }
-                IF_META_AVAILABLE(cam_stream_crop_info_t, camifCropInfo,
-                        CAM_INTF_META_SNAP_CROP_INFO_CAMIF, pMetaData) {
-                    memcpy(&(repro_info.camif_crop_info), camifCropInfo,
-                    sizeof(cam_stream_crop_info_t));
-                }
-                IF_META_AVAILABLE(cam_stream_crop_info_t, ispCropInfo,
-                        CAM_INTF_META_SNAP_CROP_INFO_ISP, pMetaData) {
-                    memcpy(&(repro_info.isp_crop_info), ispCropInfo,
-                    sizeof(cam_stream_crop_info_t));
-                }
-                IF_META_AVAILABLE(cam_stream_crop_info_t, cppCropInfo,
-                        CAM_INTF_META_SNAP_CROP_INFO_CPP, pMetaData) {
-                    memcpy(&(repro_info.cpp_crop_info), cppCropInfo,
-                    sizeof(cam_stream_crop_info_t));
-                }
-                IF_META_AVAILABLE(cam_focal_length_ratio_t, ratio,
-                        CAM_INTF_META_AF_FOCAL_LENGTH_RATIO, pMetaData) {
-                    memcpy(&(repro_info.af_focal_length_ratio), ratio,
-                    sizeof(cam_focal_length_ratio_t));
-                }
-                IF_META_AVAILABLE(int32_t, flip, CAM_INTF_PARM_FLIP, pMetaData) {
-                    memcpy(&(repro_info.pipeline_flip), flip, sizeof(int32_t));
-                }
-                IF_META_AVAILABLE(cam_rotation_info_t, rotationInfo,
-                        CAM_INTF_PARM_ROTATION, pMetaData) {
-                    memcpy(&(repro_info.rotation_info), rotationInfo, sizeof(cam_rotation_info_t));
-                }
-                repro_info.frame_number = recvd_frame->bufs[0]->frame_idx;
-                qcamera_sm_internal_evt_payload_t *payload =
-                        (qcamera_sm_internal_evt_payload_t *)
-                        malloc(sizeof(qcamera_sm_internal_evt_payload_t));
-                if (NULL != payload) {
-                    memset(payload, 0, sizeof(qcamera_sm_internal_evt_payload_t));
-                    payload->evt_type = QCAMERA_INTERNAL_EVT_DUAL_CAM_UPDATE;
-                    payload->repro_info = repro_info;
-                    int32_t rc = pme->processEvt(QCAMERA_SM_EVT_EVT_INTERNAL, payload);
-                    if (rc != NO_ERROR) {
-                    LOGE("processEvt dual_cam_update failed");
-                    free(payload);
-                    payload = NULL;
-                }
-                } else {
-                    LOGE("No memory for focus_pos_update qcamera_sm_internal_evt_payload_t");
                 }
             }
         }
@@ -318,8 +265,81 @@ void QCamera2HardwareInterface::zsl_channel_cb(mm_camera_super_buf_t *recvd_fram
 
     // Wait on Postproc initialization if needed
     // then send to postprocessor
-    if ((NO_ERROR != pme->waitDeferredWork(pme->mReprocJob)) ||
-            (NO_ERROR != pme->m_postprocessor.processData(frame))) {
+    if (NO_ERROR != pme->waitDeferredWork(pme->mReprocJob)) {
+        LOGE("Failed to trigger process data");
+        pChannel->bufDone(recvd_frame);
+        free(frame);
+        frame = NULL;
+        return;
+    }
+    if(pme->mParameters.getDualCameraMode()) {
+        mm_camera_buf_def_t *pMetaFrame = NULL;
+        for (uint32_t i = 0; i < frame->num_bufs; i++) {
+            QCameraStream *pStream = pChannel->getStreamByHandle(frame->bufs[i]->stream_id);
+            if (pStream != NULL) {
+                if (pStream->isTypeOf(CAM_STREAM_TYPE_METADATA)) {
+                    pMetaFrame = frame->bufs[i]; //find the metadata
+                    break;
+                }
+            }
+        }
+
+        if(pMetaFrame != NULL){
+            metadata_buffer_t *pMetaData = (metadata_buffer_t *)pMetaFrame->buffer;
+            cam_reprocess_info_t repro_info;
+            memset(&repro_info, 0, sizeof(cam_reprocess_info_t));
+            IF_META_AVAILABLE(cam_stream_crop_info_t, sensorCropInfo,
+                    CAM_INTF_META_SNAP_CROP_INFO_SENSOR, pMetaData) {
+                memcpy(&(repro_info.sensor_crop_info), sensorCropInfo,
+                        sizeof(cam_stream_crop_info_t));
+            }
+            IF_META_AVAILABLE(cam_stream_crop_info_t, camifCropInfo,
+                    CAM_INTF_META_SNAP_CROP_INFO_CAMIF, pMetaData) {
+                memcpy(&(repro_info.camif_crop_info), camifCropInfo,
+                        sizeof(cam_stream_crop_info_t));
+            }
+            IF_META_AVAILABLE(cam_stream_crop_info_t, ispCropInfo,
+                    CAM_INTF_META_SNAP_CROP_INFO_ISP, pMetaData) {
+                memcpy(&(repro_info.isp_crop_info), ispCropInfo,
+                        sizeof(cam_stream_crop_info_t));
+            }
+            IF_META_AVAILABLE(cam_stream_crop_info_t, cppCropInfo,
+                    CAM_INTF_META_SNAP_CROP_INFO_CPP, pMetaData) {
+                memcpy(&(repro_info.cpp_crop_info), cppCropInfo,
+                        sizeof(cam_stream_crop_info_t));
+            }
+            IF_META_AVAILABLE(cam_focal_length_ratio_t, ratio,
+                    CAM_INTF_META_AF_FOCAL_LENGTH_RATIO, pMetaData) {
+                memcpy(&(repro_info.af_focal_length_ratio), ratio,
+                        sizeof(cam_focal_length_ratio_t));
+            }
+            IF_META_AVAILABLE(int32_t, flip, CAM_INTF_PARM_FLIP, pMetaData) {
+                memcpy(&(repro_info.pipeline_flip), flip, sizeof(int32_t));
+            }
+            IF_META_AVAILABLE(cam_rotation_info_t, rotationInfo,
+                    CAM_INTF_PARM_ROTATION, pMetaData) {
+                memcpy(&(repro_info.rotation_info), rotationInfo, sizeof(cam_rotation_info_t));
+            }
+            repro_info.frame_number = recvd_frame->bufs[0]->frame_idx;
+            qcamera_sm_internal_evt_payload_t *payload =
+                    (qcamera_sm_internal_evt_payload_t *)
+                    malloc(sizeof(qcamera_sm_internal_evt_payload_t));
+            if (NULL != payload) {
+                memset(payload, 0, sizeof(qcamera_sm_internal_evt_payload_t));
+                payload->evt_type = QCAMERA_INTERNAL_EVT_DUAL_CAM_UPDATE;
+                payload->repro_info = repro_info;
+                int32_t rc = pme->processEvt(QCAMERA_SM_EVT_EVT_INTERNAL, payload);
+                if (rc != NO_ERROR) {
+                    LOGE("processEvt dual_cam_update failed");
+                    free(payload);
+                    payload = NULL;
+                }
+            } else {
+                LOGE("No memory for focus_pos_update qcamera_sm_internal_evt_payload_t");
+            }
+        }
+    }
+    if (NO_ERROR != pme->m_postprocessor.processData(frame)) {
         LOGE("Failed to trigger process data");
         pChannel->bufDone(recvd_frame);
         free(frame);
@@ -796,10 +816,6 @@ void QCamera2HardwareInterface::synchronous_stream_cb_routine(
         mPreviewTimestamp = pme->mCameraDisplay.computePresentationTimeStamp(frameTime);
     }
     stream->mStreamTimestamp = frameTime;
-
-#ifdef TARGET_TS_MAKEUP
-    pme->TsMakeupProcess_Preview(frame,stream);
-#endif
 
     // Enqueue  buffer to gralloc.
     uint32_t idx = frame->buf_idx;
@@ -1485,10 +1501,6 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
         if (pme->mParameters.getVideoBatchSize() == 0) {
             timeStamp = nsecs_t(frame->ts.tv_sec) * 1000000000LL
                     + frame->ts.tv_nsec;
-            cam_frame_len_offset_t frame_offset;
-            memset(&frame_offset, 0, sizeof(cam_frame_len_offset_t));
-            stream->getFrameOffset(frame_offset);
-            add_time_water_marking_to_frame(frame, frame_offset);
             pme->dumpFrameToFile(stream, frame, QCAMERA_DUMP_FRM_VIDEO);
             videoMemObj = (QCameraVideoMemory *)frame->mem_info;
             video_mem = NULL;
@@ -1502,10 +1514,6 @@ void QCamera2HardwareInterface::video_stream_cb_routine(mm_camera_super_buf_t *s
         } else {
             //Handle video batch callback
             native_handle_t *nh = NULL;
-            cam_frame_len_offset_t frame_offset;
-            memset(&frame_offset, 0, sizeof(cam_frame_len_offset_t));
-            stream->getFrameOffset(frame_offset);
-            add_time_water_marking_to_frame(frame, frame_offset);
             pme->dumpFrameToFile(stream, frame, QCAMERA_DUMP_FRM_VIDEO);
             QCameraVideoMemory *videoMemObj = (QCameraVideoMemory *)frame->mem_info;
             if ((stream->mCurMetaMemory == NULL)

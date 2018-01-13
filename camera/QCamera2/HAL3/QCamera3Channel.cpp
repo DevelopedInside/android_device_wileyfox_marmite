@@ -822,7 +822,6 @@ void QCamera3ProcessingChannel::streamCbRoutine(mm_camera_super_buf_t *super_fra
     if (stream->getMyType() == CAM_STREAM_TYPE_PREVIEW) {
         dumpYUV(super_frame->bufs[0], dim, offset, QCAMERA_DUMP_FRM_PREVIEW);
     } else if (stream->getMyType() == CAM_STREAM_TYPE_VIDEO) {
-        add_time_water_marking_to_frame(super_frame->bufs[0], offset);
         dumpYUV(super_frame->bufs[0], dim, offset, QCAMERA_DUMP_FRM_VIDEO);
     } else if (stream->getMyType() == CAM_STREAM_TYPE_CALLBACK) {
         dumpYUV(super_frame->bufs[0], dim, offset, QCAMERA_DUMP_FRM_CALLBACK);
@@ -3999,7 +3998,6 @@ void QCamera3ReprocessChannel::streamCbRoutine(mm_camera_super_buf_t *super_fram
 
         stream->getFrameDimension(dim);
         stream->getFrameOffset(offset);
-        add_time_water_marking_to_frame(super_frame->bufs[0], offset);
         dumpYUV(frame->bufs[0], dim, offset, QCAMERA_DUMP_FRM_SNAPSHOT);
         /* Since reprocessing is done, send the callback to release the input buffer */
         if (mChannelCB) {

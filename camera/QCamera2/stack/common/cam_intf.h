@@ -510,6 +510,11 @@ typedef struct{
     /* Max size supported by ISP viewfinder path */
     cam_dimension_t max_viewfinder_size;
 
+    /* Max size supported by ISP encoder path */
+    cam_dimension_t max_encoder_size;
+
+    cam_dimension_t bokeh_snapshot_size;
+
     /* Analysis buffer requirements */
     cam_analysis_info_t analysis_info[CAM_ANALYSIS_INFO_MAX];
 
@@ -608,7 +613,7 @@ typedef struct {
 } cam_stream_img_prop_t;
 
 typedef struct {
-    uint8_t enableStream; /*0 – stop and 1-start */
+    uint8_t enableStream; /*0 stop and 1-start */
 } cam_request_frames;
 
 typedef struct {

@@ -45,7 +45,6 @@
 #include "HAL3/QCamera3HWI.h"
 #include "util/QCameraFlash.h"
 #include "QCamera2Factory.h"
-#include "QualcommUsbCamera.h"
 extern "C" {
 #include "mm_camera_dbg.h"
 }
@@ -80,7 +79,6 @@ QCamera2Factory::QCamera2Factory()
     mHalDescriptors = NULL;
     mCallbacks = NULL;
     mNumOfCameras = get_num_of_cameras();
-    ALOGI("QCamera2Factory mNumOfCameras=%d",mNumOfCameras);
     int bDualCamera = 0;
     char propDefault[PROPERTY_VALUE_MAX];
     char prop[PROPERTY_VALUE_MAX];
@@ -111,11 +109,10 @@ QCamera2Factory::QCamera2Factory()
 #endif
     }
 #ifdef QCAMERA_HAL1_SUPPORT
-    if (!gQCameraMuxer && (mNumOfCameras > 0) &&(mNumOfCameras <= MM_CAMERA_MAX_NUM_SENSORS))
+    if (!gQCameraMuxer && (mNumOfCameras > 0) &&(mNumOfCameras <= MM_CAMERA_MAX_NUM_SENSORS)) {
 #else
-    if ((mNumOfCameras > 0) &&(mNumOfCameras <= MM_CAMERA_MAX_NUM_SENSORS))
+    if ((mNumOfCameras > 0) &&(mNumOfCameras <= MM_CAMERA_MAX_NUM_SENSORS)) {
 #endif
-    {
         mHalDescriptors = new hal_desc[mNumOfCameras];
         if ( NULL != mHalDescriptors) {
             uint32_t cameraId = 0;
@@ -135,7 +132,7 @@ QCamera2Factory::QCamera2Factory()
             LOGE("Not enough resources to allocate HAL descriptor table!");
         }
     } else {
-        LOGI("UsbCameraTest %d camera devices detected!", mNumOfCameras);
+        LOGI("%d camera devices detected!", mNumOfCameras);
     }
 }
 
@@ -325,7 +322,7 @@ int QCamera2Factory::getNumberOfCameras()
 int QCamera2Factory::getCameraInfo(int camera_id, struct camera_info *info)
 {
     int rc;
-    ALOGI("getCameraInfo camera_id==%d",camera_id);
+
     if (!mNumOfCameras || camera_id >= mNumOfCameras || !info ||
         (camera_id < 0)) {
         LOGE("Error getting camera info!! mNumOfCameras = %d,"
@@ -398,20 +395,20 @@ int QCamera2Factory::cameraDeviceOpen(int camera_id,
     int rc = NO_ERROR;
     if (camera_id < 0 || camera_id >= mNumOfCameras)
         return -ENODEV;
-    ALOGI("cameraDeviceOpen camera_id = %d", camera_id);
+
     if ( NULL == mHalDescriptors ) {
-        ALOGE("Hal descriptor table is not initialized!");
+        LOGE("Hal descriptor table is not initialized!");
         return NO_INIT;
     }
 
-    ALOGI("Open camera id %d API version %d",
+    LOGI("Open camera id %d API version %d",
             camera_id, mHalDescriptors[camera_id].device_version);
 
     if ( mHalDescriptors[camera_id].device_version == CAMERA_DEVICE_API_VERSION_3_0 ) {
         QCamera3HardwareInterface *hw = new QCamera3HardwareInterface(mHalDescriptors[camera_id].cameraId,
                 mCallbacks);
         if (!hw) {
-            ALOGE("Allocation of hardware interface failed");
+            LOGE("Allocation of hardware interface failed");
             return NO_MEMORY;
         }
         rc = hw->openCamera(hw_device);

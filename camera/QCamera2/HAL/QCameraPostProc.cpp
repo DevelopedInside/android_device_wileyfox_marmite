@@ -2186,12 +2186,6 @@ int32_t QCameraPostProcessor::encodeData(qcamera_jpeg_data_t *jpeg_job_data,
         return NO_MEMORY;
     }
 
-    //add time watermarking
-    cam_frame_len_offset_t frame_offset;
-    memset(&frame_offset, 0, sizeof(cam_frame_len_offset_t));
-    main_stream->getFrameOffset(frame_offset);
-    add_time_water_marking_to_frame(main_frame, frame_offset);
-
     // dump snapshot frame if enabled
     m_parent->dumpFrameToFile(main_stream, main_frame,
             QCAMERA_DUMP_FRM_SNAPSHOT, (char *)"CPP");

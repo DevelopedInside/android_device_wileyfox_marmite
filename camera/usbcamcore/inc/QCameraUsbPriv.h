@@ -29,11 +29,6 @@
 #ifndef ANDROID_HARDWARE_QCAMERA_USB_PRIV_H
 #define ANDROID_HARDWARE_QCAMERA_USB_PRIV_H
 
-#include <linux/videodev2.h>
-#include <QCameraParameters.h>
-#include <media/hardware/HardwareAPI.h>
-
-using namespace qcamera;
 namespace android {
 
 /* File name length in number of characters */
@@ -132,60 +127,21 @@ struct bufObj {
     int     len;
 };
 
-#define MAX_BUFFER_COUNT 16
-
-typedef struct {
-	int size;
-	int fd;
-	int main_ion_fd;
-	int handle;
-}QCameraHalMemInfo_t;
-
-typedef struct {
-	int size;
-	int fd;
-	int offset;
-}private_buffer_handle_t;
-
-
-typedef struct {
-	int buffer_count;
-	int stride[MAX_BUFFER_COUNT];
-	int local_flag[MAX_BUFFER_COUNT];
-	buffer_handle_t *buffer_handle[MAX_BUFFER_COUNT];
-	QCameraHalMemInfo_t mem_info[MAX_BUFFER_COUNT];
-	camera_memory_t *camera_memory[MAX_BUFFER_COUNT];
-	struct private_handle_t *private_buffer_handle[MAX_BUFFER_COUNT];
-}QCameraHalMemory_t;
-
-typedef enum {
-  JPEG_JOB_STATUS_DONE = 0,
-  JPEG_JOB_STATUS_ERROR
-} jpeg_job_status_t;
-
-
 typedef struct {
     camera_device                       hw_dev;
     Mutex                               lock;
     int                                 previewEnabledFlag;
-    int                                 videorecordingEnableFlag;
     int                                 prvwStoppedForPicture;
     int                                 msgEnabledFlag;
-    int                                 snapshotEnabledFlag;
-    int                                 preview_thread_enable;
     volatile int                        prvwCmdPending;
     volatile int                        prvwCmd;
     pthread_t                           previewThread;
-    pthread_t                           recordingThread;
     pthread_t                           takePictureThread;
 
     camera_notify_callback              notify_cb;
     camera_data_callback                data_cb;
     camera_data_timestamp_callback      data_cb_timestamp;
     camera_request_memory               get_memory;
-    Vector<camera_memory_t*>            prevFreeBufs;
-    Vector<camera_memory_t*>            pictFreeBufs;
-    Vector<camera_memory_t*>            videoFreeBufs;
     void*                               cb_ctxt;
 
     /* capture related members */
@@ -194,24 +150,13 @@ typedef struct {
     int                                 prevFps;
     int                                 prevWidth;
     int                                 prevHeight;
-
-    int                                 videoWidth;
-    int                                 videoHeight;
-    QCameraHalMemory_t                  videoMem;
     /* captureFormat is internal setting for USB camera buffers */
-    int                                 recordingFormat;
-    int                                 previewFormat;
     int                                 captureFormat;
     char                                dev_name[FILENAME_LENGTH];
     int                                 fd;
-    char                                h264_dev_name[FILENAME_LENGTH];
-    int                                 h264_fd;
     unsigned int                        n_buffers;
-    unsigned int                        n_h264_buffers;
     struct v4l2_buffer                  curCaptureBuf;
-    struct v4l2_buffer                  curVideoBuf;
     struct bufObj                       *buffers;
-    struct bufObj                       *h264Buffers;
 
     /* Display related members */
     preview_stream_ops*                 window;
@@ -230,9 +175,6 @@ typedef struct {
     int                                 pictWidth;
     int                                 pictHeight;
     int                                 pictJpegQlty;
-    Vector<Size>                        prevSizes;
-    Vector<Size>                        pictSizes;
-    Vector<Size>                        videoSizes;
     int                                 thumbnailWidth;
     int                                 thumbnailHeight;
     int                                 thumbnailJpegQlty;
@@ -244,43 +186,13 @@ typedef struct {
 
     /* */
     QCameraParameters                   qCamParams;
-    String8                             prevSizeValue;
     String8                             prevSizeValues;
-    String8                             pictSizeValue;
     String8                             pictSizeValues;
     String8                             thumbnailSizeValues;
-    String8                             vidSizeValue;
     String8                             vidSizeValues;
     String8                             pictFormatValues;
     String8                             prevFormatValues;
     String8                             prevFpsRangesValues;
-
-    camera_memory_t *mMetadata[MM_CAMERA_MAX_NUM_FRAMES];
-    native_handle_t *mNativeHandle[MM_CAMERA_MAX_NUM_FRAMES];
-
-    camera_memory_t* getFreePrevBuffer(){
-        if(prevFreeBufs.size() == 0)
-            return 0;
-        camera_memory_t* ret = prevFreeBufs.editTop();
-        prevFreeBufs.pop();
-        return ret;
-    }
-
-    void returnFreePrevBuffer(camera_memory_t* buf){
-        prevFreeBufs.push_front(buf);
-    }
-
-    camera_memory_t* getFreeVideoBuffer(){
-        if(videoFreeBufs.size() == 0)
-            return 0;
-        camera_memory_t* ret = videoFreeBufs.editTop();
-        videoFreeBufs.pop();
-        return ret;
-    }
-
-    void returnFreeVideoBuffer(camera_memory_t* buf){
-        videoFreeBufs.push_front(buf);
-    }
 
 } camera_hardware_t;
 

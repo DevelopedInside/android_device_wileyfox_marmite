@@ -56,8 +56,6 @@ LOCAL_CFLAGS += -DSYSTEM_HEADER_PREFIX=sys
 
 LOCAL_CFLAGS += -DHAS_MULTIMEDIA_HINTS -D_ANDROID
 
-LOCAL_CFLAGS += -DENABLE_MODEL_INFO_EXIF
-
 ifeq ($(TARGET_USES_AOSP),true)
 LOCAL_CFLAGS += -DVANILLA_HAL
 endif
@@ -83,14 +81,12 @@ LOCAL_C_INCLUDES := \
         $(LOCAL_PATH)/stack/mm-camera-interface/inc \
         $(LOCAL_PATH)/util \
         $(LOCAL_PATH)/HAL3 \
-        $(LOCAL_PATH)/../usbcamcore/inc \
         hardware/libhardware/include/hardware \
         $(call project-path-for,qcom-media)/libstagefrighthw \
         $(call project-path-for,qcom-media)/mm-core/inc \
         system/core/include/cutils \
         system/core/include/system \
-        system/media/camera/include/system \
-        vendor/qcom/proprietary/mm-still/jpeg2/inc
+        system/media/camera/include/system
 
 #HAL 1.0 Include paths
 LOCAL_C_INCLUDES += \
@@ -120,13 +116,7 @@ LOCAL_C_INCLUDES += \
 LOCAL_SHARED_LIBRARIES := libcamera_client liblog libhardware libutils libcutils libdl libsync libgui
 LOCAL_SHARED_LIBRARIES += libmmcamera_interface libmmjpeg_interface libui libcamera_metadata
 LOCAL_SHARED_LIBRARIES += libqdMetaData libqservice libbinder
-LOCAL_SHARED_LIBRARIES += libcutils libdl libmmjpeg libqomx_core  libjpeg
-ifeq ($(strip $(USES_GEMINI)),true)
-    LOCAL_SHARED_LIBRARIES += libgemini
-else
-    LOCAL_SHARED_LIBRARIES += libjpegehw
-endif
-
+LOCAL_SHARED_LIBRARIES += libcutils libdl
 ifeq ($(TARGET_TS_MAKEUP),true)
 LOCAL_SHARED_LIBRARIES += libts_face_beautify_hal libts_detected_face_hal
 endif
