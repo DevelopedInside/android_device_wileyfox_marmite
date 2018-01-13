@@ -271,6 +271,9 @@ void LocInternalAdapter::setUlpProxy(UlpProxyBase* ulp) {
         virtual void proc() const {
             LOC_LOGV("%s] ulp %p adapter %p", __func__,
                      mUlp, mAdapter);
+            if (mUlp) {
+                mUlp->setCapabilities(ContextBase::getCarrierCapabilities());
+            }
             mAdapter->setUlpProxy(mUlp);
         }
     };

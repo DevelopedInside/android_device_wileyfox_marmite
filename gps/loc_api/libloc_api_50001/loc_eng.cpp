@@ -781,6 +781,7 @@ void LocEngReportPosition::proc() const {
     if (locEng->mute_session_state != LOC_MUTE_SESS_IN_SESSION) {
         bool reported = false;
         if (locEng->location_cb != NULL) {
+            adapter->clearGnssSvUsedListData();
             if (LOC_SESS_FAILURE == mStatus) {
                 // in case we want to handle the failure case
                 locEng->location_cb(NULL, NULL);
