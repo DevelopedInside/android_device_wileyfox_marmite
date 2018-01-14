@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 #include "edify/expr.h"
@@ -35,13 +34,13 @@
 #define ALPHABET_LEN 256
 
 #ifdef USES_BOOTDEVICE_PATH
-#define MODEM_PART_PATH "/dev/block/bootdevice/by-name/modem"
+#define BASEBAND_PART_PATH "/dev/block/bootdevice/by-name/modem"
 #else
-#define MODEM_PART_PATH "/dev/block/platform/msm_sdcc.1/by-name/modem"
+#define BASEBAND_PART_PATH "/dev/block/platform/7824900.sdhci/by-name/modem"
 #endif
-#define MODEM_VER_STR "Time_Stamp\": \""
-#define MODEM_VER_STR_LEN 14
-#define MODEM_VER_BUF_LEN 20
+#define BASEBAND_VER_STR_START "QC_IMAGE_VERSION_STRING=MPSS.JO."
+#define BASEBAND_VER_STR_START_LEN 32
+#define BASEBAND_VER_BUF_LEN 255
 
 /* Boyer-Moore string search implementation from Wikipedia */
 
@@ -121,81 +120,84 @@ static char * bm_search(const char *str, size_t str_len, const char *pat,
     return NULL;
 }
 
-static int get_modem_version(char *ver_str, size_t len) {
+static int get_baseband_version(char *ver_str, size_t len) {
     int ret = 0;
     int fd;
-    int modem_size;
-    char *modem_data = NULL;
+    int baseband_size;
+    char *baseband_data = NULL;
     char *offset = NULL;
 
-    fd = open(MODEM_PART_PATH, O_RDONLY);
+    fd = open(BASEBAND_PART_PATH, O_RDONLY);
     if (fd < 0) {
         ret = errno;
         goto err_ret;
     }
 
-    modem_size = lseek64(fd, 0, SEEK_END);
-    if (modem_size == -1) {
+    baseband_size = lseek64(fd, 0, SEEK_END);
+    if (baseband_size == -1) {
         ret = errno;
         goto err_fd_close;
     }
 
-    modem_data = (char *) mmap(NULL, modem_size, PROT_READ, MAP_PRIVATE, fd, 0);
-    if (modem_data == (char *)-1) {
+    baseband_data = (char *) mmap(NULL, baseband_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    if (baseband_data == (char *)-1) {
         ret = errno;
         goto err_fd_close;
     }
 
-    /* Do Boyer-Moore search across MODEM data */
-    offset = bm_search(modem_data, modem_size, MODEM_VER_STR, MODEM_VER_STR_LEN);
+    /* Do Boyer-Moore search across BASEBAND data */
+    offset = bm_search(baseband_data, baseband_size, BASEBAND_VER_STR_START, BASEBAND_VER_STR_START_LEN);
     if (offset != NULL) {
-        snprintf(ver_str, len, "%s", offset + MODEM_VER_STR_LEN);
+        strncpy(ver_str, offset + BASEBAND_VER_STR_START_LEN, len);
     } else {
         ret = -ENOENT;
     }
 
-    munmap(modem_data, modem_size);
+    munmap(baseband_data, baseband_size);
 err_fd_close:
     close(fd);
 err_ret:
     return ret;
 }
 
-/* verify_modem("MODEM_VERSION") */
-Value * VerifyModemFn(const char *name, State *state, int argc, Expr *argv[]) {
-    char current_modem_version[MODEM_VER_BUF_LEN];
-    char* modem_version;
-    int ret;
-    struct tm tm1, tm2;
+/* verify_baseband("BASEBAND_VERSION", "BASEBAND_VERSION", ...) */
+Value * VerifyBasebandFn(const char *name, State *state, int argc, Expr *argv[]) {
+    char current_baseband_version[BASEBAND_VER_BUF_LEN];
+    int i, ret;
 
-    ret = get_modem_version(current_modem_version, MODEM_VER_BUF_LEN);
+    ret = get_baseband_version(current_baseband_version, BASEBAND_VER_BUF_LEN);
     if (ret) {
-        return ErrorAbort(state, kVendorFailure,
-                "%s() failed to read current MODEM build time-stamp: %d", name, ret);
+        return ErrorAbort(state, kFreadFailure, "%s() failed to read current baseband version: %d",
+                name, ret);
     }
 
-    memset(&tm1, 0, sizeof(tm));
-    strptime(current_modem_version, "%Y-%m-%d %H:%M:%S", &tm1);
-
-    ret = ReadArgs(state, argv, 1, &modem_version);
-    if (ret < 0) {
+    char** baseband_version = ReadVarArgs(state, argc, argv);
+    if (baseband_version == NULL) {
         return ErrorAbort(state, kArgsParsingFailure, "%s() error parsing arguments", name);
     }
 
-    uiPrintf(state, "Checking for MODEM build time-stamp %s\n", modem_version);
-
-    memset(&tm2, 0, sizeof(tm));
-    strptime(modem_version, "%Y-%m-%d %H:%M:%S", &tm2);
-
-    if (mktime(&tm1) >= mktime(&tm2)) {
-        ret = 1;
+    ret = 0;
+    for (i = 0; i < argc; i++) {
+        uiPrintf(state, "Comparing baseband version %s to %s",
+                 baseband_version[i], current_baseband_version);
+        if (strncmp(baseband_version[i], current_baseband_version, strlen(baseband_version[i])) == 0) {
+            ret = 1;
+            break;
+        }
     }
 
-    free(modem_version);
+    if (ret == 0) {
+        uiPrintf(state, "ERROR: It appears you are running an unsupported baseband.");
+    }
+
+    for (i = 0; i < argc; i++) {
+        free(baseband_version[i]);
+    }
+    free(baseband_version);
 
     return StringValue(strdup(ret ? "1" : "0"));
 }
 
 void Register_librecovery_updater_marmite() {
-    RegisterFunction("marmite.verify_modem", VerifyModemFn);
+    RegisterFunction("marmite.verify_baseband", VerifyBasebandFn);
 }

@@ -23,21 +23,21 @@ import re
 
 def FullOTA_Assertions(info):
   AddBootloaderAssertion(info)
-  AddModemAssertion(info)
+  AddBasebandAssertion(info)
   return
 
 def IncrementalOTA_Assertions(info):
   AddBootloaderAssertion(info)
-  AddModemAssertion(info)
+  AddBasebandAssertion(info)
   return
 
-def AddModemAssertion(info):
+def AddBasebandAssertion(info):
   android_info = info.input_zip.read("OTA/android-info.txt")
-  m = re.search(r'require\s+version-modem\s*=\s*(.+)', android_info)
+  m = re.search(r'require\s+version-baseband\s*=\s*(.+)', android_info)
   if m:
     version = m.group(1).rstrip()
     if len(version) and '*' not in version:
-      cmd = 'assert(marmite.verify_modem("' + version + '") == "1");'
+      cmd = 'assert(marmite.verify_baseband("' + version + '") == "1");'
       info.script.AppendExtra(cmd)
   return
 
