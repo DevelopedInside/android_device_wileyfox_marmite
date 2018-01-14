@@ -181,5 +181,8 @@ on class_start:late_start
 on property:init.svc.recovery=running
     trigger enable-low-power
 
+on early-boot
+    write /sys/block/mmcblk0/queue/scheduler "noop"
+
 on property:dev.bootcomplete=1
     setprop sys.io.scheduler bfq

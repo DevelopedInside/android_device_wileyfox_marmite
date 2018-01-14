@@ -357,9 +357,3 @@ on property:sys.io.scheduler=bfq
     write /sys/block/sda/queue/iosched/slice_idle 0
     write /sys/block/sde/queue/iosched/slice_idle 0
     write /sys/block/dm-0/queue/iosched/slice_idle 0
-
-on early-boot
-    write /sys/block/mmcblk0/queue/scheduler "noop"
-
-on property:dev.bootcomplete=1
-    setprop sys.io.scheduler bfq
