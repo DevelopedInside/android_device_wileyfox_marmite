@@ -23,6 +23,8 @@ on boot
 
 on enable-low-power
 
+    start qcom-mem
+
     write /proc/sys/kernel/sched_boost 1
 
     # Apply Scheduler and Governor settings for 8937

@@ -17,7 +17,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     init.qcom.bt.sh \
     init.qcom.fm.sh \
-    init.qcom.post_boot.sh
+    init.qcom.mem.sh
 
 # Wileyfox varinats
 PRODUCT_PACKAGES += \
