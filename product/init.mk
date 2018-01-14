@@ -1,4 +1,4 @@
-# Init scripts
+# Root init scripts
 PRODUCT_PACKAGES += \
     fstab.qcom \
     init.class_main.sh \
@@ -11,10 +11,16 @@ PRODUCT_PACKAGES += \
     init.qcom.usb.rc \
     init.qcom.usb.sh \
     init.target.rc \
-    init.variant.mv1.rc \
-    init.variant.mv2.rc \
-    init.variant.mv3.rc \
-    ueventd.qcom.rc \
+    ueventd.qcom.rc
+
+# etc scripts
+PRODUCT_PACKAGES += \
     init.qcom.bt.sh \
     init.qcom.fm.sh \
     init.qcom.post_boot.sh
+
+# Wileyfox varinats
+PRODUCT_PACKAGES += \
+    init.variant.mv1.rc \
+    init.variant.mv2.rc \
+    init.variant.mv3.rc
