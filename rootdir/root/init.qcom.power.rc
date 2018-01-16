@@ -1,8 +1,4 @@
 on boot
-
-    # Set RPS mask
-    write /sys/class/net/rmnet0/queues/rx-0/rps_cpus 2
-
     # Add a cpuset for the camera daemon
     # we want all cores for camera
     mkdir /dev/cpuset/camera-daemon
@@ -12,27 +8,31 @@ on boot
     chown system system /dev/cpuset/camera-daemon/tasks
     chmod 0664 /dev/cpuset/camera-daemon/tasks
 
-    # Update foreground and background cpusets
-    # Reserve CPU 7 for the top app
-    write /dev/cpuset/foreground/cpus 0-6
+    # Update foreground and background cpusets while booting
+    write /dev/cpuset/foreground/cpus 0-7
     write /dev/cpuset/foreground/boost/cpus 0-3
-    write /dev/cpuset/background/cpus 4-6
-    write /dev/cpuset/system-background/cpus 4-6
+    write /dev/cpuset/background/cpus 4-7
+    write /dev/cpuset/system-background/cpus 4-7
     write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/camera-daemon/cpus 4-7
 
-on enable-low-power
-
-    start qcom-mem
-
+    # Enable sched boost in order to schedule tasks on perf cluster
     write /proc/sys/kernel/sched_boost 1
 
+on enable-low-power
+    start qcom-mem
+
     # Apply Scheduler and Governor settings for 8937
+
+    # Set RPS mask
+    write /sys/class/net/rmnet0/queues/rx-0/rps_cpus 2
 
     # HMP scheduler settings
     write /proc/sys/kernel/sched_window_stats_policy 3
     write /proc/sys/kernel/sched_ravg_hist_size 3
     write /proc/sys/kernel/sched_ravg_window 20000000
+
+    # Disable sched_boost in 8937
+    write /proc/sys/kernel/sched_boost 0
 
     # HMP Task packing settings
     write /proc/sys/kernel/sched_small_task 20
@@ -114,6 +114,9 @@ on enable-low-power
     write /sys/devices/system/cpu/cpu6/online 1
     write /sys/devices/system/cpu/cpu7/online 1
 
+    # Enable power_efficient workqueue
+    write /sys/module/workqueue/parameters/power_efficient 1
+
     # Enable low power modes
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
 
@@ -158,11 +161,11 @@ on enable-low-power
     write /sys/block/dm-0/queue/read_ahead_kb 128
     write /sys/block/dm-1/queue/read_ahead_kb 128
 
+    # Set perfd properties
     rm /data/system/perfd/default_values
     start perfd
 
 on charger
-
     # Offline all cores other than CPU0
     write /sys/devices/system/cpu/cpu1/online 0
     write /sys/devices/system/cpu/cpu2/online 0
@@ -186,3 +189,12 @@ on early-boot
 
 on property:dev.bootcomplete=1
     setprop sys.io.scheduler bfq
+
+    # update cpusets now that boot is complete and we want
+    # better load balancing
+    write /dev/cpuset/top-app/cpus 0-7
+    write /dev/cpuset/foreground/boost/cpus 0-2
+    write /dev/cpuset/foreground/cpus 0-2
+    write /dev/cpuset/background/cpus 0
+    write /dev/cpuset/system-background/cpus 4-5
+    write /dev/cpuset/camera-daemon/cpus 4-7
