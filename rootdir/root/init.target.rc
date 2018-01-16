@@ -37,7 +37,6 @@ on early-init
 
 on fs
     wait /dev/block/bootdevice
-    write /proc/sys/vm/swappiness 100
 
     mount_all fstab.qcom
 

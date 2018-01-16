@@ -138,9 +138,6 @@ ro.am.reschedule_service=true
 #Optimal dex2oat threads for faster app installation
 ro.sys.fw.dex2oat_thread_count=4
 
-# Create zram disk
-ro.config.zram=true
-
 # Create Swap disk, if below sys-prop enabled & also if device has lower (< 1 GB) RAM
 ro.config.swap=true
 
