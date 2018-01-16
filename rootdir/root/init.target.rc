@@ -73,6 +73,10 @@ on post-fs-data
     mkdir /data/system/fingerprint 0770 system system
     restorecon /data/system/fingerprint
 
+    # Glove mode
+    chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+    chmod 0660 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+
 #start camera server as daemon
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
@@ -182,10 +186,6 @@ on boot
     chown system system /sys/class/leds/red/led_time
     chown system system /sys/class/leds/green/led_time
     chown system system /sys/class/leds/blue/led_time
-
-    # Glove mode
-    chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
-    chmod 0660 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
 
 service wcnss-service /system/bin/wcnss_service
     class main
