@@ -170,8 +170,6 @@ void vendor_load_properties()
     property_set("ro.hwui.text_large_cache_width", "2048");
     property_set("ro.hwui.text_large_cache_height", large_cache_height);
 
-    property_set("qemu.hw.mainkeys", "0");
-
     check_aw87319();
 
     std::string cmv = property_get("ro.boot.cmv");
