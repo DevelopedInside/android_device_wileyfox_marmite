@@ -14,7 +14,9 @@ PRODUCT_PACKAGES += \
     libdisplayconfig \
     libgenlock \
     liboverlay \
-    libtinyxml
+    libtinyxml \
+    vendor.display.config@1.0 \
+    vendor.display.config@1.0_vendor
 
 # Permissions
 PRODUCT_COPY_FILES += \
