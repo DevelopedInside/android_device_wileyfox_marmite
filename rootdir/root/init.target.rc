@@ -91,6 +91,10 @@ on early-boot
    # Adjust parameters for dm-verity device
    write /sys/block/dm-0/queue/read_ahead_kb 2048
 
+# Enable zram
+on property:ro.config.zram=true
+    swapon_all fstab.qcom
+    write /proc/sys/vm/swappiness 100
 
 service qfp-daemon /system/bin/qfp-daemon
    class late_start
