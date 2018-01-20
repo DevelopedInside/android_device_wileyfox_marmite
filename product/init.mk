@@ -11,6 +11,7 @@ PRODUCT_PACKAGES += \
     init.qcom.usb.rc \
     init.qcom.usb.sh \
     init.target.rc \
+    init.recovery.qcom.rc \
     ueventd.qcom.rc
 
 # etc scripts
