@@ -85,14 +85,11 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     writepid /dev/cpuset/system-background/tasks
 
 on init
-   verity_load_state
    write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
 
 on early-boot
    # Adjust parameters for dm-verity device
    write /sys/block/dm-0/queue/read_ahead_kb 2048
-   # Update dm-verity state and set partition.*.verified properties
-   verity_update_state
 
 
 service qfp-daemon /system/bin/qfp-daemon
