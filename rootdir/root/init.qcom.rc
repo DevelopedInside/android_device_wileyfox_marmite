@@ -1071,7 +1071,3 @@ service time_daemon /system/bin/time_daemon
     user root
     group root
     writepid /dev/cpuset/system-background/tasks
-
-service qcom-mem /system/bin/sh /system/etc/init.qcom.mem.sh
-    disabled
-    oneshot

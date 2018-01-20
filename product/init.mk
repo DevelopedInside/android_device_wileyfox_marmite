@@ -16,8 +16,7 @@ PRODUCT_PACKAGES += \
 # etc scripts
 PRODUCT_PACKAGES += \
     init.qcom.bt.sh \
-    init.qcom.fm.sh \
-    init.qcom.mem.sh
+    init.qcom.fm.sh
 
 # Wileyfox varinats
 PRODUCT_PACKAGES += \
