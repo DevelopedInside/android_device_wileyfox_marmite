@@ -52,8 +52,6 @@ fi
 
 log -t BOOT -p i "MSM target '$1', SoC '$soc_hwplatform', HwID '$soc_hwid', SoC ver '$soc_hwver'"
 
-target=`getprop ro.board.platform`
-
 # Setup display nodes & permissions
 function set_perms() {
     #Usage set_perms <filename> <ownership> <permission>
