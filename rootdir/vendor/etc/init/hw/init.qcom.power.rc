@@ -151,8 +151,8 @@ on enable-low-power
 
     # Set lowmemorykiller tuning parameters
     write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
-    write /sys/module/lowmemorykiller/parameters/minfree "15360,19200,23040,26880,34415,43737"
-    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 53059
+    write /sys/module/lowmemorykiller/parameters/minfree "18432,23040,27648,32256,55296,80640"
+    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 80640
 
     # Set ZCache parameters
     write /sys/module/zcache/parameters/clear_percent 3
