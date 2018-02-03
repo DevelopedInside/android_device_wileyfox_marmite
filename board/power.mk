@@ -1,0 +1,2 @@
+# Power
+TARGET_USES_INTERACTION_BOOST := true
