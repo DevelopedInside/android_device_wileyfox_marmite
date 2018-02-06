@@ -105,11 +105,6 @@ persist.qfp=false
 # FM radio
 ro.fm.transmitter=false
 
-# GPS
-persist.gps.qc_nlp_in_use=1
-persist.loc.nlp_name=com.qualcomm.location
-ro.gps.agps_provider=1
-
 # Media
 media.aac_51_output_enabled=true
 media.msm8956hw=0
@@ -161,15 +156,15 @@ persist.radio.aosp_usr_pref_sel=true
 persist.radio.apm_sim_not_pwdn=1
 persist.radio.calls.on.ims=0
 persist.radio.csvt.enabled=false
-persist.radio.custom_ecc=1
 persist.radio.data_ltd_sys_ind=1
 persist.radio.jbims=0
 persist.radio.mt_sms_ack=20
 persist.radio.multisim.config=dsds
-persist.radio.rat_on=combine
-persist.radio.sib16_support=1
 ro.telephony.call_ring.multiple=false
 telephony.lteOnCdmaDevice=1
+persist.vendor.radio.custom_ecc=1
+persist.vendor.radio.rat_on=combine
+persist.vendor.radio.sib16_support=1
 
 # Storage
 persist.fuse_sdcard=true
