@@ -493,7 +493,7 @@ service dpmd /system/bin/dpmd
     group system readproc
     writepid /dev/cpuset/system-background/tasks
 
-service irsc_util /system/bin/irsc_util "/etc/sec_config"
+service irsc_util /system/bin/irsc_util "/system/vendor/etc/sec_config"
     class core
     user root
     oneshot
