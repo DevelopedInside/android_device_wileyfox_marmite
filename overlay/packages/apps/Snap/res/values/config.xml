@@ -24,4 +24,7 @@
 
     <!-- Opens front camera using openLegacy() -->
     <bool name="front_camera_open_legacy">true</bool>
+
+    <!-- Set this to true to use device manufacturer and model for exif -->
+    <bool name="override_maker_and_model_tag">true</bool>
 </resources>
