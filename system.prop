@@ -121,6 +121,7 @@ persist.nfc.smartcard.config=SIM1,eSE1
 
 # Perf
 ro.am.reschedule_service=true
+ro.config.zram=true
 ro.core_ctl_max_cpu=4
 ro.core_ctl_min_cpu=2
 ro.sys.fw.use_trim_settings=true
