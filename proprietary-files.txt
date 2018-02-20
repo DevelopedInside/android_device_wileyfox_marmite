@@ -818,7 +818,10 @@ vendor/lib64/libconnctrl.so
 vendor/lib64/libQtiTether.so
 
 # NFC
+vendor/firmware/libpn547_fw.so
 vendor/firmware/libpn548ad_fw.so
+vendor/firmware/libpn551_fw.so
+vendor/firmware/libpn553_fw.so
 
 # Perf
 bin/iop
