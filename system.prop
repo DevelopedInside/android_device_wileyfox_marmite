@@ -28,7 +28,6 @@ audio.pp.asphere.enabled=false
 audio.safx.pbe.enabled=true
 audio_hal.period_size=192
 flac.sw.decoder.24bit.support=true
-persist.audio.fluence.audiorec=false
 persist.audio.fluence.speaker=false
 persist.audio.fluence.voicecall=true
 persist.audio.fluence.voicerec=false
