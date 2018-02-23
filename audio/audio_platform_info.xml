@@ -70,14 +70,17 @@
         <device name="SND_DEVICE_IN_SPEAKER_DMIC_NS_BROADSIDE" acdb_id="120"/>
         <device name="SND_DEVICE_IN_SPEAKER_DMIC_AEC_NS_BROADSIDE" acdb_id="105"/>
 
-        <device name="SND_DEVICE_IN_CAMCORDER_MIC" acdb_id="34"/>
+        <device name="SND_DEVICE_IN_HANDSET_MIC" acdb_id="35"/>
+        <device name="SND_DEVICE_IN_CAMCORDER_MIC" acdb_id="35"/>
     </acdb_ids>
     <backend_names>
         <device name="SND_DEVICE_OUT_SPEAKER_AND_HEADPHONES" backend="speaker-and-headphones" />
         <device name="SND_DEVICE_OUT_SPEAKER_AND_LINE" backend="speaker-and-headphones" />
     </backend_names>
     <device_names>
-        <device name="SND_DEVICE_IN_CAMCORDER_MIC" alias="handset-stereo-dmic-ef"/>
+        <device name="SND_DEVICE_IN_HANDSET_MIC" alias="speaker-stereo-dmic-ef" />
+        <device name="SND_DEVICE_IN_CAMCORDER_MIC" alias="speaker-stereo-dmic-ef" />
+        <device name="SND_DEVICE_IN_VOICE_SPEAKER_MIC" alias="second-mic" />
     </device_names>
 </audio_platform_info>
 
