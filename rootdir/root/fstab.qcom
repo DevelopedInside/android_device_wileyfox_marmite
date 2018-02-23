@@ -36,5 +36,4 @@
 /dev/block/bootdevice/by-name/boot         /boot           emmc    defaults                                                        defaults
 /dev/block/bootdevice/by-name/recovery     /recovery       emmc    defaults                                                        defaults
 /dev/block/bootdevice/by-name/misc         /misc           emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/sysinfo      /sysinfo        ext4    ro,barrier=1,discard                                            wait,check,formattable
 /dev/block/zram0                           none            swap    defaults                                                        zramsize=536870912,zramstreams=4
