@@ -19,6 +19,14 @@ vendor/lib/rfsa/adsp/libexternal_dog_skel.so
 vendor/lib/rfsa/adsp/libfastcvadsp_skel.so
 vendor/lib/rfsa/adsp/libfastcvadsp.so
 
+# ANT+
+lib64/com.qualcomm.qti.ant@1.0.so
+-lib64/libantradio.so
+lib/com.qualcomm.qti.ant@1.0.so
+-lib/libantradio.so
+vendor/lib64/hw/com.qualcomm.qti.ant@1.0-impl.so
+vendor/lib64/com.qualcomm.qti.ant@1.0_vendor.so
+
 # Audio
 etc/permissions/audiosphere.xml
 framework/audiosphere.jar
@@ -87,7 +95,6 @@ vendor/lib64/libbt-hidlclient.so
 vendor/lib64/libbtnv.so
 
 # Bluetooth (shared dependencies)
-vendor/lib64/com.qualcomm.qti.ant@1.0_vendor.so
 vendor/lib64/vendor.qti.hardware.fm@1.0_vendor.so
 
 # Bluetooth (aptX) - from marlin - OPM1.171019.011
