@@ -1,8 +1,7 @@
 # ANT
 PRODUCT_PACKAGES += \
     AntHalService \
-    com.dsi.ant.antradio_library \
-    libantradio
+    com.dsi.ant.antradio_library
 
 # Permissions
 PRODUCT_COPY_FILES += \
