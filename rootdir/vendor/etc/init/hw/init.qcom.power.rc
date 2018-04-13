@@ -194,6 +194,7 @@ on property:dev.bootcomplete=1
     write /dev/cpuset/background/cpus 4-6
     write /dev/cpuset/system-background/cpus 4-6
     write /dev/cpuset/camera-daemon/cpus 0-3
+    write /dev/cpuset/restricted/cpus 4-7
 
     # Tell perfd that we're ready to go
     setprop vendor.post_boot.parsed 1
