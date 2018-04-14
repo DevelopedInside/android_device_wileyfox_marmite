@@ -923,29 +923,24 @@ vendor/lib64/sensors.ssc.so
 # Subsystem restart
 bin/ssr_diag
 
-# Thermal
-vendor/bin/thermal-engine
-vendor/lib/libthermalclient.so
+# Thermal - from tissot - OPR1.170623.026
+vendor/bin/thermal-engine|ef05fa3e09dafb74775a69e6a10c5d00194e3d53
+-vendor/lib64/libthermalclient.so|9beae9671d80ee9b1d47689ed32b5780a863cb77
+vendor/lib64/libthermalioctl.so|ca2dca5f433073df781073f449fd7ed73a4e4d3c
+-vendor/lib/libthermalclient.so|6096637d37150d89caf3c730c9964ac07797fa55
 
-vendor/lib64/libthermalclient.so
-vendor/lib64/libthermalioctl.so
-
-# Time services
--app/TimeService/TimeService.apk
-bin/time_daemon
--vendor/lib/libtime_genoff.so
-vendor/lib/libTimeService.so
-
--vendor/lib64/libtime_genoff.so
-vendor/lib64/libTimeService.so
+# Time services - from bardock-pro - OPM1.171019.011
+-vendor/app/TimeService/TimeService.apk|5055619766db32fe499cda86b892c9f3081219c5
+vendor/bin/time_daemon|8ea7d65a65c1d50afc6553ad52848b454c62563d
+vendor/lib64/libtime_genoff.so|7683a85cae9f17cd535e8960fceda1d6831074a0
 
 # USB
 etc/firmware/ice40.bin
 
-# Widevine
-vendor/lib/libWVStreamControlAPI_L3.so
-vendor/lib/libwvdrm_L3.so
-vendor/lib/mediadrm/libwvdrmengine.so
+# Widevine DRM - from marlin - OPM1.171019.011
+vendor/bin/hw/android.hardware.drm@1.0-service.widevine|fd6e14710c196fdd4131afe2ce10c4a5be1b309c
+vendor/etc/init/android.hardware.drm@1.0-service.widevine.rc|51a3168a0dbc064d78ee11ca83614c0cd2e6daa5
+vendor/lib/libwvhidl.so|f7288f7a7ed6765bd1d80d639a0aeb0c31eda795
 
-# Wi-Fi
-bin/wcnss_service
+# WiFi - from tissot - OPR1.170623.026
+vendor/bin/cnss-daemon|2336903c6a526568b8c74fff4b429d5fabe71d1d
