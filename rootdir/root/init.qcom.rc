@@ -471,7 +471,7 @@ on property:vold.decrypt=trigger_restart_framework
 on property:persist.env.fastdorm.enabled=true
     setprop persist.radio.data_no_toggle 1
 
-service cnd /system/bin/cnd
+service cnd /system/vendor/bin/cnd
     class main
     socket cnd stream 660 root inet
     writepid /dev/cpuset/system-background/tasks
@@ -482,7 +482,7 @@ service dpmd /system/bin/dpmd
     group system readproc
     writepid /dev/cpuset/system-background/tasks
 
-service irsc_util /system/bin/irsc_util "/system/vendor/etc/sec_config"
+service irsc_util /system/vendor/bin/irsc_util "/system/vendor/etc/sec_config"
     class core
     user root
     oneshot
@@ -499,7 +499,7 @@ service rfs_access /system/bin/rfs_access
    group system net_raw
    writepid /dev/cpuset/system-background/tasks
 
-service tftp_server /system/bin/tftp_server
+service tftp_server /system/vendor/bin/tftp_server
    class core
    user root
    writepid /dev/cpuset/system-background/tasks
@@ -772,7 +772,7 @@ service cnss_diag /system/bin/cnss_diag -q -f
     group system wifi inet net_admin sdcard_rw media_rw diag
     oneshot
 
-service cnss-daemon /system/bin/cnss-daemon -n -l
+service cnss-daemon /system/vendor/bin/cnss-daemon -n -l
     class late_start
     user system
     group system inet net_admin wifi

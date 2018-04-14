@@ -198,7 +198,7 @@ service imsstarter /system/bin/sh /system/etc/init.qti.ims.sh
 on property:vold.decrypt=trigger_restart_framework
     start imsstarter
 
-service imsqmidaemon /system/bin/imsqmidaemon
+service imsqmidaemon /system/vendor/bin/imsqmidaemon
     class main
     user system
     socket ims_qmid stream 0660 system radio
@@ -209,7 +209,7 @@ service imsqmidaemon /system/bin/imsqmidaemon
 on property:service.qti.ims.enabled=1
     start imsqmidaemon
 
-service imsdatadaemon /system/bin/imsdatadaemon
+service imsdatadaemon /system/vendor/bin/imsdatadaemon
     class main
     user system
     socket ims_datad stream 0660 system radio
@@ -220,7 +220,7 @@ service imsdatadaemon /system/bin/imsdatadaemon
 on property:sys.ims.QMI_DAEMON_STATUS=1
     start imsdatadaemon
 
-service ims_rtp_daemon /system/bin/ims_rtp_daemon
+service ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
    class main
    user system
    socket ims_rtpd stream 0660 system radio
@@ -284,13 +284,13 @@ service adsprpcd /system/bin/adsprpcd
 on property:init.svc.dts_configurator=stopped
     start dtseagleservice
 
-service per_mgr /system/bin/pm-service
+service per_mgr /system/vendor/bin/pm-service
     class core
     user system
     group system net_raw
     writepid /dev/cpuset/system-background/tasks
 
-service per_proxy /system/bin/pm-proxy
+service per_proxy /system/vendor/bin/pm-proxy
     class core
     user system
     group system
