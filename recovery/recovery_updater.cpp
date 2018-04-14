@@ -267,7 +267,7 @@ Value * VerifyTrustZoneFn(const char *name, State *state,
     return StringValue(strdup(ret ? "1" : "0"));
 }
 
-void Register_librecovery_updater_cm() {
+void Register_librecovery_updater_marmite() {
     RegisterFunction("cm.verify_baseband", VerifyBasebandFn);
     RegisterFunction("cm.verify_trustzone", VerifyTrustZoneFn);
 }
