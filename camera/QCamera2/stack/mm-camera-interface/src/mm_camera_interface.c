@@ -42,6 +42,8 @@
 #define IOCTL_H <SYSTEM_HEADER_PREFIX/ioctl.h>
 #include IOCTL_H
 
+#define EXTRA_ENTRY 6
+
 // Camera dependencies
 #include "mm_camera_dbg.h"
 #include "mm_camera_interface.h"
@@ -53,6 +55,10 @@ static mm_camera_ctrl_t g_cam_ctrl;
 
 static pthread_mutex_t g_handler_lock = PTHREAD_MUTEX_INITIALIZER;
 static uint16_t g_handler_history_count = 0; /* history count for handler */
+
+#ifndef DAEMON_PRESENT
+static bool g_shim_initialized = FALSE; /* Tells mct shim layer initialized or not */
+#endif
 
 // 16th (starting from 0) bit tells its a BACK or FRONT camera
 #define CAM_SENSOR_FACING_MASK (1U<<16)
@@ -1778,6 +1784,7 @@ void sort_camera_info(int num_cam)
 uint8_t get_num_of_cameras()
 {
     int rc = 0;
+    int i = 0;
     int dev_fd = -1;
     struct media_device_info mdev_info;
     int num_media_devices = 0;
@@ -1797,9 +1804,15 @@ uint8_t get_num_of_cameras()
 
     memset (&g_cam_ctrl, 0, sizeof (g_cam_ctrl));
 #ifndef DAEMON_PRESENT
-    if (mm_camera_load_shim_lib() < 0) {
-        LOGE ("Failed to module shim library");
-        return 0;
+    if (g_shim_initialized == FALSE) {
+        if (mm_camera_load_shim_lib() < 0) {
+            LOGE("Failed to module shim library");
+            return 0;
+        } else {
+            g_shim_initialized = TRUE;
+        }
+    } else {
+        LOGH("module shim layer already intialized");
     }
 #endif /* DAEMON_PRESENT */
 
@@ -1862,7 +1875,15 @@ uint8_t get_num_of_cameras()
     cfg.cfgtype = CFG_SINIT_PROBE_WAIT_DONE;
     cfg.cfg.setting = NULL;
     if (ioctl(sd_fd, VIDIOC_MSM_SENSOR_INIT_CFG, &cfg) < 0) {
-        LOGE("failed");
+        LOGI("failed...Camera Daemon may not up so try again");
+        for(i = 0; i < (MM_CAMERA_EVT_ENTRY_MAX + EXTRA_ENTRY); i++) {
+            if (ioctl(sd_fd, VIDIOC_MSM_SENSOR_INIT_CFG, &cfg) < 0) {
+                LOGI("failed...Camera Daemon may not up so try again");
+                continue;
+            }
+            else
+                break;
+        }
     }
     close(sd_fd);
     dev_fd = -1;
@@ -1909,7 +1930,7 @@ uint8_t get_num_of_cameras()
             if(entity.type == MEDIA_ENT_T_DEVNODE_V4L && entity.group_id == QCAMERA_VNODE_GROUP_ID) {
                 strlcpy(g_cam_ctrl.video_dev_name[num_cameras],
                      entity.name, sizeof(entity.name));
-                LOGI("dev_info[id=%d,name='%s']\n",
+                LOGE("dev_info[id=%d,name='%s']\n",
                     (int)num_cameras, g_cam_ctrl.video_dev_name[num_cameras]);
                 num_cameras++;
                 break;
@@ -1928,7 +1949,7 @@ uint8_t get_num_of_cameras()
     sort_camera_info(g_cam_ctrl.num_cam);
     /* unlock the mutex */
     pthread_mutex_unlock(&g_intf_lock);
-    LOGI("num_cameras=%d\n", (int)g_cam_ctrl.num_cam);
+    LOGE("num_cameras=%d\n", (int)g_cam_ctrl.num_cam);
     return(uint8_t)g_cam_ctrl.num_cam;
 }
 

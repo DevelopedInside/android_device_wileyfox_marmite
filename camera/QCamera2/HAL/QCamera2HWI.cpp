@@ -2746,14 +2746,16 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
         {
             if (isNoDisplayMode()) {
                 mem = new QCameraStreamMemory(mGetMemory,
+                        mCallbackCookie,
                         bCachedMem,
                         (bPoolMem) ? &m_memoryPool : NULL,
                         stream_type);
             } else {
                 cam_dimension_t dim;
                 int minFPS, maxFPS;
-                QCameraGrallocMemory *grallocMemory =
-                    new QCameraGrallocMemory(mGetMemory);
+                QCameraGrallocMemory *grallocMemory = NULL;
+
+                grallocMemory = new QCameraGrallocMemory(mGetMemory, mCallbackCookie);
 
                 mParameters.getStreamDimension(stream_type, dim);
                 /* we are interested only in maxfps here */
@@ -2789,12 +2791,12 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
     case CAM_STREAM_TYPE_POSTVIEW:
         {
             if (isNoDisplayMode() || isPreviewRestartEnabled()) {
-                mem = new QCameraStreamMemory(mGetMemory, bCachedMem);
+                mem = new QCameraStreamMemory(mGetMemory, mCallbackCookie, bCachedMem);
             } else {
                 cam_dimension_t dim;
                 int minFPS, maxFPS;
                 QCameraGrallocMemory *grallocMemory =
-                        new QCameraGrallocMemory(mGetMemory);
+                        new QCameraGrallocMemory(mGetMemory, mCallbackCookie);
 
                 mParameters.getStreamDimension(stream_type, dim);
                 /* we are interested only in maxfps here */
@@ -2813,6 +2815,7 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
     case CAM_STREAM_TYPE_RAW:
     case CAM_STREAM_TYPE_OFFLINE_PROC:
         mem = new QCameraStreamMemory(mGetMemory,
+                mCallbackCookie,
                 bCachedMem,
                 (bPoolMem) ? &m_memoryPool : NULL,
                 stream_type);
@@ -2854,7 +2857,7 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
             QCameraVideoMemory *videoMemory = NULL;
             if (mParameters.getVideoBatchSize()) {
                 videoMemory = new QCameraVideoMemory(
-                        mGetMemory, FALSE, QCAMERA_MEM_TYPE_BATCH);
+                        mGetMemory, mCallbackCookie, FALSE, QCAMERA_MEM_TYPE_BATCH);
                 if (videoMemory == NULL) {
                     LOGE("Out of memory for video batching obj");
                     return NULL;
@@ -2873,7 +2876,7 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
                 }
             } else {
                 videoMemory =
-                        new QCameraVideoMemory(mGetMemory, bCachedMem);
+                        new QCameraVideoMemory(mGetMemory, mCallbackCookie, bCachedMem);
                 if (videoMemory == NULL) {
                     LOGE("Out of memory for video obj");
                     return NULL;
@@ -2892,6 +2895,7 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamBuf(
         break;
     case CAM_STREAM_TYPE_CALLBACK:
         mem = new QCameraStreamMemory(mGetMemory,
+                mCallbackCookie,
                 bCachedMem,
                 (bPoolMem) ? &m_memoryPool : NULL,
                 stream_type);
@@ -3216,7 +3220,7 @@ QCameraMemory *QCamera2HardwareInterface::allocateStreamUserBuf(
     switch (streamInfo->stream_type) {
     case CAM_STREAM_TYPE_VIDEO: {
         QCameraVideoMemory *video_mem = new QCameraVideoMemory(
-                mGetMemory, FALSE, QCAMERA_MEM_TYPE_BATCH);
+                mGetMemory, mCallbackCookie, FALSE, QCAMERA_MEM_TYPE_BATCH);
         if (video_mem == NULL) {
             LOGE("Out of memory for video obj");
             return NULL;
@@ -3788,11 +3792,6 @@ int QCamera2HardwareInterface::startRecording()
         rc = pChannel->start();
     }
 
-    if (rc == NO_ERROR) {
-        // Set power Hint for video encoding
-        m_perfLock.powerHint(POWER_HINT_VIDEO_ENCODE, true);
-    }
-
     LOGI("X rc = %d", rc);
     return rc;
 }
@@ -3819,8 +3818,6 @@ int QCamera2HardwareInterface::stopRecording()
     int rc = stopChannel(QCAMERA_CH_TYPE_VIDEO);
 
     m_cbNotifier.flushVideoNotifications();
-    // Disable power hint for video encoding
-    m_perfLock.powerHint(POWER_HINT_VIDEO_ENCODE, false);
     LOGI("X rc = %d", rc);
     return rc;
 }
@@ -6730,6 +6727,8 @@ int32_t QCamera2HardwareInterface::processPrepSnapshotDoneEvent(
 int32_t QCamera2HardwareInterface::processASDUpdate(
         __unused cam_asd_decision_t asd_decision)
 {
+
+#ifndef VANILLA_HAL
     if ( msgTypeEnabled(CAMERA_MSG_META_DATA) ) {
         size_t data_len = sizeof(cam_auto_scene_t);
         size_t buffer_len = 1 *sizeof(int)       //meta type
@@ -6748,7 +6747,6 @@ int32_t QCamera2HardwareInterface::processASDUpdate(
             return UNKNOWN_ERROR;
         }
 
-#ifndef VANILLA_HAL
         pASDData[0] = CAMERA_META_DATA_ASD;
         pASDData[1] = (int)data_len;
         pASDData[2] = asd_decision.detected_scene;
@@ -6766,8 +6764,8 @@ int32_t QCamera2HardwareInterface::processASDUpdate(
             LOGE("fail sending notification");
             asdBuffer->release(asdBuffer);
         }
-#endif
     }
+#endif
     return NO_ERROR;
 }
 
