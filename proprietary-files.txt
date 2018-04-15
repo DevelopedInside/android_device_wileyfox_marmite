@@ -175,7 +175,7 @@ vendor/lib64/libwqe.so|1ee0763c75da97daf3ef50a34be34cdb6465683f
 vendor/lib64/libxml.so|28642c2ee9abf46130f5b44b3665b63b008d150d
 
 # Camera
-bin/mm-qcamera-daemon
+bin/mm-qcamera-daemon:vendor/bin/mm-qcamera-daemon
 
 lib64/libfilterpack_facedetect.so
 
