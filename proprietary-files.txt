@@ -761,7 +761,6 @@ vendor/lib/libwms.so
 vendor/lib64/libwms.so
 
 # Network
--priv-app/QtiTetherService/QtiTetherService.apk
 vendor/lib/libconnctrl.so
 vendor/lib/libQtiTether.so
 
