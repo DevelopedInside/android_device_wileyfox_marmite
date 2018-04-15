@@ -80,21 +80,21 @@ vendor/lib64/soundfx/libqcvirt.so|25427388d43806769c1cbd08318bcc056b1be68d
 vendor/lib64/soundfx/libshoebox.so|f78894b08091c8b70f8cacee8242c3325d185e1f
 
 # Audio ACDB
-etc/acdbdata/MTP/MTP_Bluetooth_cal.acdb
-etc/acdbdata/MTP/MTP_General_cal.acdb
-etc/acdbdata/MTP/MTP_Global_cal.acdb
-etc/acdbdata/MTP/MTP_Handset_cal.acdb
-etc/acdbdata/MTP/MTP_Hdmi_cal.acdb
-etc/acdbdata/MTP/MTP_Headset_cal.acdb
-etc/acdbdata/MTP/MTP_Speaker_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_Bluetooth_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_General_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_Global_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_Handset_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_Hdmi_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_Headset_cal.acdb
+vendor/etc/acdbdata/MTP/MTP_Speaker_cal.acdb
 
-etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb
-etc/acdbdata/AW87319/AW87319_General_cal.acdb
-etc/acdbdata/AW87319/AW87319_Global_cal.acdb
-etc/acdbdata/AW87319/AW87319_Handset_cal.acdb
-etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb
-etc/acdbdata/AW87319/AW87319_Headset_cal.acdb
-etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_General_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_Global_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_Handset_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb
+vendor/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb
 
 # Bluetooth
 bin/btnvtool
@@ -709,12 +709,12 @@ vendor/lib64/vendor.qti.imsrtpservice@1.0_vendor.so|cda7a4da8436db7a71496fbc6b75
 bin/ipacm-diag
 
 # Keystore - from op3 - OPR6.170623.013
-vendor/lib64/hw/keystore.msm8996.so|ade812bb2991c103f6af397e9662460ed0e48d5f
-vendor/lib/hw/keystore.msm8996.so|bd92d1ccbc294e6bcb0fdb4018749646d1ba0193
+vendor/lib64/hw/keystore.msm8937.so|ade812bb2991c103f6af397e9662460ed0e48d5f
+vendor/lib/hw/keystore.msm8937.so|bd92d1ccbc294e6bcb0fdb4018749646d1ba0193
 
 # Listen - from op3 - OPR6.170623.013
-vendor/lib64/hw/sound_trigger.primary.msm8996.so|d81639f09364ff39a1132f7ee8497a13aa1bd988
-vendor/lib/hw/sound_trigger.primary.msm8996.so|82906637605944c0dea3de007bd3ad063b610cd0
+vendor/lib64/hw/sound_trigger.primary.msm8937.so|d81639f09364ff39a1132f7ee8497a13aa1bd988
+vendor/lib/hw/sound_trigger.primary.msm8937.so|82906637605944c0dea3de007bd3ad063b610cd0
 vendor/lib/libadpcmdec.so|cce776b6e1edac56705b155444c3f28362055442
 vendor/lib/libsmwrapper.so|cd54c73eaafbe3fe9eacafc845a04d25e44fe553
 
