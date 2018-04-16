@@ -524,7 +524,7 @@ on property:wc_transport.start_fmhci=true
 on property:wc_transport.start_fmhci=false
     stop fmhal_service
 
-service start_hci_filter /system/bin/wcnss_filter
+service start_hci_filter /system/vendor/bin/wcnss_filter
     class late_start
     user bluetooth
     group bluetooth diag system wakelock
@@ -774,7 +774,7 @@ service wifi_ftmd /system/bin/wifi_ftmd
     disabled
     oneshot
 
-service cnss_diag /system/bin/cnss_diag -q -f
+service cnss_diag /system/vendor/bin/cnss_diag -q -f
     class main
     user system
     group system wifi inet net_admin sdcard_rw media_rw diag

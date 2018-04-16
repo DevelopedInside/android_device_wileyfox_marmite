@@ -303,7 +303,7 @@ on property:init.svc.per_mgr=running
 on property:sys.shutdown.requested=*
     stop per_proxy
 
-service hvdcp_opti /system/bin/hvdcp_opti
+service hvdcp_opti /system/vendor/bin/hvdcp_opti
     class main
     user root
     group root
