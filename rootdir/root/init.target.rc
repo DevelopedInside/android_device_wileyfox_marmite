@@ -76,7 +76,7 @@ on post-fs-data
 
     # Glove mode
     chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
-    chmod 0660 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+    chmod 0000 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
 
 #start camera server as daemon
 service qcamerasvr /system/vendor/bin/mm-qcamera-daemon
