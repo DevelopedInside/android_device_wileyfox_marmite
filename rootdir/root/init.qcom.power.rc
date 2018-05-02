@@ -199,8 +199,8 @@ on property:dev.bootcomplete=1
     # update cpusets now that boot is complete and we want
     # better load balancing
     write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/foreground/boost/cpus 0-3
     write /dev/cpuset/foreground/cpus 0-6
+    write /dev/cpuset/foreground/boost/cpus 0-3
     write /dev/cpuset/background/cpus 4-6
     write /dev/cpuset/system-background/cpus 4-6
     write /dev/cpuset/camera-daemon/cpus 4-7
