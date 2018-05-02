@@ -167,10 +167,6 @@ on enable-low-power
     write /sys/block/dm-0/queue/read_ahead_kb 128
     write /sys/block/dm-1/queue/read_ahead_kb 128
 
-    # Set perfd properties
-    rm /data/system/perfd/default_values
-    start perfd
-
 on charger
     # Offline all cores other than CPU0
     write /sys/devices/system/cpu/cpu1/online 0
@@ -204,3 +200,7 @@ on property:dev.bootcomplete=1
     write /dev/cpuset/background/cpus 4-6
     write /dev/cpuset/system-background/cpus 4-6
     write /dev/cpuset/camera-daemon/cpus 4-7
+
+    # Set perfd properties
+    rm /data/system/perfd/default_values
+    start perfd
