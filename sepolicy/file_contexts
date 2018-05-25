@@ -12,3 +12,8 @@
 
 # sysinfo devices
 /dev/block/bootdevice/by-name/sysinfo u:object_r:sysinfo_block_device:s0
+
+# Lights
+/sys/devices/soc/gpio-leds\.[a-z0-9]+/leds(/.*)?                       u:object_r:sysfs_leds:s0
+/sys/devices/soc/qcom,camera-led-flash\.[a-z0-9]+/leds(/.*)?           u:object_r:sysfs_leds:s0
+/sys/devices/soc/[a-z0-9]+\.i2c/i2c-[0-9]/[0-9]-[a-z0-9]+/leds(/.*)?   u:object_r:sysfs_leds:s0
