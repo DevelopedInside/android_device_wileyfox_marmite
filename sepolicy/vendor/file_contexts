@@ -1,3 +1,6 @@
+# Camera
+/data/vendor/qcam(/.*)?                                                                             u:object_r:vendor_camera_data_file:s0
+
 # cgroup
 /dev/cpuset(/.*)?                                                                                   u:object_r:cgroup:s0
 /dev/stune(/.*)?                                                                                    u:object_r:cgroup:s0
