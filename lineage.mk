@@ -34,5 +34,10 @@ TARGET_VENDOR := wileyfox
 TARGET_VENDOR_PRODUCT_NAME := Swift2
 TARGET_VENDOR_DEVICE_NAME := marmite
 
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRIVATE_BUILD_DESC="marmite-user 8.1.0 OPM5.171019.017 38c792b31d release-keys"
+
+BUILD_FINGERPRINT := Wileyfox/Swift2/marmite:8.1.0/OPM5.171019.017/38c792b31d:user/release-keys
+
 PRODUCT_SYSTEM_PROPERTY_BLACKLIST += \
     ro.product.model
