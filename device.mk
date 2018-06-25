@@ -470,5 +470,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     WfdCommon
 
+# Always preopt extracted APKs to prevent extracting out of the APK
+# for gms modules.
+PRODUCT_ALWAYS_PREOPT_EXTRACTED_APK := true
+
 # Inherit proprietary files
 $(call inherit-product, vendor/wileyfox/marmite/marmite-vendor.mk)
