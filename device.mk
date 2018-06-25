@@ -474,5 +474,8 @@ PRODUCT_BOOT_JARS += \
 # for gms modules.
 PRODUCT_ALWAYS_PREOPT_EXTRACTED_APK := true
 
+# Speed profile services and wifi-service to reduce RAM and storage.
+PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed-profile
+
 # Inherit proprietary files
 $(call inherit-product, vendor/wileyfox/marmite/marmite-vendor.mk)
