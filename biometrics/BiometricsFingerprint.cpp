@@ -20,12 +20,9 @@
 #include <hardware/hardware.h>
 #include <hardware/fingerprint.h>
 #include "BiometricsFingerprint.h"
-#include <cutils/properties.h>
 
 #include <inttypes.h>
 #include <unistd.h>
-
-fingerprint_device_t* getWrapperService(fingerprint_notify_t);
 
 namespace android {
 namespace hardware {
