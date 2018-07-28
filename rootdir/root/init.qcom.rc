@@ -649,7 +649,7 @@ service qti /system/vendor/bin/qti
     disabled
     writepid /dev/cpuset/system-background/tasks
 
-service sensors /system/bin/sensors.qcom
+service sensors /vendor/bin/sensors.qcom
     class core
     user root
     group root
