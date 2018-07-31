@@ -1,2 +1,2 @@
-add_lunch_combo rr_marmite-userdebug
-add_lunch_combo rr_marmite-eng
+add_lunch_combo lineage_marmite-userdebug
+add_lunch_combo lineage_marmite-eng
