@@ -47,6 +47,7 @@ on fs
 
     mkdir /persist/data 0700 system system
     mkdir /persist/bms 0700 root system
+    mkdir /persist/wlan_bt 0770 system system
     restorecon_recursive /persist
 
     wait /dev/block/bootdevice/by-name/dsp
