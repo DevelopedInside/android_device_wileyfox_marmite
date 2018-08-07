@@ -24,3 +24,7 @@ PRODUCT_PACKAGES += \
     init.variant.mv1.rc \
     init.variant.mv2.rc \
     init.variant.mv3.rc
+
+# OTA
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/releasetools/fixup.sh:install/bin/fixup.sh
