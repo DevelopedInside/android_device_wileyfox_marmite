@@ -198,7 +198,7 @@ void vendor_load_properties()
         property_set("ro.sf.lcd_density", "440");
         property_set("persist.bootanimation.scale", "1.5");
         property_set("sys.lights.capabilities", "3");
-        property_set("ro.power_profile.override", "power_profile_2x");
+//        property_set("ro.power_profile.override", "power_profile_2x");
     }
 }
 
