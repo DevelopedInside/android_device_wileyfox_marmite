@@ -54,7 +54,7 @@
          LIGHTS_ADJUSTABLE_BATTERY_LED_BRIGHTNESS = 128
          For example, a device with notification and battery lights that supports
          pulsating and RGB control would set this config to 75. -->
-    <integer name="config_deviceLightCapabilities">235</integer>
+    <integer name="config_deviceLightCapabilities">75</integer>
 
     <!-- LiveDisplay values -->
     <integer name="config_dayColorTemperature">6500</integer>

@@ -1,4 +1,3 @@
 # Lights
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-impl \
-    lights.msm8937
+    android.hardware.light@2.0-service.aw2013
