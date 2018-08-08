@@ -225,7 +225,7 @@
             <instance>default</instance>
         </interface>
     </hal>
-     <hal format="hidl">
+    <hal format="hidl">
         <name>android.hardware.tetheroffload.config</name>
         <transport>hwbinder</transport>
         <version>1.0</version>
@@ -258,6 +258,15 @@
         <version>1.1</version>
         <interface>
             <name>IWifi</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.wifi.supplicant</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>ISupplicant</name>
             <instance>default</instance>
         </interface>
     </hal>
