@@ -420,6 +420,15 @@ vendor/lib/libchromatix_s5k3p3_zsl_preview_dw9800_x50l.so
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800.so
 vendor/lib/libchromatix_s5k3p3_zsl_video_dw9800_x50l.so
 
+# Camera configs
+vendor/etc/camera/camera_config.xml
+vendor/etc/camera/ov8856_chromatix.xml
+vendor/etc/camera/ov8865_chromatix.xml
+vendor/etc/camera/s5k3l8_chromatix.xml
+vendor/etc/camera/s5k3l8_f3l8yam_chromatix.xml
+vendor/etc/camera/s5k3p3_chromatix.xml
+vendor/etc/camera/s5k3p3_x50l_chromatix.xml
+
 # Camera firmware
 vendor/firmware/cpp_firmware_v1_10_0.fw
 vendor/firmware/cpp_firmware_v1_1_1.fw
@@ -811,6 +820,8 @@ vendor/bin/hw/vendor.qti.hardware.perf@1.0-service
 vendor/bin/msm_irqbalance
 vendor/etc/init/vendor.qti.hardware.iop@1.0-service.rc
 vendor/etc/init/vendor.qti.hardware.perf@1.0-service.rc
+vendor/etc/perf/perf-profile0.conf
+vendor/etc/perf/perf-profile1.conf
 vendor/lib/hw/vendor.qti.hardware.iop@1.0-impl.so
 vendor/lib/libfeedbackhandler.so
 vendor/lib/libperfgluelayer.so
@@ -912,6 +923,8 @@ vendor/bin/netmgrd
 vendor/bin/qti
 vendor/bin/rmt_storage
 vendor/bin/tftp_server
+vendor/etc/data/dsi_config.xml
+vendor/etc/data/netmgr_config.xml
 vendor/lib/libmdmdetect.so
 vendor/lib/libqcmaputils.so
 vendor/lib/vendor.qti.hardware.radio.am@1.0_vendor.so
