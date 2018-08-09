@@ -14,11 +14,6 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
     ueventd.qcom.rc
 
-# etc scripts
-PRODUCT_PACKAGES += \
-    init.qcom.bt.sh \
-    init.qcom.fm.sh
-
 # Wileyfox varinats
 PRODUCT_PACKAGES += \
     init.variant.mv1.rc \
