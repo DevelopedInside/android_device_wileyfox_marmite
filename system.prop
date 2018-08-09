@@ -56,8 +56,6 @@ ro.cutoff_voltage_mv=3400
 
 # Bluetooth
 bluetooth.hfp.client=1
-qcom.bluetooth.soc=smd
-ro.qualcomm.bt.hci_transport=smd
 
 # Camera
 persist.vendor.camera.display.umax=1920x1080
