@@ -116,6 +116,9 @@ ro.emmc_size=16GB
 # NFC
 persist.nfc.smartcard.config=SIM1,eSE1
 
+# OEM Unlocking
+ro.oem_unlock_supported=true
+
 # Perf
 ro.vendor.qti.config.zram=true
 ro.vendor.qti.core_ctl_min_cpu=2
