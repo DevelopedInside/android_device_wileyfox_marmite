@@ -29,6 +29,7 @@
 
 import init.carrier.rc
 import /vendor/etc/init/hw/init.variant.${ro.boot.cmv}.rc
+import /vendor/etc/init/hw/init.qcom.power.rc
 
 on early-init
     mkdir /firmware 0771 system system
@@ -156,8 +157,6 @@ service audiod /system/vendor/bin/audiod
 on boot
     start rmt_storage
     insmod /system/lib/modules/adsprpc.ko
-    # enable sched boost in order to schedule tasks on perf cluster
-    write /proc/sys/kernel/sched_boost 1
 # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
@@ -175,21 +174,6 @@ on boot
     chown system system /sys/class/leds/red/led_time
     chown system system /sys/class/leds/green/led_time
     chown system system /sys/class/leds/blue/led_time
-
-    # update foreground cpuset now that processors are up
-    write /dev/cpuset/foreground/cpus 0-7
-    write /dev/cpuset/foreground/boost/cpus 0-3
-    write /dev/cpuset/background/cpus 4
-    write /dev/cpuset/system-background/cpus 4-7
-
-   # Add a cpuset for the camera daemon
-   # We want all cores for camera
-   mkdir /dev/cpuset/camera-daemon
-   write /dev/cpuset/camera-daemon/cpus 0-3
-   write /dev/cpuset/camera-daemon/mems 0
-   chown cameraserver cameraserver /dev/cpuset/camera-daemon
-   chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
-   chmod 0660 /dev/cpuset/camera-daemon/tasks
 
 service wcnss-service /system/vendor/bin/wcnss_service
     class main
@@ -351,12 +335,6 @@ on property:sys.io.scheduler=bfq
     write /sys/block/sda/queue/iosched/slice_idle 0
     write /sys/block/sde/queue/iosched/slice_idle 0
     write /sys/block/dm-0/queue/iosched/slice_idle 0
-
-on early-boot
-    write /sys/block/mmcblk0/queue/scheduler "noop"
-
-on property:dev.bootcomplete=1
-    setprop sys.io.scheduler bfq
 
 service bugreport /system/bin/dumpstate \
        -d -p -B -z -o/data/user_de/0/com.android.shell/files/bugreports/bugreport
