@@ -1,5 +1,6 @@
-#!/system/bin/sh
-# Copyright (c) 2015, The Linux Foundation. All rights reserved.
+#! /vendor/bin/sh
+
+# Copyright (c) 2012, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -26,21 +27,54 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-#
-# Function to start sensors for SSC enabled platforms
-#
-start_sensors()
-{
-    if [ -c /dev/msm_dsps -o -c /dev/sensors ]; then
-        chmod -h 775 /persist/sensors
-        chmod -h 664 /persist/sensors/sensors_settings
-        chown -h system.root /persist/sensors/sensors_settings
+target="$1"
+serial="$2"
 
-        mkdir -p /data/misc/sensors
-        chmod -h 775 /data/misc/sensors
+# No path is set up at this point so we have to do it here.
+PATH=/sbin:/system/sbin:/system/bin:/system/xbin
+export PATH
 
-        start sensors
-    fi
-}
+mount_needed=false;
 
-start_sensors
+if [ ! -f /system/etc/boot_fixup ];then
+# This should be the first command
+# remount system as read-write.
+  mount -o rw,remount,barrier=1 /system
+  mount_needed=true;
+fi
+
+# **** WARNING *****
+# This runs in a single-threaded, critical path portion
+# of the Android bootup sequence.  This is to guarantee
+# all necessary system partition fixups are done before
+# the rest of the system starts up.  Run any non-
+# timing critical tasks in a separate process to
+# prevent slowdown at boot.
+
+# Run modem link script
+if [ -f /system/etc/init.qcom.modem_links.sh ]; then
+   /system/vendor/bin/init.qcom.modem_links.sh
+fi
+
+# Run mdm link script
+if [ -f /system/etc/init.qcom.mdm_links.sh ]; then
+   /system/vendor/bin/init.qcom.mdm_links.sh
+fi
+
+# Run wifi script
+if [ -f /vendor/bin/init.qcom.wifi.sh ]; then
+  /vendor/bin/init.qcom.wifi.sh "$target" "$serial"
+fi
+
+# Run the sensor script
+if [ -f /system/etc/init.qcom.sensor.sh ]; then
+   /system/vendor/bin/init.qcom.sensor.sh
+fi
+
+touch /system/etc/boot_fixup
+
+if $mount_needed ;then
+# This should be the last command
+# remount system as read-only.
+  mount -o ro,remount,barrier=1 /system
+fi

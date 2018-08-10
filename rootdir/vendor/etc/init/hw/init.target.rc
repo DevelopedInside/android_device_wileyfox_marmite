@@ -27,7 +27,7 @@
 #
 #
 
-import /init.variant.${ro.boot.cmv}.rc
+import init.carrier.rc
 
 on early-init
     mkdir /firmware 0771 system system
@@ -38,8 +38,9 @@ on early-init
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+    write /proc/sys/vm/swappiness 100
 
-    mount_all fstab.qcom
+    mount_all /vendor/etc/fstab.qcom
 
     # Keeping following partitions outside fstab file. As user may not have
     # these partition flashed on the device. Failure to mount any partition in fstab file
@@ -47,14 +48,8 @@ on fs
 
     mkdir /persist/data 0700 system system
     mkdir /persist/bms 0700 root system
-    mkdir /persist/wlan_bt 0770 system system
     restorecon_recursive /persist
 
-    wait /dev/block/bootdevice/by-name/dsp
-    mount ext4 /dev/block/bootdevice/by-name/dsp /dsp ro nosuid nodev barrier=1
-
-    wait /dev/block/bootdevice/by-name/modem
-    mount vfat /dev/block/bootdevice/by-name/modem /firmware ro context=u:object_r:firmware_file:s0,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337
     #write /sys/kernel/boot_adsp/boot 1
 
     wait /dev/block/bootdevice/by-name/oem
@@ -68,16 +63,12 @@ on post-fs-data
     mkdir /tombstones/dsps 0771 system system
     mkdir /persist/data/sfs 0700 system system
     mkdir /persist/data/tz 0700 system system
-    mkdir /data/misc/hbtp 0750 system system
+    mkdir /data/vendor/hbtp 0750 system system
     mkdir /data/misc/dts 0770 media audio
 
-    # Fingerprint
-    mkdir /data/system/fingerprint 0770 system system
-    restorecon /data/system/fingerprint
 
-    # Glove mode
-    chown root system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
-    chmod 0000 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+#Create folder for mm-qcamera-daemon
+    mkdir /data/vendor/camera 0770 camera camera
 
 #start camera server as daemon
 service qcamerasvr /system/vendor/bin/mm-qcamera-daemon
@@ -87,24 +78,15 @@ service qcamerasvr /system/vendor/bin/mm-qcamera-daemon
     writepid /dev/cpuset/system-background/tasks
 
 on init
+   verity_load_state
    write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
 
 on early-boot
    # Adjust parameters for dm-verity device
    write /sys/block/dm-0/queue/read_ahead_kb 2048
+   # Update dm-verity state and set partition.*.verified properties
+   verity_update_state
 
-# Enable zram
-on property:ro.config.zram=true
-    # Setup zram options
-    write /sys/block/zram0/comp_algorithm lz4
-    write /proc/sys/vm/page-cluster 0
-
-    swapon_all fstab.qcom
-
-service qfp-daemon /system/bin/qfp-daemon
-   class late_start
-   user system
-   group system drmrpc
 
 # Allow usb charging to be disabled peristently
 on property:persist.usb.chgdisabled=1
@@ -128,16 +110,21 @@ service qrngp /system/bin/qrngp -f
 on property:sys.boot_completed=1
    start qrngp
 
-service qseecomd /system/vendor/bin/qseecomd
+service qseecomd /vendor/bin/qseecomd
    class core
    user root
    group root
-   writepid /dev/cpuset/system-background/tasks
 
 #service aostlmd /system/bin/aostlmd
 #   class late_start
 #   user system
 #   group system net_raw
+
+service perfd /system/vendor/bin/perfd
+   class main
+   user root
+   writepid /dev/cpuset/system-background/tasks
+   disabled
 
 service gamed /system/vendor/bin/gamed
    class main
@@ -152,19 +139,25 @@ service thermal-engine /system/vendor/bin/thermal-engine
    socket thermal-send-client stream 0666 system system
    socket thermal-recv-client stream 0660 system system
    socket thermal-recv-passive-client stream 0666 system system
+   socket thermal-send-rule stream 0660 system system
    group root
-   writepid /dev/cpuset/system-background/tasks
 
 service time_daemon /system/vendor/bin/time_daemon
    class late_start
    user root
    group root
-   writepid /dev/cpuset/system-background/tasks
+
+service audiod /system/vendor/bin/audiod
+   class late_start
+   user system
+   group system
 
 on boot
     start rmt_storage
-
-    # access permission for secure touch
+    insmod /system/lib/modules/adsprpc.ko
+    # enable sched boost in order to schedule tasks on perf cluster
+    write /proc/sys/kernel/sched_boost 1
+# access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
     chmod 0660 /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch_enable
@@ -174,9 +167,28 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch_enable
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch
 
-    # Goodix Fingerprint
-    chown system system /dev/goodix_fp
-    chmod 0644 /dev/goodix_fp
+    # Notification LED
+    chown system system /sys/class/leds/red/blink
+    chown system system /sys/class/leds/green/blink
+    chown system system /sys/class/leds/blue/blink
+    chown system system /sys/class/leds/red/led_time
+    chown system system /sys/class/leds/green/led_time
+    chown system system /sys/class/leds/blue/led_time
+
+    # update foreground cpuset now that processors are up
+    write /dev/cpuset/foreground/cpus 0-7
+    write /dev/cpuset/foreground/boost/cpus 0-3
+    write /dev/cpuset/background/cpus 4
+    write /dev/cpuset/system-background/cpus 4-7
+
+   # Add a cpuset for the camera daemon
+   # We want all cores for camera
+   mkdir /dev/cpuset/camera-daemon
+   write /dev/cpuset/camera-daemon/cpus 0-3
+   write /dev/cpuset/camera-daemon/mems 0
+   chown cameraserver cameraserver /dev/cpuset/camera-daemon
+   chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
+   chmod 0660 /dev/cpuset/camera-daemon/tasks
 
 service wcnss-service /system/vendor/bin/wcnss_service
     class main
@@ -184,7 +196,7 @@ service wcnss-service /system/vendor/bin/wcnss_service
     group system wifi radio
     oneshot
 
-service imsstarter /system/bin/sh /system/etc/init.qti.ims.sh
+service imsstarter /vendor/bin/init.qti.ims.sh
     class main
     oneshot
 
@@ -195,9 +207,8 @@ service imsqmidaemon /system/vendor/bin/imsqmidaemon
     class main
     user system
     socket ims_qmid stream 0660 system radio
-    group radio net_raw log diag
+    group radio log diag
     disabled
-    writepid /dev/cpuset/system-background/tasks
 
 on property:service.qti.ims.enabled=1
     start imsqmidaemon
@@ -206,31 +217,27 @@ service imsdatadaemon /system/vendor/bin/imsdatadaemon
     class main
     user system
     socket ims_datad stream 0660 system radio
-    group system wifi radio inet net_raw log diag net_admin
+    group system wifi radio inet log diag
     disabled
-    writepid /dev/cpuset/system-background/tasks
 
-on property:sys.ims.QMI_DAEMON_STATUS=1
+on property:vendor.ims.QMI_DAEMON_STATUS=1
     start imsdatadaemon
 
 service ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
    class main
    user system
-   socket ims_rtpd stream 0660 system radio
-   group radio net_raw diag diag inet log
+   group radio diag inet log
    disabled
-   writepid /dev/cpuset/system-background/tasks
 
-service imscmservice /system/bin/imscmservice
+service vendor.imsrcsservice /system/vendor/bin/imsrcsd
    class main
    user system
    group radio diag inet log
    disabled
-   writepid /dev/cpuset/system-background/tasks
 
-on property:sys.ims.DATA_DAEMON_STATUS=1
+on property:vendor.ims.DATA_DAEMON_STATUS=1
     start ims_rtp_daemon
-    start imscmservice
+    start vendor.imsrcsservice
 
 service ppd /system/vendor/bin/mm-pp-dpps
     class late_start
@@ -246,8 +253,6 @@ on property:init.svc.surfaceflinger=running
     start ppd
 
 on property:init.svc.surfaceflinger=restarting
-    stop hwcomposer-2-1
-    start hwcomposer-2-1
     stop ppd
 
 on property:init.svc.zygote=stopped
@@ -281,14 +286,12 @@ service per_mgr /system/vendor/bin/pm-service
     class core
     user system
     group system net_raw
-    writepid /dev/cpuset/system-background/tasks
 
 service per_proxy /system/vendor/bin/pm-proxy
     class core
     user system
     group system
     disabled
-    writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.per_mgr=running
     start per_proxy
@@ -299,23 +302,21 @@ on property:sys.shutdown.requested=*
 service hvdcp_opti /system/vendor/bin/hvdcp_opti
     class main
     user root
-    group root
+    group root wakelock
 
 service usb-config /system/bin/sh /init.marmite.usb.sh
     class core
     user root
     oneshot
 
-# fingerprint daemon
-service fingerprintd /system/bin/fingerprintd
-    class late_start
-    user system
-    writepid /dev/cpuset/system-background/tasks
+on property:init.svc.fps_hal=running
+    start gx_fpd
 
 service gx_fpd /vendor/bin/gx_fpd
     class late_start
     user root
     group root system
+    disabled
 
 on property:hw.fm.init=0
     write /sys/module/radio_iris_transport/parameters/fmsmd_set 0
@@ -349,3 +350,16 @@ on property:sys.io.scheduler=bfq
     write /sys/block/sda/queue/iosched/slice_idle 0
     write /sys/block/sde/queue/iosched/slice_idle 0
     write /sys/block/dm-0/queue/iosched/slice_idle 0
+
+on early-boot
+    write /sys/block/mmcblk0/queue/scheduler "noop"
+
+on property:dev.bootcomplete=1
+    setprop sys.io.scheduler bfq
+
+service bugreport /system/bin/dumpstate \
+       -d -p -B -z -o/data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+    keycodes 114 115 116

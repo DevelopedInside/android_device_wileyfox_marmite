@@ -1,3 +1,5 @@
+#! /vendor/bin/sh
+
 # Copyright (c) 2014, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,15 +26,32 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#
 
-#device         mount point      fstype        [device2] [length=]
+dir0=/data
+trigger_file=$dir0/ims_diabled
+ims_disabled=`getprop persist.ims.disabled`
+target=`getprop ro.build.product`
 
-/dev/block/bootdevice/by-name/cache        /cache          ext4    noatime,nosuid,nodev,barrier=1,noauto_da_alloc                  wait,check,formattable
-/dev/block/bootdevice/by-name/userdata     /data           ext4    noatime,nosuid,nodev,barrier=1,data=ordered,noauto_da_alloc     wait,check,formattable,encryptable=footer,length=-16384
-/devices/soc/7864900.sdhci/mmc_host*       auto            auto    defaults                                                        voldmanaged=sdcard1:auto,noemulatedsd,encryptable=userdata
-/dev/block/bootdevice/by-name/persist      /persist        ext4    noatime,nosuid,nodev,barrier=1,noauto_da_alloc                  wait,formattable
-/dev/block/bootdevice/by-name/config       /frp            emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/boot         /boot           emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/recovery     /recovery       emmc    defaults                                                        defaults
-/dev/block/bootdevice/by-name/misc         /misc           emmc    defaults                                                        defaults
-/dev/block/zram0                           none            swap    defaults                                                        zramsize=536870912,zramstreams=4
+#if [ ! -e $trigger_file ]; then
+#   for future use in doing conditional debugging
+#else
+#
+#fi
+echo "$ims_disabled"
+echo "$target"
+
+if [ "$ims_disabled" = "0" ]; then
+    echo "ims will be enabled"
+    setprop service.qti.ims.enabled 1
+    exit
+fi
+
+if [ "$ims_disabled" = "1" ] || [ "$target" = "msm8909_512" ]; then
+    echo "ims is disabled"
+    setprop service.qti.ims.enabled 0
+else
+    echo "ims is enabled"
+    setprop service.qti.ims.enabled 1
+fi

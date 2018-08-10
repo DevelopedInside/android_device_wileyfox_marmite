@@ -1,4 +1,5 @@
-#!/system/bin/sh
+#! /vendor/bin/sh
+
 # Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,11 +31,11 @@
 # start ril-daemon only for targets on which radio is present
 #
 baseband=`getprop ro.baseband`
-sgltecsfb=`getprop persist.radio.sglte_csfb`
+sgltecsfb=`getprop persist.vendor.radio.sglte_csfb`
 datamode=`getprop persist.data.mode`
 
 case "$baseband" in
-    "apq")
+    "apq" | "sda" )
     setprop ro.radio.noril yes
     stop ril-daemon
 esac
@@ -42,6 +43,10 @@ esac
 case "$baseband" in
     "msm" | "csfb" | "svlte2a" | "mdm" | "mdm2" | "sglte" | "sglte2" | "dsda2" | "unknown" | "dsda3")
     start qmuxd
+esac
+
+case "$baseband" in
+    "msm" | "csfb" | "svlte2a" | "mdm" | "mdm2" | "sglte" | "sglte2" | "dsda2" | "unknown" | "dsda3" | "sdm" | "sdx")
     start ipacm-diag
     start ipacm
     case "$baseband" in
@@ -52,7 +57,7 @@ case "$baseband" in
           if [ "x$sgltecsfb" != "xtrue" ]; then
               start qmiproxy
           else
-              setprop persist.radio.voice.modem.index 0
+              setprop persist.vendor.radio.voice.modem.index 0
           fi
         ;;
         "dsda2")
