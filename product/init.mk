@@ -38,3 +38,9 @@ PRODUCT_PACKAGES += \
     init.qcom.rc \
     init.qcom.usb.rc \
     init.target.rc \
+
+# Device varinats
+PRODUCT_PACKAGES += \
+    init.variant.mv1.rc \
+    init.variant.mv2.rc \
+    init.variant.mv3.rc

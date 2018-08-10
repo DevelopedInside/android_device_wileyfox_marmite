@@ -28,6 +28,7 @@
 #
 
 import init.carrier.rc
+import /vendor/etc/init/hw/init.variant.${ro.boot.cmv}.rc
 
 on early-init
     mkdir /firmware 0771 system system
