@@ -34,7 +34,6 @@ PRODUCT_PACKAGES += \
 # /vendor/etc/init/hw
 PRODUCT_PACKAGES += \
     init.msm.usb.configfs.rc \
-    init.qcom.factory.rc \
     init.qcom.rc \
     init.qcom.power.rc \
     init.qcom.usb.rc \
