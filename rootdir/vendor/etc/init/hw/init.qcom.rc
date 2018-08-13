@@ -536,6 +536,7 @@ service cnd /system/vendor/bin/cnd
     class main
     user system
     group system wifi inet radio wakelock net_admin
+    writepid /dev/cpuset/system-background/tasks
 
 service dpmQmiMgr /system/vendor/bin/dpmQmiMgr
     class main
@@ -552,10 +553,12 @@ service rmt_storage /vendor/bin/rmt_storage
     user root
     shutdown critical
     ioprio rt 0
+    writepid /dev/cpuset/system-background/tasks
 
 service tftp_server /vendor/bin/tftp_server
    class core
    user root
+   writepid /dev/cpuset/system-background/tasks
 
 on property:wc_transport.start_hci=true
     start start_hci_filter
@@ -569,6 +572,7 @@ service start_hci_filter /system/vendor/bin/wcnss_filter
     group bluetooth diag system wakelock
     seclabel u:r:bluetooth:s0
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
     class late_start
@@ -624,10 +628,12 @@ service qmuxd /system/vendor/bin/qmuxd
     user root
     group radio audio bluetooth gps nfc diag
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service netmgrd /system/vendor/bin/netmgrd
     class main
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service ipacm-diag /system/vendor/bin/ipacm-diag
     class main
@@ -635,18 +641,21 @@ service ipacm-diag /system/vendor/bin/ipacm-diag
     socket ipacm_log_file dgram 660 radio radio
     group radio diag oem_2901
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service ipacm /system/vendor/bin/ipacm
     class main
     user radio
     group radio inet
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service qti /system/vendor/bin/qti
     class main
     user radio
     group radio oem_2901 diag usb net_admin
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service sensors /vendor/bin/sensors.qcom
     class core
@@ -1072,18 +1081,21 @@ service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /system/vendor/etc/m
     user root
     group root
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.msm_irqbal_lb /vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance_little_big.conf
     class core
     user root
     group root
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.msm_irqbl_sdm630 /vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance_sdm630.conf
     class core
     user root
     group root
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 # service for USERDEBUG
 service vendor.LKCore-dbg /vendor/bin/LKCore
@@ -1105,6 +1117,7 @@ service qseeproxydaemon /system/vendor/bin/qseeproxydaemon
     class late_start
     user system
     group system
+    writepid /dev/cpuset/system-background/tasks
 
 service esepmdaemon /system/vendor/bin/esepmdaemon
     class core
@@ -1143,6 +1156,7 @@ service time_daemon /system/vendor/bin/time_daemon
     class main
     user root
     group root
+    writepid /dev/cpuset/system-background/tasks
 
 service qdmastatsd /system/vendor/bin/qdmastatsd
     class late_start
