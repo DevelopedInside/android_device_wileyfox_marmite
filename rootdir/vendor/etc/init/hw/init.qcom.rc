@@ -213,6 +213,7 @@ on boot
 
 # msm specific files that need to be created on /data
 on post-fs-data
+    mkdir /data/vendor 0771 system system
     mkdir /data/vendor/misc 01771 system system
 
     # Create directory used by display clients
@@ -245,6 +246,7 @@ on post-fs-data
 
     #Create folder for mm-qcamera-daemon
     mkdir /data/misc/camera 0770 camera camera
+    mkdir /data/vendor/camera 0770 camera camera
 
     mkdir /data/media 0770 media_rw media_rw
     chown media_rw media_rw /data/media
@@ -367,6 +369,8 @@ on post-fs-data
     # NFC local data and nfcee xml storage
     mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
+    mkdir /data/vendor/nfc 0770 nfc nfc
+    mkdir /data/vendor/nfc/param 0770 nfc nfc
 
     #Create IOP  deamon related dirs
     mkdir /data/vendor/iop 0770 root system
@@ -539,7 +543,7 @@ service cnd /system/vendor/bin/cnd
 service dpmQmiMgr /system/vendor/bin/dpmQmiMgr
     class main
     user system
-    group system
+    group radio system
 
 service irsc_util /vendor/bin/irsc_util "/vendor/etc/sec_config"
     class core
@@ -556,6 +560,7 @@ service rmt_storage /vendor/bin/rmt_storage
 service tftp_server /vendor/bin/tftp_server
    class core
    user root
+   group root system
    writepid /dev/cpuset/system-background/tasks
 
 on property:wc_transport.start_hci=true
@@ -949,10 +954,7 @@ service atfwd /vendor/bin/ATFWD-daemon
     class late_start
     user system
     group system radio
-    disabled
-
-on property:persist.radio.atfwd.start=true
-    start atfwd
+    writepid /dev/cpuset/system-background/tasks
 
 service hostapd_fst /vendor/bin/hostapd -g /data/vendor/wifi/hostapd/global /data/vendor/wifi/hostapd.conf
     class late_start
@@ -1012,7 +1014,7 @@ service profiler_daemon /system/bin/profiler_daemon
 service charger /charger
     class charger
     group system graphics
-    seclabel u:r:healthd:s0
+    seclabel u:r:charger:s0
 
 service ssr_diag /system/vendor/bin/ssr_diag
     class late_start
