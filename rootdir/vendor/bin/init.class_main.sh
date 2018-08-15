@@ -35,12 +35,6 @@ sgltecsfb=`getprop persist.vendor.radio.sglte_csfb`
 datamode=`getprop persist.data.mode`
 
 case "$baseband" in
-    "apq" | "sda" )
-    setprop ro.radio.noril yes
-    stop ril-daemon
-esac
-
-case "$baseband" in
     "msm" | "csfb" | "svlte2a" | "mdm" | "mdm2" | "sglte" | "sglte2" | "dsda2" | "unknown" | "dsda3")
     start qmuxd
 esac
@@ -87,16 +81,4 @@ case "$baseband" in
             start netmgrd
             ;;
     esac
-esac
-
-#
-# Allow persistent faking of bms
-# User needs to set fake bms charge in persist.bms.fake_batt_capacity
-#
-fake_batt_capacity=`getprop persist.bms.fake_batt_capacity`
-case "$fake_batt_capacity" in
-    "") ;; #Do nothing here
-    * )
-    echo "$fake_batt_capacity" > /sys/class/power_supply/battery/capacity
-    ;;
 esac
