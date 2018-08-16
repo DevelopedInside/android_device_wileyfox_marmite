@@ -1,7 +1,7 @@
 cc_binary {
-    name: "android.hardware.biometrics.fingerprint@2.0-service-marmite",
+    name: "android.hardware.biometrics.fingerprint@2.1-service-marmite",
     defaults: ["hidl_defaults"],
-    init_rc: ["android.hardware.biometrics.fingerprint@2.0-service-marmite.rc"],
+    init_rc: ["android.hardware.biometrics.fingerprint@2.1-service-marmite.rc"],
     vendor: true,
     relative_install_path: "hw",
     srcs: [

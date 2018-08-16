@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "biometrics.fingerprint@2.0-service"
+#define LOG_TAG "android.hardware.biometrics.fingerprint@2.1-service-marmite"
 
 #include <binder/ProcessState.h>
 
@@ -36,16 +36,8 @@ using android::sp;
 bool is_goodix = false;
 
 int main() {
-    char vend[PROPERTY_VALUE_MAX];
-    property_get("ro.hardware.fingerprint", vend, "none");
 
-    if (!strcmp(vend, "none")) {
-    	ALOGE("ro.hardware.fingerprint not set! Killing " LOG_TAG " binder service!");
-        return 1;
-    } else if (!strcmp(vend, "goodix")) {
-        ALOGI("is_goodix = true");
-        is_goodix = true;
-    }
+    is_goodix = true;
 
     ALOGI("Start biometrics");
     android::sp<IBiometricsFingerprint> bio = BiometricsFingerprint::getInstance();
