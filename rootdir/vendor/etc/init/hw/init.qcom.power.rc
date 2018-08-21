@@ -4,8 +4,8 @@ on boot
     mkdir /dev/cpuset/camera-daemon
     write /dev/cpuset/camera-daemon/cpus 0-7
     write /dev/cpuset/camera-daemon/mems 0
-    chown system system /dev/cpuset/camera-daemon
-    chown system system /dev/cpuset/camera-daemon/tasks
+    chown cameraserver cameraserver /dev/cpuset/camera-daemon
+    chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
     chmod 0664 /dev/cpuset/camera-daemon/tasks
 
     # Update foreground and background cpusets while booting
@@ -28,6 +28,16 @@ on enable-low-power
 
     # Disable sched_boost in 8937
     write /proc/sys/kernel/sched_boost 0
+    
+    write /sys/class/devfreq/soc:qcom,mincpubw/governor "cpufreq"
+    write /sys/class/devfreq/soc:qcom,cpubw/governor "bw_hwmon"
+    write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/io_percent 20
+    write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/guard_band_mbps 30
+
+    write /sys/class/devfreq/soc:qcom,gpubw/bw_hwmon/io_percent 40
+    
+    # Disable thermal core_control to update interactive gov and core_ctl settings
+    write /sys/module/msm_thermal/core_control/enabled 0
 
     # HMP Task packing settings
     write /proc/sys/kernel/sched_small_task 20
@@ -58,16 +68,6 @@ on enable-low-power
     write /sys/devices/system/cpu/cpu6/sched_prefer_idle 0
     write /sys/devices/system/cpu/cpu7/sched_prefer_idle 0
 
-    write /sys/class/devfreq/soc:qcom,mincpubw/governor "cpufreq"
-
-    write /sys/class/devfreq/soc:qcom,cpubw/governor "bw_hwmon"
-    write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/io_percent 20
-
-    write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/guard_band_mbps 30
-
-    # Disable thermal core_control to update interactive gov settings
-    write /sys/module/msm_thermal/core_control/enabled 0
-
     # Enable governor for perf cluster
     write /sys/devices/system/cpu/cpu0/online 1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "interactive"
@@ -79,7 +79,6 @@ on enable-low-power
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads "1 960000:85 1094400:90 1344000:80"
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time 40000
     write /sys/devices/system/cpu/cpu0/cpufreq/interactive/sampling_down_factor 40000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 960000
 
     # Enable governor for power cluster
     write /sys/devices/system/cpu/cpu4/online 1
@@ -92,7 +91,14 @@ on enable-low-power
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads "1 768000:90"
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time 40000
     write /sys/devices/system/cpu/cpu4/cpufreq/interactive/sampling_down_factor 40000
-    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 768000
+
+    # Enable sched guided freq control
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load 1
+    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_migration_notif 1
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load 1
+    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_migration_notif 1
+    write /proc/sys/kernel/sched_freq_inc_notify 50000
+    write /proc/sys/kernel/sched_freq_dec_notify 50000
 
     # Disable L2-GDHS low power modes
     write /sys/module/lpm_levels/system/pwr/pwr-l2-gdhs/idle_enabled "N"
@@ -115,14 +121,6 @@ on enable-low-power
     # HMP scheduler (big.Little cluster related) settings
     write /proc/sys/kernel/sched_upmigrate 93
     write /proc/sys/kernel/sched_downmigrate 83
-
-    # Enable sched guided freq control
-    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load 1
-    write /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_migration_notif 1
-    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load 1
-    write /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_migration_notif 1
-    write /proc/sys/kernel/sched_freq_inc_notify 50000
-    write /proc/sys/kernel/sched_freq_dec_notify 50000
 
     # Enable core control
     write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 2
@@ -194,5 +192,5 @@ on property:dev.bootcomplete=1
     write /dev/cpuset/system-background/cpus 4-6
     write /dev/cpuset/camera-daemon/cpus 4-7
 
-    # Set perfd properties
+    # Tell perfd that we're ready to go
     setprop sys.post_boot.parsed 1
