@@ -1,2 +1,2 @@
-require version-bootloader=marmite-N-ge8bbd8f
-require version-baseband=1.2.C2-89031
+require version-bootloader=marmite-O-ga01b617c6
+
