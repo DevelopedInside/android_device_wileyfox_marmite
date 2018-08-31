@@ -34,4 +34,9 @@
          policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
     -->
     <integer name="config_longPressOnAppSwitchBehavior">2</integer>
+    
+    <!-- Fix for Lineage LiveDisplay -->
+    <!-- Boolean indicating whether the HWC setColorTransform function can be performed efficiently
+         in hardware. -->
+    <bool name="config_setColorTransformAccelerated">true</bool>
 </resources>
