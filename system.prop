@@ -181,3 +181,6 @@ ro.vendor.qti.sys.fw.trim_enable_memory=2147483648
 
 # Wi-Fi
 wifi.interface=wlan0
+
+# MTP fix
+ro.usb.vid=05C6

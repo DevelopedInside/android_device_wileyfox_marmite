@@ -125,10 +125,10 @@ on enable-low-power
     write /proc/sys/kernel/sched_freq_dec_notify 50000
 
     # Enable core control
-    write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 2
+    write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 0
     write /sys/devices/system/cpu/cpu0/core_ctl/max_cpus 4
-    write /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres 68
-    write /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres 40
+    write /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres 75
+    write /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres 50
     write /sys/devices/system/cpu/cpu0/core_ctl/offline_delay_ms 100
     write /sys/devices/system/cpu/cpu0/core_ctl/is_big_cluster 1
 
@@ -140,6 +140,9 @@ on enable-low-power
 
     # Enable timer migration to little cluster
     write /proc/sys/kernel/power_aware_timer_migration 1
+    
+    # Enable schedule work queues
+    write /sys/module/workqueue/parameters/power_efficient Y
 
     # Per-process reclaim
     write /sys/module/process_reclaim/parameters/enable_process_reclaim 1
