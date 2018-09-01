@@ -777,7 +777,7 @@ service wifi_ftmd /system/bin/wifi_ftmd
     disabled
     oneshot
 
-service cnss_diag /system/vendor/bin/cnss_diag -q -f
+service cnss_diag /system/vendor/bin/cnss_diag -q
     class main
     user system
     group system wifi inet net_admin sdcard_rw media_rw diag
