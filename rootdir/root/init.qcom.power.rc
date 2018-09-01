@@ -140,6 +140,9 @@ on enable-low-power
 
     # Enable timer migration to little cluster
     write /proc/sys/kernel/power_aware_timer_migration 1
+    
+    # Enable schedule work queues
+    write /sys/module/workqueue/parameters/power_efficient Y
 
     # Per-process reclaim
     write /sys/module/process_reclaim/parameters/enable_process_reclaim 1
