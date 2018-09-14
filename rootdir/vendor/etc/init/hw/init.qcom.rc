@@ -211,6 +211,9 @@ on boot
     # load WIGIG platform driver
     insmod /vendor/lib/modules/msm_11ad_proxy.ko
 
+    # Wifi firmware reload path
+    chown wifi wifi /sys/module/wlan/parameters/fwpath
+
 # msm specific files that need to be created on /data
 on post-fs-data
     mkdir /data/vendor 0771 system system
