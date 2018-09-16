@@ -1,2 +1,0 @@
-allow bluetooth_loader persist_bluetooth_file:dir search;
-allow bluetooth_loader persist_bluetooth_file:file { read open };
