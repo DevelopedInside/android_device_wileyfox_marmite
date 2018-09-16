@@ -1,3 +1,6 @@
+# Bluetooth
+/(vendor|system/vendor)/bin/hci_qcomm_init u:object_r:bluetooth_loader_exec:s0
+
 # Goodix Fingerprint
 /dev/gf66xx-spi                                                       u:object_r:gx_fpd_device:s0
 /dev/ttyACM[0-9]*                                                     u:object_r:gx_fpd_device:s0
