@@ -5,3 +5,5 @@ allow kernel platform_app:process setsched;
 allow kernel priv_app:process setsched;
 allow kernel system_app:process setsched;
 allow kernel debugfs_wlan:dir search;
+
+allow kernel sysfs_battery_supply:dir search;
