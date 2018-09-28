@@ -206,9 +206,9 @@ vendor/lib/libmmcamera_imglib.so
 vendor/lib/libmmcamera_onsemi_cat24c16_eeprom.so
 vendor/lib/libmmcamera_onsemi_cat24c32_eeprom.so
 vendor/lib/libmmcamera_ov7251.so
-vendor/lib/libmmcamera_ov8856.so
+vendor/lib/libmmcamera_ov8856.so|a93bfa6546170ab523f11d1540d13df9865d1c52
 vendor/lib/libmmcamera_ov8856_eeprom.so
-vendor/lib/libmmcamera_ov8865.so
+vendor/lib/libmmcamera_ov8865.so|47a47f50d2df4eb1af6ccabbf0e41916d9f8a402
 vendor/lib/libmmcamera_qtech_f3l8yam_eeprom.so
 vendor/lib/libmmcamera_s5k3l8.so
 vendor/lib/libmmcamera_s5k3p3.so
