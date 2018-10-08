@@ -34,7 +34,6 @@ import /vendor/etc/init/hw/init.qcom.power.rc
 on early-init
     mkdir /firmware 0771 system system
     mkdir /system 0777 root root
-    symlink /data/tombstones /tombstones
     mkdir /dsp 0771 media media
 
 on fs
