@@ -35,7 +35,6 @@ on early-init
     mkdir /firmware 0771 system system
     mkdir /system 0777 root root
     mkdir /bt_firmware 0771 system system
-    symlink /data/tombstones /tombstones
     mkdir /dsp 0771 media media
 
 on fs
@@ -60,11 +59,10 @@ on post-fs
     write /dev/ipa 1
 
 on post-fs-data
-    mkdir /data/tombstones 0771 system system
-    mkdir /tombstones/modem 0771 system system
-    mkdir /tombstones/lpass 0771 system system
-    mkdir /tombstones/wcnss 0771 system system
-    mkdir /tombstones/dsps 0771 system system
+    mkdir /data/tombstones/modem 0771 system system
+    mkdir /data/tombstones/lpass 0771 system system
+    mkdir /data/tombstones/wcnss 0771 system system
+    mkdir /data/tombstones/dsps 0771 system system
     mkdir /persist/data/sfs 0700 system system
     mkdir /persist/data/tz 0700 system system
     mkdir /data/vendor/hbtp 0750 system system
