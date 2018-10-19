@@ -1,0 +1,22 @@
+on init
+    wait /dev/ion
+    wait /dev/qseecom
+
+    chown system system /dev/ion
+    chown system drmrpc /dev/qseecom
+
+on fs
+    wait    /dev/block/platform/soc/${ro.boot.bootdevice}
+    symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+
+    setprop ro.board.platform msm8937
+
+service sbinqseecomd /sbin/qseecomd
+    oneshot
+    disabled
+    user root
+    group root
+    seclabel u:r:recovery:s0
+
+on property:ro.crypto.state=encrypted
+start sbinqseecomd
