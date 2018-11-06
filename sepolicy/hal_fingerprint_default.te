@@ -3,6 +3,7 @@ allow hal_fingerprint_default keystore_service:service_manager find;
 allow hal_fingerprint_default gx_fpd_service:service_manager { add find };
 allow hal_fingerprint_default tee_device:chr_file rw_file_perms;
 allow hal_fingerprint_default servicemanager:binder transfer;
+allow hal_fingerprint_default keystore:keystore_key add_auth;
 
 binder_call(hal_fingerprint_default, gx_fpd)
 
