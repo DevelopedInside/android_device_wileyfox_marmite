@@ -18,3 +18,7 @@ BOARD_VENDORIMAGE_JOURNAL_SIZE        := 0
 BOARD_VENDORIMAGE_SQUASHFS_COMPRESSOR := lz4
 
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 26301931008
+BOARD_ROOT_EXTRA_SYMLINKS := \
+    /vendor/dsp:/dsp \
+    /vendor/firmware_mnt:/firmware \
+    /mnt/vendor/persist:/persist
