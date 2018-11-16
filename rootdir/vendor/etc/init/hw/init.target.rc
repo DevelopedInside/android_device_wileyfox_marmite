@@ -269,11 +269,16 @@ on charger
     wait /dev/block/bootdevice/by-name/system
     mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
     load_system_props
-    setprop sys.usb.configfs 1
     start qcom-post-boot
     setprop persist.sys.usb.config mass_storage
     start vendor.hvdcp_opti
     start vendor.vm_bms
+
+on charger && property:ro.boot.usbconfigfs=true
+    setprop sys.usb.configfs 1
+
+on charger && property:ro.boot.usbconfigfs=false
+    setprop sys.usb.configfs 0
 
 service hbtp /system/vendor/bin/hbtp_daemon
     class main
