@@ -115,15 +115,6 @@ typedef enum {
     QCAMERA_DATA_SNAPSHOT_CALLBACK
 } qcamera_callback_type_m;
 
-/* meta data type and value in CameraMetaDataCallback */
-typedef enum {
-    CAMERA_META_DATA_ASD = 0x001, //ASD data
-    CAMERA_META_DATA_FD = 0x002, //FD/FP data
-    CAMERA_META_DATA_HDR = 0x003, //Auto HDR data
-    /*Add new data type after this, since 4 is being used in APP*/
-    CAMERA_META_DATA_DUAL = 0x004 //Dual camera data
-} qcamera_metadatacallback_type_m;;
-
 typedef void (*camera_release_callback)(void *user_data,
                                         void *cookie,
                                         int32_t cb_status);
@@ -405,7 +396,6 @@ private:
     int32_t processASDUpdate(cam_asd_decision_t asd_decision);
     int32_t processJpegNotify(qcamera_jpeg_evt_payload_t *jpeg_job);
     int32_t processHDRData(cam_asd_hdr_scene_data_t hdr_scene);
-    int32_t processDualCameraUpdate(cam_reprocess_info_t repro_info);
     int32_t processRetroAECUnlock();
     int32_t processZSLCaptureDone();
     int32_t processSceneData(cam_scene_mode_type scene);
@@ -579,7 +569,6 @@ private:
     void setDisplayFrameSkip(uint32_t start = 0, uint32_t end = 0);
     /*Verifies if frameId is valid to skip*/
     bool isDisplayFrameToSkip(uint32_t frameId);
-    bool needSyncCB(cam_stream_type_t stream_type);
 
 private:
     camera_device_t   mCameraDevice;
@@ -650,8 +639,6 @@ private:
     bool mIs3ALocked;
     bool mPrepSnapRun;
     int32_t mZoomLevel;
-    int32_t mStride;
-    int32_t mScanline;
     // Flag to indicate whether preview restart needed (for dual camera mode)
     bool mPreviewRestartNeeded;
 
@@ -777,7 +764,7 @@ private:
 #endif
     QCameraMemory *mMetadataMem;
 
-    uint32_t sNextJobId;
+    static uint32_t sNextJobId;
 
     //Gralloc memory details
     pthread_mutex_t mGrallocLock;
