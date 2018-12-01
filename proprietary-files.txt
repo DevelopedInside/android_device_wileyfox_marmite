@@ -1014,6 +1014,4 @@ vendor/etc/init/android.hardware.drm@1.0-service.widevine.rc
 vendor/lib/libwvhidl.so
 
 # Wi-Fi
-vendor/bin/cnss-daemon
-vendor/bin/cnss_diag
-vendor/lib64/vendor.qti.hardware.wifi.supplicant@1.0_vendor.so
+vendor/bin/wcnss_service:vendor/bin/wcnss_service
