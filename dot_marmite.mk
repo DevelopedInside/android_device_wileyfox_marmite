@@ -18,14 +18,14 @@
 $(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
 
 # Inherit some common LineageOS stuff
-$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+$(call inherit-product, vendor/dot/config/common.mk)
 
 # Vendor security patch level
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.lineage.build.vendor_security_patch=2018-06-01
 
 # Set those variables here to overwrite the inherited values.
-PRODUCT_NAME := lineage_marmite
+PRODUCT_NAME := dot_marmite
 BOARD_VENDOR := wileyfox
 PRODUCT_DEVICE := marmite
 
