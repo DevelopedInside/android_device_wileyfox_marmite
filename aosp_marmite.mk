@@ -20,7 +20,7 @@ $(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
 #Bootanimation res
 TARGET_BOOT_ANIMATION_RES := 720
 
-# Inherit some common  AEX stuff
+# Inherit some common  stuffy stuff
 $(call inherit-product, vendor/aosp/config/common.mk)
 
 # Set those variables here to overwrite the inherited values.
