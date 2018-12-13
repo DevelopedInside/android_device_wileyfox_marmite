@@ -293,8 +293,8 @@
                   autodetected from the Configuration. -->
     <bool name="config_showNavigationBar">true</bool>
 
-    <!-- Disable Button backlight settings -->
-    <integer name="config_buttonBrightnessSettingDefault">0</integer>
+    <!-- Disable Button backlight settings
+    <integer name="config_buttonBrightnessSettingDefault">0</integer>  EDITED FOR AOSP -->
 
     <!-- Flag indicating whether the we should enable the automatic brightness in Settings.
          Software implementation will be used if config_hardware_auto_brightness_available is not set -->
@@ -313,8 +313,8 @@
     <integer name="config_screenBrightnessSettingDefault">102</integer>
 
     <!-- When true use the linux /dev/input/event subsystem to detect the switch changes
-     on the headphone/microphone jack. When false use the older uevent framework -->
-    <bool name="config_useDevInputEventForAudioJack">true</bool>
+     on the headphone/microphone jack. When false use the older uevent framework 
+    <bool name="config_useDevInputEventForAudioJack">true</bool> EDITED FOR AOSP -->
 
     <!-- Default value for led color when battery is low on charge -->
     <integer name="config_notificationsBatteryLowARGB">0xFFFF0000</integer>
@@ -331,8 +331,8 @@
     <!-- Is the battery LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveBatteryLed">true</bool>
 
-    <!-- Flag indicating if the speed up audio on mt call code should be executed -->
-    <bool name="config_speed_up_audio_on_mt_calls">true</bool>
+    <!-- Flag indicating if the speed up audio on mt call code should be executed 
+    <bool name="config_speed_up_audio_on_mt_calls">true</bool> EDITED FOR AOSP -->
 
     <!-- Indicate whether closing the lid causes the device to go to sleep and opening
          it causes the device to wake up.
@@ -346,11 +346,11 @@
          The default is false. -->
     <bool name="config_suspendWhenScreenOffDueToProximity">true</bool>
 
-    <!-- Is the device capable of hot swapping an UICC Card -->
-    <bool name="config_hotswapCapable">true</bool>
+    <!-- Is the device capable of hot swapping an UICC Card 
+    <bool name="config_hotswapCapable">true</bool> EDITED FOR AOSP -->
 
-    <!-- Flag indicating if the speed up audio on mt call code should be executed -->
-    <bool name="config_speed_up_audio_on_mt_calls">true</bool>
+    <!-- Flag indicating if the speed up audio on mt call code should be executed 
+    <bool name="config_speed_up_audio_on_mt_calls">true</bool> EDITED FOR AOSP -->
 
     <!-- Set this to true to enable the platform's auto-power-save modes like doze and
          app standby.  These are not enabled by default because they require a standard
@@ -370,8 +370,8 @@
     <!-- Default LED off time for notification LED in milliseconds. -->
     <integer name="config_defaultNotificationLedOff">2000</integer>
 
-    <!-- Boolean indicating whether Hotspot 2.0/Passpoint and ANQP queries is enabled -->
-    <bool translatable="false" name="config_wifi_hotspot2_enabled">true</bool>
+    <!-- Boolean indicating whether Hotspot 2.0/Passpoint and ANQP queries is enabled 
+    <bool translatable="false" name="config_wifi_hotspot2_enabled">true</bool> EDITED FOR AOSP-->
 
     <!-- SD card is hot-pluggable on this device -->
     <bool name="config_batterySdCardAccessibility">true</bool>
