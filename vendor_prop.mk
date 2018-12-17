@@ -114,6 +114,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.gralloc.enable_fb_ubwc=1 \
     vendor.opengles.version=196610
 
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    ro.surface_flinger.force_hwc_copy_for_virtual_displays=true \
+    ro.surface_flinger.max_frame_buffer_acquired_buffers=3
+
 # DRM
 PRODUCT_PROPERTY_OVERRIDES += \
     drm.service.enabled=1
@@ -121,10 +125,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Factory reset partition
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.frp.pst=/dev/block/bootdevice/by-name/config
-
-# Force triple frame buffers
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.surface_flinger.max_frame_buffer_acquired_buffers=3
 
 # IMS
 PRODUCT_PROPERTY_OVERRIDES += \
