@@ -204,6 +204,7 @@ PRODUCT_PACKAGES += \
 # IMS
 PRODUCT_PACKAGES += \
     ims-ext-common
+    ims_ext_common.xml
 
 # IPA Manager
 PRODUCT_PACKAGES += \
