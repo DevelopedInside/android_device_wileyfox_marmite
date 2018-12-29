@@ -572,6 +572,7 @@ framework/com.qti.location.sdk.jar
 framework/izat.xt.srv.jar
 lib64/liblocationservice_jni.so
 lib64/libxt_native.so
+lib64/android.hardware.gnss@1.0-v27.so
 lib64/vendor.qti.gnss@1.0.so
 -priv-app/com.qualcomm.location/com.qualcomm.location.apk
 vendor/bin/hw/vendor.qti.gnss@1.0-service
