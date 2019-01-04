@@ -31,7 +31,6 @@
 #include <fstream>
 #include <stdio.h>
 #include <string.h>
-#include <sys/sysinfo.h>
 
 #include <dirent.h>
 #include <errno.h>
@@ -50,12 +49,6 @@ using android::base::GetProperty;
 using android::base::ReadFileToString;
 using android::base::Trim;
 using android::init::property_set;
-
-char const* heapstartsize;
-char const* heapgrowthlimit;
-char const* heapsize;
-char const* heapminfree;
-char const* heapmaxfree;
 
 static void init_alarm_boot_properties()
 {
@@ -88,32 +81,6 @@ static void init_alarm_boot_properties()
             property_set("ro.alarm_boot", "true");
         else
             property_set("ro.alarm_boot", "false");
-    }
-}
-
-void check_device()
-{
-    struct sysinfo sys;
-
-    sysinfo(&sys);
-
-    if (sys.totalram > 2048ull * 1024 * 1024)
-    {
-        // from - phone-xxhdpi-3072-dalvik-heap.mk
-        heapstartsize = "8m";
-        heapgrowthlimit = "288m";
-        heapsize = "768m";
-        heapminfree = "512k";
-        heapmaxfree = "8m";
-    }
-    else
-    {
-        // from - phone-xxhdpi-2048-dalvik-heap.mk
-        heapstartsize = "16m";
-        heapgrowthlimit = "192m";
-        heapsize = "512m";
-        heapminfree = "2m";
-        heapmaxfree = "8m";
     }
 }
 
@@ -152,15 +119,6 @@ void check_aw87319()
 void vendor_load_properties()
 {
     init_alarm_boot_properties();
-
-    check_device();
-    property_set("dalvik.vm.heapstartsize", heapstartsize);
-    property_set("dalvik.vm.heapgrowthlimit", heapgrowthlimit);
-    property_set("dalvik.vm.heapsize", heapsize);
-    property_set("dalvik.vm.heaptargetutilization", "0.75");
-    property_set("dalvik.vm.heapminfree", heapminfree);
-    property_set("dalvik.vm.heapmaxfree", heapmaxfree);
-
     check_aw87319();
 
     std::string cmv = GetProperty("ro.boot.cmv","");
