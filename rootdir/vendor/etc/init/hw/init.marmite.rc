@@ -37,8 +37,7 @@ on fs
 
 on post-fs-data
     #Create folder for mm-qcamera-daemon
-    mkdir /data/misc/camera 0770 camera camera
-    mkdir /data/vendor/camera 0770 camera camera
+    mkdir /data/vendor/qcam 0770 camera camera
 
     # NFC local data and nfcee xml storage
     mkdir /data/nfc 0770 nfc nfc
