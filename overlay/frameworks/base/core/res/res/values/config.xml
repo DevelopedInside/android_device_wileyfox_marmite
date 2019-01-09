@@ -273,6 +273,9 @@
     <!-- Should the pinner service pin the Camera application? -->
     <bool name="config_pinnerCameraApp">true</bool>
 
+    <!-- Disable rounded corners on windows to improve graphics performance -->
+    <bool name="config_supportsRoundedCornersOnWindows">false</bool>
+
     <!-- Whether WiFi display is supported by this device.
          There are many prerequisites for this feature to work correctly.
          Here are a few of them:
