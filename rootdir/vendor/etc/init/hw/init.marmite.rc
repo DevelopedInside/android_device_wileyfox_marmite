@@ -69,8 +69,8 @@ on boot
     chown wifi wifi /sys/module/wlan/parameters/fwpath
 
 on property:vold.decrypt=trigger_restart_framework
-    stop camera-provider-2-4
-    start camera-provider-2-4
+    stop vendor.camera-provider-2-4
+    start vendor.camera-provider-2-4
 
 # FM
 on property:hw.fm.init=0
