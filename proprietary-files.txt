@@ -80,22 +80,17 @@ vendor/etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb
 vendor/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb
 vendor/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb
 
-# Bluetooth
--lib/com.qualcomm.qti.bluetooth_audio@1.0.so
--lib64/com.qualcomm.qti.bluetooth_audio@1.0.so
-vendor/bin/hci_qcomm_init
+# Bluetooth - from tissot - OPM1.171019.026 V9.6.4.0.ODHMIFE
 vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti
+vendor/bin/hci_qcomm_init
 vendor/bin/wcnss_filter
 vendor/etc/init/android.hardware.bluetooth@1.0-service-qti.rc
-vendor/lib/com.qualcomm.qti.bluetooth_audio@1.0_vendor.so
-vendor/lib/libbtnv.so
-vendor/lib64/com.qualcomm.qti.bluetooth_audio@1.0_vendor.so
 vendor/lib64/hw/android.hardware.bluetooth@1.0-impl-qti.so
-vendor/lib64/libbt-hidlclient.so
 vendor/lib64/libbtnv.so
+vendor/lib64/libbt-hidlclient.so
 
-# Bluetooth (shared dependencies)
-vendor/lib64/vendor.qti.hardware.fm@1.0_vendor.so
+# Bluetooth (shared dependencies) - from tissot - OPM1.171019.026 V9.6.4.0.ODHMIFE
+vendor/lib64/com.qualcomm.qti.ant@1.0_vendor.so
 
 # Bluetooth (aptX) - from marlin - OPM1.171019.011
 lib64/libaptX_encoder.so|0cebad28afcf29f931bdc2d24fce2730dc882ecf
@@ -564,7 +559,7 @@ vendor/lib64/vendor.qti.hardware.fm@1.0_vendor.so
 vendor/lib/hw/gatekeeper.msm8937.so
 vendor/lib64/hw/gatekeeper.msm8937.so
 
-# GPS
+# GPS - from tissot - OPM1.171019.026 V9.6.4.0.ODHMIFE
 etc/permissions/com.qti.location.sdk.xml
 etc/permissions/com.qualcomm.location.xml
 etc/permissions/izat.xt.srv.xml
@@ -572,25 +567,21 @@ framework/com.qti.location.sdk.jar
 framework/izat.xt.srv.jar
 lib64/liblocationservice_jni.so
 lib64/libxt_native.so
-lib64/android.hardware.gnss@1.0-v27.so
-lib64/vendor.qti.gnss@1.0.so
+lib64/vendor.qti.gnss@1.0.so|392c70592a5759063ee9e09ebcb637bff04aa4fd
 -priv-app/com.qualcomm.location/com.qualcomm.location.apk
 vendor/bin/hw/vendor.qti.gnss@1.0-service
 vendor/bin/loc_launcher
 vendor/bin/lowi-server
-vendor/bin/slim_daemon
 vendor/bin/xtra-daemon
 vendor/etc/cacert_location.pem
 vendor/etc/init/vendor.qti.gnss@1.0-service.rc
 vendor/etc/xtra_root_cert.pem
-vendor/lib/hw/vendor.qti.gnss@1.0-impl.so
-vendor/lib/vendor.qti.gnss@1.0_vendor.so
 vendor/lib64/hw/vendor.qti.gnss@1.0-impl.so
 vendor/lib64/libalarmservice_jni.so
 vendor/lib64/libdataitems.so
 vendor/lib64/libdrplugin_client.so
-vendor/lib64/libDRPlugin.so
 vendor/lib64/lib_drplugin_server.so
+vendor/lib64/libDRPlugin.so
 vendor/lib64/libevent_observer.so
 vendor/lib64/libflp.so
 vendor/lib64/libgdtap.so
@@ -601,15 +592,17 @@ vendor/lib64/liblbs_core.so
 -vendor/lib64/libloc_api_v02.so
 vendor/lib64/libloc_ds_api.so
 vendor/lib64/libloc_externalDr.so
-vendor/lib64/liblocationservice_glue.so
 vendor/lib64/liblocationservice.so
+vendor/lib64/liblocationservice_glue.so
 vendor/lib64/liblowi_client.so
 vendor/lib64/liblowi_wifihal.so
 vendor/lib64/libquipc_os_api.so
+vendor/lib64/libslimclient.so
 vendor/lib64/libulp2.so
 vendor/lib64/libxtadapter.so
 vendor/lib64/libxtwifi_ulp_adaptor.so
-vendor/lib64/vendor.qti.gnss@1.0_vendor.so
+vendor/lib64/vendor.qti.gnss@1.0_vendor.so|f7e9ee8e3804887a2f3939128e860767e6f27258
+lib64/android.hardware.gnss@1.0-v27.so
 
 # Graphics
 vendor/lib64/egl/eglSubDriverAndroid.so
@@ -667,21 +660,20 @@ vendor/lib/libRSDriver_adreno.so
 vendor/lib/libhdr_tm.so
 vendor/lib64/libhdr_tm.so
 
-# Graphics (SDM)
-lib64/libsdm-disp-apis.so
-lib/libsdm-disp-apis.so
+# Graphics (SDM) - from B2N_sprout - PPR1.180610.011
+vendor/lib/libqseed3.so
+vendor/lib/libsdm-color.so
+vendor/lib/libsdm-diag.so
+-vendor/lib/libsdm-disp-vndapis.so
+vendor/lib/libsdmextension.so
+vendor/lib/libtinyxml2_1.so
+vendor/lib64/libqseed3.so
 vendor/lib64/libscalar.so
 vendor/lib64/libsdm-color.so
 vendor/lib64/libsdm-diag.so
 -vendor/lib64/libsdm-disp-vndapis.so
 vendor/lib64/libsdmextension.so
 vendor/lib64/libtinyxml2_1.so
-vendor/lib/libscalar.so
-vendor/lib/libsdm-color.so
-vendor/lib/libsdm-diag.so
--vendor/lib/libsdm-disp-vndapis.so
-vendor/lib/libsdmextension.so
-vendor/lib/libtinyxml2_1.so
 
 # Graphics (Vulkan)
 vendor/lib/hw/vulkan.msm8937.so
@@ -932,12 +924,9 @@ vendor/lib64/libqmiservices.so
 vendor/lib64/libsmemlog.so
 
 # Radio
--app/QtiTelephonyService/QtiTelephonyService.apk
 etc/permissions/qcrilhook.xml
 etc/permissions/telephonyservice.xml
--framework/QtiTelephonyServicelibrary.jar
 -framework/qcrilhook.jar
--framework/qti-telephony-common.jar
 -priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk
 vendor/bin/ATFWD-daemon
 vendor/bin/netmgrd
