@@ -122,6 +122,11 @@ TARGET_USES_QTI_CAMERA_DEVICE := true
 TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /vendor/bin/mm-qcamera-daemon=23
 
+# API Override
+TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
+    /vendor/bin/mm-qcamera-daemon=27 \
+    /system/vendor/bin/mm-qcamera-daemon=27 \
+
 # Charger
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
 
