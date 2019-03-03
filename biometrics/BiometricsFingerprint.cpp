@@ -42,7 +42,7 @@ BiometricsFingerprint::BiometricsFingerprint() : mClientCallback(nullptr), mDevi
     sInstance = this; // keep track of the most recent instance
 
     is_goodix = true;
-    mDevice = getWrapperService(BiometricsFingerprint::notify);
+    mDevice = openHal();
 
     if (!mDevice) {
         ALOGE("Can't open HAL module");

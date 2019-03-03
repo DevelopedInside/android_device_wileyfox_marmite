@@ -29,7 +29,6 @@
 #include <android/hardware/biometrics/fingerprint/2.1/types.h>
 
 #include "BiometricsFingerprint.h"
-#include "fingerprintd/FingerprintDaemonProxy.h"
 #include <cutils/properties.h>
 
 using android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint;
@@ -47,19 +46,9 @@ int main() {
     if (!strcmp(vend, "none")) {
     	ALOGE("ro.hardware.fingerprint not set! Killing " LOG_TAG " binder service!");
         return 1;
-    }
-
-    if (!strcmp(vend, "goodix")) {
+    } else if (!strcmp(vend, "goodix")) {
+        ALOGI("is_goodix = true");
         is_goodix = true;
-        ALOGI("Start fingerprintd");
-        android::sp<android::IServiceManager> serviceManager = android::defaultServiceManager();
-        android::sp<android::FingerprintDaemonProxy> proxy =
-                android::FingerprintDaemonProxy::getInstance();
-        android::status_t ret = serviceManager->addService(
-                android::FingerprintDaemonProxy::descriptor, proxy);
-        if (ret != android::OK) {
-            ALOGE("Couldn't register fingerprintd binder service!");
-        }
     }
 
     ALOGI("Start biometrics");
@@ -83,7 +72,8 @@ int main() {
     }
 
     if (is_goodix) {
-        android::IPCThreadState::self()->joinThreadPool();   // run binder service fingerprintd part
+        /* ensure that gx_fpd will be able to send IPC calls to this process */
+        android::IPCThreadState::self()->joinThreadPool();
     } else {
         joinRpcThreadpool();
     }
