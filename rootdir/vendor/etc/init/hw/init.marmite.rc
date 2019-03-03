@@ -42,10 +42,6 @@ on post-fs-data
     mkdir /data/misc/camera 0770 camera camera
     mkdir /data/vendor/camera 0770 camera camera
 
-    # Fingerprint
-    mkdir /data/system/fingerprint 0770 system system
-    restorecon /data/system/fingerprint
-
     # NFC local data and nfcee xml storage
     mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
@@ -68,15 +64,6 @@ service usb-config /system/bin/sh /init.marmite.usb.sh
     class core
     user root
     oneshot
-
-on property:init.svc.fps_hal=running
-    start gx_fpd
-
-service gx_fpd /vendor/bin/gx_fpd
-    class late_start
-    user root
-    group root system
-    disabled
 
 # FM
 on property:vendor.hw.fm.init=0

@@ -35,7 +35,6 @@ namespace V2_1 {
 namespace implementation {
 
 // Supported fingerprint HAL version
-static bool is_goodix = false;
 
 using RequestStatus =
         android::hardware::biometrics::fingerprint::V2_1::RequestStatus;
