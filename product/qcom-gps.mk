@@ -13,7 +13,8 @@ PRODUCT_PACKAGES += \
     android.hardware.gnss@1.0-service-qti \
     libcurl \
     libgnss \
-    libgnsspps
+    libgnsspps \
+    libsensorndkbridge
 
 # Permissions
 PRODUCT_COPY_FILES += \

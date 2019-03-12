@@ -328,9 +328,12 @@ void SystemStatusOsObserver::notify(const list<IDataItemCore*>& dlist)
             for (auto client : clientSet) {
                 unordered_set<DataItemId> dataItemIdsForThisClient(
                         mParent->mClientToDataItems.getValSet(client));
-                for (auto id : dataItemIdsForThisClient) {
-                    if (dataItemIdsToBeSent.find(id) == dataItemIdsToBeSent.end()) {
-                        dataItemIdsForThisClient.erase(id);
+                for (auto itr = dataItemIdsForThisClient.begin();
+                        itr != dataItemIdsForThisClient.end(); ) {
+                    if (dataItemIdsToBeSent.find(*itr) == dataItemIdsToBeSent.end()) {
+                        itr = dataItemIdsForThisClient.erase(itr);
+                    } else {
+                        itr++;
                     }
                 }
 
@@ -445,6 +448,65 @@ void SystemStatusOsObserver::turnOff(DataItemId dit)
     }
 }
 
+#ifdef USE_GLIB
+bool SystemStatusOsObserver::connectBackhaul()
+{
+    bool result = false;
+
+    if (mContext.mFrameworkActionReqObj != NULL) {
+        struct HandleConnectBackhaul : public LocMsg {
+            HandleConnectBackhaul(IFrameworkActionReq* fwkActReq) :
+                    mFwkActionReqObj(fwkActReq) {}
+            virtual ~HandleConnectBackhaul() {}
+            void proc() const {
+                LOC_LOGD("HandleConnectBackhaul");
+                mFwkActionReqObj->connectBackhaul();
+            }
+            IFrameworkActionReq* mFwkActionReqObj;
+        };
+        mContext.mMsgTask->sendMsg(
+                new (nothrow) HandleConnectBackhaul(mContext.mFrameworkActionReqObj));
+        result = true;
+    }
+    else {
+        ++mBackHaulConnectReqCount;
+        LOC_LOGE("Framework action request object is NULL.Caching connect request: %d",
+                        mBackHaulConnectReqCount);
+        result = false;
+    }
+    return result;
+
+}
+
+bool SystemStatusOsObserver::disconnectBackhaul()
+{
+    bool result = false;
+
+    if (mContext.mFrameworkActionReqObj != NULL) {
+        struct HandleDisconnectBackhaul : public LocMsg {
+            HandleDisconnectBackhaul(IFrameworkActionReq* fwkActReq) :
+                    mFwkActionReqObj(fwkActReq) {}
+            virtual ~HandleDisconnectBackhaul() {}
+            void proc() const {
+                LOC_LOGD("HandleDisconnectBackhaul");
+                mFwkActionReqObj->disconnectBackhaul();
+            }
+            IFrameworkActionReq* mFwkActionReqObj;
+        };
+        mContext.mMsgTask->sendMsg(
+                new (nothrow) HandleDisconnectBackhaul(mContext.mFrameworkActionReqObj));
+    }
+    else {
+        if (mBackHaulConnectReqCount > 0) {
+            --mBackHaulConnectReqCount;
+        }
+        LOC_LOGE("Framework action request object is NULL.Caching disconnect request: %d",
+                        mBackHaulConnectReqCount);
+        result = false;
+    }
+    return result;
+}
+#endif
 /******************************************************************************
  Helpers
 ******************************************************************************/

@@ -11,7 +11,7 @@
     <hal format="hidl">
         <name>android.hardware.audio</name>
         <transport>hwbinder</transport>
-        <version>2.0</version>
+        <version>4.0</version>
         <interface>
             <name>IDevicesFactory</name>
             <instance>default</instance>
@@ -20,7 +20,7 @@
     <hal format="hidl">
         <name>android.hardware.audio.effect</name>
         <transport>hwbinder</transport>
-        <version>2.0</version>
+        <version>4.0</version>
         <interface>
             <name>IEffectsFactory</name>
             <instance>default</instance>
@@ -69,13 +69,15 @@
         <interface>
             <name>ICryptoFactory</name>
             <instance>default</instance>
-            <instance>widevine</instance>
         </interface>
         <interface>
             <name>IDrmFactory</name>
             <instance>default</instance>
-            <instance>widevine</instance>
         </interface>
+        <fqname>@1.1::ICryptoFactory/clearkey</fqname>
+        <fqname>@1.1::IDrmFactory/clearkey</fqname>
+        <fqname>@1.1::ICryptoFactory/widevine</fqname>
+        <fqname>@1.1::IDrmFactory/widevine</fqname>
     </hal>
     <hal format="hidl">
         <name>android.hardware.gatekeeper</name>
@@ -93,8 +95,9 @@
         <interface>
             <name>IGnss</name>
             <instance>default</instance>
-            <instance>gnss_vendor</instance>
         </interface>
+        <fqname>@1.0::IGnss/default</fqname>
+        <fqname>@1.0::IGnss/gnss_vendor</fqname>
     </hal>
     <hal format="hidl">
         <name>android.hardware.graphics.allocator</name>
@@ -236,7 +239,7 @@
     <hal format="hidl">
         <name>android.hardware.soundtrigger</name>
         <transport>hwbinder</transport>
-        <version>2.0</version>
+        <version>2.1</version>
         <interface>
             <name>ISoundTriggerHw</name>
             <instance>default</instance>
@@ -326,7 +329,7 @@
     <hal format="hidl">
         <name>com.quicinc.cne.api</name>
         <transport>hwbinder</transport>
-        <version>1.0</version>
+        <version>1.1</version>
         <interface>
             <name>IApiService</name>
             <instance>cnd</instance>
@@ -335,7 +338,7 @@
     <hal format="hidl">
         <name>com.quicinc.cne.server</name>
         <transport>hwbinder</transport>
-        <version>2.0</version>
+        <version>2.2</version>
         <interface>
             <name>IServer</name>
             <instance>cnd</instance>
@@ -380,11 +383,22 @@
     <hal format="hidl">
         <name>vendor.qti.gnss</name>
         <transport>hwbinder</transport>
-        <version>1.0</version>
+        <version>1.2</version>
         <interface>
             <name>ILocHidlGnss</name>
             <instance>gnss_vendor</instance>
         </interface>
+        <fqname>@1.2::ILocHidlGnss/gnss_vendor</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>vendor.qti.gnss</name>
+        <transport>hwbinder</transport>
+        <version>2.0</version>
+        <interface>
+            <name>ILocHidlGnss</name>
+            <instance>gnss_vendor</instance>
+        </interface>
+        <fqname>@2.0::ILocHidlGnss/gnss_vendor</fqname>
     </hal>
     <hal format="hidl">
         <name>vendor.qti.hardware.alarm</name>
