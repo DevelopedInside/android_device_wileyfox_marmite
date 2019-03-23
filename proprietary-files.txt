@@ -793,8 +793,7 @@ vendor/lib/libwms.so
 vendor/lib64/libwms.so
 
 # NFC
-vendor/firmware/libpn547_fw.so
-vendor/firmware/libpn548ad_fw.so
+vendor/firmware/libpn548ad_fw.so:vendor/lib/libpn548ad_fw.so
 
 # Perf
 -lib/vendor.qti.hardware.iop@1.0.so
