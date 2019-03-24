@@ -18,12 +18,12 @@
 #include <inttypes.h>
 #define LOG_TAG "FingerprintDaemon"
 
+#include <android/security/IKeystoreService.h>
 #include <binder/IPCThreadState.h>
 #include <binder/IServiceManager.h>
 #include <binder/PermissionCache.h>
 #include <utils/String16.h>
 #include <utils/Looper.h>
-#include <keystore/IKeystoreService.h>
 #include <keystore/keystore.h> // for error code
 #include <hardware/hardware.h>
 #include <hardware/fingerprint.h>
