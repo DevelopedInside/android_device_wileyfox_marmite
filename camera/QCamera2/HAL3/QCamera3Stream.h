@@ -73,6 +73,7 @@ public:
                          hal3_stream_cb_routine stream_cb,
                          void *userdata);
     virtual int32_t bufDone(uint32_t index);
+    virtual int32_t cancelBuffer(uint32_t index);
     virtual int32_t bufRelease(int32_t index);
     virtual int32_t processDataNotify(mm_camera_super_buf_t *bufs);
     virtual int32_t start();
@@ -96,6 +97,7 @@ public:
     cam_stream_info_t* getStreamInfo() const {return mStreamInfo; };
 
     static void releaseFrameData(void *data, void *user_data);
+    int32_t timeoutFrame(int32_t bufIdx);
 
 private:
     uint32_t mCamHandle;
@@ -110,6 +112,7 @@ private:
     void *mUserData;
 
     QCameraQueue     mDataQ;
+    QCameraQueue     mTimeoutFrameQ;
     QCameraCmdThread mProcTh; // thread for dataCB
 
     QCamera3HeapMemory *mStreamInfoBuf;
@@ -119,6 +122,7 @@ private:
     cam_padding_info_t mPaddingInfo;
     QCamera3Channel *mChannel;
     Mutex mLock;    //Lock controlling access to 'mBufDefs'
+    Mutex mParamLock;    //Lock setparam
 
     uint32_t mBatchSize; // 0: No batch, non-0: Number of imaage bufs in a batch
     uint8_t mNumBatchBufs; //Number of batch buffers which can hold image bufs

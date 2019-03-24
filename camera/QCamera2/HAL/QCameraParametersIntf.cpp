@@ -111,6 +111,12 @@ char* QCameraParametersIntf::QCameraParametersIntf::getParameters()
     return mImpl->getParameters();
 }
 
+bool QCameraParametersIntf::QCameraParametersIntf::getDualCameraMode()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getDualCameraMode();
+}
 void QCameraParametersIntf::getPreviewFpsRange(int *min_fps, int *max_fps) const
 {
     Mutex::Autolock lock(mLock);

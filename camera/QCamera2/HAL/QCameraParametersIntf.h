@@ -76,6 +76,7 @@ public:
     int32_t commitParameters();
 
     char* getParameters();
+    bool getDualCameraMode();
     void getPreviewFpsRange(int *min_fps, int *max_fps) const;
 #ifdef TARGET_TS_MAKEUP
     bool getTsMakeupInfo(int &whiteLevel, int &cleanLevel) const;

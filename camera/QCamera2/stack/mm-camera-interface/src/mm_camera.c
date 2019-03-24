@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -263,6 +263,7 @@ int32_t mm_camera_open(mm_camera_obj_t *my_obj)
     int cam_idx = 0;
     const char *dev_name_value = NULL;
     int l_errno = 0;
+    pthread_condattr_t cond_attr;
 
     LOGD("begin\n");
 
@@ -343,10 +344,14 @@ int32_t mm_camera_open(mm_camera_obj_t *my_obj)
     }
 #endif /* DAEMON_PRESENT */
 
+    pthread_condattr_init(&cond_attr);
+    pthread_condattr_setclock(&cond_attr, CLOCK_MONOTONIC);
+
     pthread_mutex_init(&my_obj->msg_lock, NULL);
     pthread_mutex_init(&my_obj->cb_lock, NULL);
     pthread_mutex_init(&my_obj->evt_lock, NULL);
-    pthread_cond_init(&my_obj->evt_cond, NULL);
+    pthread_cond_init(&my_obj->evt_cond, &cond_attr);
+    pthread_condattr_destroy(&cond_attr);
 
     LOGD("Launch evt Thread in Cam Open");
     snprintf(my_obj->evt_thread.threadName, THREAD_NAME_SIZE, "CAM_Dispatch");
@@ -444,6 +449,7 @@ int32_t mm_camera_close(mm_camera_obj_t *my_obj)
     pthread_mutex_destroy(&my_obj->evt_lock);
     pthread_cond_destroy(&my_obj->evt_cond);
     pthread_mutex_unlock(&my_obj->cam_lock);
+
     return 0;
 }
 
@@ -554,6 +560,38 @@ int32_t mm_camera_qbuf(mm_camera_obj_t *my_obj,
      * in order to avoid deadlock, we are not locking ch_lock for qbuf */
     if (NULL != ch_obj) {
         rc = mm_channel_qbuf(ch_obj, buf);
+    }
+
+    return rc;
+}
+
+/*===========================================================================
+ * FUNCTION   : mm_camera_cancel_buf
+ *
+ * DESCRIPTION: Cancel an already queued buffer
+ *
+ * PARAMETERS :
+ *   @my_obj       : camera object
+ *   @ch_id        : channel handle
+ *
+ *   @buf          : buf ptr to be enqueued
+ *
+ * RETURN     : int32_t type of status
+ *              0  -- success
+ *              -1 -- failure
+ *==========================================================================*/
+int32_t mm_camera_cancel_buf(mm_camera_obj_t *my_obj,
+                       uint32_t ch_id,
+                       uint32_t stream_id,
+                       uint32_t buf_idx)
+{
+    int rc = -1;
+    mm_channel_t * ch_obj = NULL;
+    ch_obj = mm_camera_util_get_channel_by_handler(my_obj, ch_id);
+
+    if (NULL != ch_obj) {
+        pthread_mutex_unlock(&my_obj->cam_lock);
+        rc = mm_channel_cancel_buf(ch_obj,stream_id,buf_idx);
     }
 
     return rc;
@@ -1773,7 +1811,7 @@ void mm_camera_util_wait_for_event(mm_camera_obj_t *my_obj,
 
     pthread_mutex_lock(&my_obj->evt_lock);
     while (!(my_obj->evt_rcvd.server_event_type & evt_mask)) {
-        clock_gettime(CLOCK_REALTIME, &ts);
+        clock_gettime(CLOCK_MONOTONIC, &ts);
         ts.tv_sec += WAIT_TIMEOUT;
         rc = pthread_cond_timedwait(&my_obj->evt_cond, &my_obj->evt_lock, &ts);
         if (rc) {

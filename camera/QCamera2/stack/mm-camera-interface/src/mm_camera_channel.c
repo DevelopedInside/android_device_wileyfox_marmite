@@ -48,6 +48,8 @@ static pthread_mutex_t fs_lock = PTHREAD_MUTEX_INITIALIZER;
 /* internal function declare goes here */
 int32_t mm_channel_qbuf(mm_channel_t *my_obj,
                         mm_camera_buf_def_t *buf);
+int32_t mm_channel_cancel_buf(mm_channel_t *my_obj,
+                        uint32_t stream_id, uint32_t buf_idx);
 int32_t mm_channel_init(mm_channel_t *my_obj,
                         mm_camera_channel_attr_t *attr,
                         mm_camera_buf_notify_t channel_cb,
@@ -1286,7 +1288,9 @@ uint32_t mm_channel_add_stream(mm_channel_t *my_obj)
         LOGE("streams reach max, no more stream allowed to add");
         return s_hdl;
     }
-
+    pthread_condattr_t cond_attr;
+    pthread_condattr_init(&cond_attr);
+    pthread_condattr_setclock(&cond_attr, CLOCK_MONOTONIC);
     /* initialize stream object */
     memset(stream_obj, 0, sizeof(mm_stream_t));
     stream_obj->fd = -1;
@@ -1295,7 +1299,8 @@ uint32_t mm_channel_add_stream(mm_channel_t *my_obj)
     pthread_mutex_init(&stream_obj->buf_lock, NULL);
     pthread_mutex_init(&stream_obj->cb_lock, NULL);
     pthread_mutex_init(&stream_obj->cmd_lock, NULL);
-    pthread_cond_init(&stream_obj->buf_cond, NULL);
+    pthread_cond_init(&stream_obj->buf_cond, &cond_attr);
+    pthread_condattr_destroy(&cond_attr);
     memset(stream_obj->buf_status, 0,
             sizeof(stream_obj->buf_status));
     stream_obj->state = MM_STREAM_STATE_INITED;
@@ -2040,6 +2045,44 @@ int32_t mm_channel_qbuf(mm_channel_t *my_obj,
 
     return rc;
 }
+
+/*===========================================================================
+ * FUNCTION   : mm_channel_cancel_buf
+ *
+ * DESCRIPTION: Get back buffer already sent to kernel
+ *
+ * PARAMETERS :
+ *   @my_obj       : channel object
+ *   @buf          : buf ptr to be enqueued
+ *
+ * RETURN     : int32_t type of status
+ *              0  -- success
+ *              -1 -- failure
+ *==========================================================================*/
+int32_t mm_channel_cancel_buf(mm_channel_t *my_obj,
+                        uint32_t stream_id, uint32_t buf_idx)
+{
+    int32_t rc = -1;
+    mm_stream_t* s_obj = mm_channel_util_get_stream_by_handler(my_obj, stream_id);
+
+    if (NULL != s_obj) {
+        if (s_obj->ch_obj != my_obj) {
+            /* Redirect to linked stream */
+            rc = mm_stream_fsm_fn(s_obj->linked_stream,
+                    MM_STREAM_EVT_CANCEL_BUF,
+                    (void *)&buf_idx,
+                    NULL);
+        } else {
+            rc = mm_stream_fsm_fn(s_obj,
+                    MM_STREAM_EVT_CANCEL_BUF,
+                    (void *)&buf_idx,
+                    NULL);
+        }
+    }
+
+    return rc;
+}
+
 
 /*===========================================================================
  * FUNCTION   : mm_channel_get_queued_buf_count
