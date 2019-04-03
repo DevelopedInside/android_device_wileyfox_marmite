@@ -32,3 +32,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:system/vendor/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:system/vendor/etc/wifi/wpa_supplicant_overlay.conf
+
+# WiFi Display
+PRODUCT_PACKAGES += \
+    libaacwrapper \
+    libnl
+
+PRODUCT_BOOT_JARS += \
+    WfdCommon
