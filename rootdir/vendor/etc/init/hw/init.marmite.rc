@@ -70,6 +70,7 @@ on boot
 
 on property:vold.decrypt=trigger_restart_framework
     restart vendor.camera-provider-2-4
+    restart vendor.audio-hal-2-0
 
 # FM
 on property:hw.fm.init=0
