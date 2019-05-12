@@ -25,6 +25,8 @@
 #include <android/hardware/biometrics/fingerprint/2.1/types.h>
 
 #include "BiometricsFingerprint.h"
+#include <errno.h>
+#include <unistd.h>
 
 using android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint;
 using android::hardware::biometrics::fingerprint::V2_1::implementation::BiometricsFingerprint;
@@ -32,10 +34,17 @@ using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 using android::sp;
 
+static constexpr char kGoodixFpDev[] = "/dev/goodix_fp";
+
 int main() {
 
     ALOGI("Start biometrics");
     android::sp<IBiometricsFingerprint> bio = BiometricsFingerprint::getInstance();
+
+    if (access(kGoodixFpDev, F_OK) != 0) {
+        ALOGE("Cannot access %s (%s)", kGoodixFpDev, strerror(errno));
+        return 1;
+    }
 
     // the conventional HAL might start binder services
     android::ProcessState::initWithDriver("/dev/binder");
