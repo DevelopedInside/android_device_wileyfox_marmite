@@ -72,6 +72,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     bluetooth.hfp.client=1 \
     persist.vendor.btstack.enable.splita2dp=false \
+    vendor.bluetooth.soc=smd \
     vendor.qcom.bluetooth.soc=smd
 
 # Camera
