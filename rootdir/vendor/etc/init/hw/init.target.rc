@@ -28,8 +28,7 @@
 #
 
 import init.carrier.rc
-import /vendor/etc/init/hw/init.variant.${ro.boot.cmv}.rc
-import /vendor/etc/init/hw/init.qcom.power.rc
+import /vendor/etc/init/hw/init.marmite.rc
 
 on early-init
     exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules audio_apr audio_adsp_loader audio_q6_notifier audio_q6 audio_usf audio_native audio_pinctrl_wcd audio_swr audio_platform audio_swr_ctrl audio_hdmi audio_wcd9xxx audio_wcd_core audio_wsa881x_analog audio_wsa881x audio_mbhc audio_stub audio_digital_cdc audio_analog_cdc audio_wcd_cpe audio_cpe_lsm audio_wcd9335 audio_machine_sdm450 audio_machine_ext_sdm450
@@ -56,8 +55,6 @@ on fs
     wait /dev/block/bootdevice/by-name/oem
     mount ext4 /dev/block/bootdevice/by-name/oem /oem ro nosuid nodev barrier=1
 
-    setprop sys.usb.ffs.aio_compat 1
-
 on post-fs
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
@@ -81,10 +78,6 @@ on post-fs-data
 
 #Create folder for mm-qcamera-daemon
     mkdir /data/vendor/camera 0770 camera camera
-
-    # Fingerprint
-    mkdir /data/system/fingerprint 0770 system system
-    restorecon /data/system/fingerprint
 
 #start camera server as daemon
 service qcamerasvr /system/vendor/bin/mm-qcamera-daemon
@@ -353,27 +346,6 @@ service vendor.hvdcp_opti /vendor/bin/hvdcp_opti
     class main
     user root
     group system wakelock
-
-service usb-config /system/bin/sh /init.marmite.usb.sh
-    class core
-    user root
-    oneshot
-
-on property:init.svc.fps_hal=running
-    start gx_fpd
-
-service gx_fpd /vendor/bin/gx_fpd
-    class late_start
-    user root
-    group root system
-    disabled
-
-# FM
-on property:vendor.hw.fm.init=0
-    write /sys/module/radio_iris_transport/parameters/fmsmd_set 0
-
-on property:vendor.hw.fm.init=1
-    write /sys/module/radio_iris_transport/parameters/fmsmd_set 1
 
 service vendor.vm_bms /vendor/bin/vm_bms
     class main

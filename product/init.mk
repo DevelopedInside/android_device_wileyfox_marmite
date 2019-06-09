@@ -22,6 +22,7 @@ PRODUCT_PACKAGES += \
 
 # /vendor/etc/init/hw
 PRODUCT_PACKAGES += \
+    init.marmite.rc \
     init.msm.usb.configfs.rc \
     init.qcom.rc \
     init.qcom.power.rc \
