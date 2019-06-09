@@ -28,6 +28,7 @@
 #device         mount point      fstype        [device2] [length=]
 
 /dev/block/bootdevice/by-name/system       /system         ext4    ro,barrier=1                                                    wait
+/dev/block/bootdevice/by-name/oem          /vendor         squashfs    ro,barrier=1,discard                                            wait
 /dev/block/bootdevice/by-name/cache        /cache          ext4    noatime,nosuid,nodev,barrier=1,noauto_da_alloc                  wait,check,formattable
 /dev/block/bootdevice/by-name/userdata     /data           ext4    noatime,nosuid,nodev,barrier=1,data=ordered,noauto_da_alloc     wait,check,formattable,encryptable=footer,length=-16384
 /devices/soc/7864900.sdhci/mmc_host*       auto            auto    defaults                                                        voldmanaged=sdcard1:auto,noemulatedsd,encryptable=userdata

@@ -31,7 +31,7 @@
 /dev/block/bootdevice/by-name/cache        /cache          f2fs    discard,nosuid,nodev,noatime,nodiratime,inline_xattr,data_flush wait,check,formattable
 /dev/block/bootdevice/by-name/userdata     /data           ext4    noatime,nosuid,nodev,barrier=1,data=ordered,noauto_da_alloc     wait,check,formattable,encryptable=footer,length=-16384,quota
 /dev/block/bootdevice/by-name/userdata     /data           f2fs    discard,nosuid,nodev,noatime,nodiratime,inline_xattr,data_flush wait,check,formattable,encryptable=footer,length=-16384,quota
-/dev/block/bootdevice/by-name/vendor       /vendor         ext4    ro,barrier=1,discard                                            wait
+/dev/block/bootdevice/by-name/oem          /vendor         squashfs    ro,barrier=1,discard                                            wait
 /devices/soc/7864900.sdhci/mmc_host*       auto            auto    defaults                                                        voldmanaged=sdcard1:auto,noemulatedsd,encryptable=userdata
 /dev/block/bootdevice/by-name/persist      /persist        ext4    noatime,nosuid,nodev,barrier=1,noauto_da_alloc                  wait,formattable
 /dev/block/bootdevice/by-name/config       /frp            emmc    defaults                                                        defaults
