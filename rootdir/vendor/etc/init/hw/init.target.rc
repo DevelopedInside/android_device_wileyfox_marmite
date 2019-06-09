@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2015, The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2015,2018, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -32,8 +32,11 @@ import /vendor/etc/init/hw/init.variant.${ro.boot.cmv}.rc
 import /vendor/etc/init/hw/init.qcom.power.rc
 
 on early-init
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules audio_apr audio_adsp_loader audio_q6_notifier audio_q6 audio_usf audio_native audio_pinctrl_wcd audio_swr audio_platform audio_swr_ctrl audio_hdmi audio_wcd9xxx audio_wcd_core audio_wsa881x_analog audio_wsa881x audio_mbhc audio_stub audio_digital_cdc audio_analog_cdc audio_wcd_cpe audio_cpe_lsm audio_wcd9335 audio_machine_sdm450 audio_machine_ext_sdm450
     mkdir /firmware 0771 system system
     mkdir /system 0777 root root
+    mkdir /bt_firmware 0771 system system
+    symlink /data/tombstones /tombstones
     mkdir /dsp 0771 media media
 
 on fs
@@ -42,21 +45,11 @@ on fs
     write /proc/sys/vm/swappiness 100
 
     mount_all /vendor/etc/fstab.qcom
-
-    # Set permissions for persist partition
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
-    mkdir /mnt/vendor/persist/bluetooth 0770 bluetooth bluetooth
-    mkdir /mnt/vendor/persist/bms 0700 root system
     mkdir /mnt/vendor/persist/data 0700 system system
-    mkdir /mnt/vendor/persist/display 0770 system graphics
-    mkdir /mnt/vendor/persist/hvdcp_opti 0770 root system
-    mkdir /mnt/vendor/persist/time 0770 system system
+    mkdir /mnt/vendor/persist/bms 0700 root system
     restorecon_recursive /mnt/vendor/persist
-
-    # Keeping following partitions outside fstab file. As user may not have
-    # these partition flashed on the device. Failure to mount any partition in fstab file
-    # results in failure to launch late-start class.
 
     #write /sys/kernel/boot_adsp/boot 1
 
@@ -64,6 +57,14 @@ on fs
     mount ext4 /dev/block/bootdevice/by-name/oem /oem ro nosuid nodev barrier=1
 
     setprop sys.usb.ffs.aio_compat 1
+
+on post-fs
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+
+    start vendor.qseecomd
+    exec - system system -- /vendor/bin/init.qti.qseecomd.sh
+    write /dev/ipa 1
 
 on post-fs-data
     mkdir /data/tombstones 0771 system system
@@ -75,6 +76,7 @@ on post-fs-data
     mkdir /persist/data/tz 0700 system system
     mkdir /data/vendor/hbtp 0750 system system
     mkdir /data/misc/dts 0770 media audio
+    mkdir /data/vendor/tloc 0700 system drmrpc
 
 
 #Create folder for mm-qcamera-daemon
@@ -85,22 +87,19 @@ on post-fs-data
     restorecon /data/system/fingerprint
 
 #start camera server as daemon
-service qcamerasvr /vendor/bin/mm-qcamera-daemon
+service qcamerasvr /system/vendor/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input graphics
-    writepid /dev/cpuset/camera-daemon/tasks
 
 on init
-   verity_load_state
+   write /dev/stune/top-app/schedtune.colocate 1
    write /sys/module/qpnp_rtc/parameters/poweron_alarm 1
 
-on early-boot
-   # Adjust parameters for dm-verity device
-   write /sys/block/dm-0/queue/read_ahead_kb 2048
-   # Update dm-verity state and set partition.*.verified properties
-   verity_update_state
-
+service qfp-daemon /system/vendor/bin/qfp-daemon
+   class late_start
+   user system
+   group system drmrpc
 
 # Allow usb charging to be disabled peristently
 on property:persist.usb.chgdisabled=1
@@ -124,31 +123,29 @@ service qrngp /system/bin/qrngp -f
 on property:sys.boot_completed=1
    start qrngp
 
-service qseecomd /vendor/bin/qseecomd
+service vendor.qseecomd /vendor/bin/qseecomd
    class core
    user root
    group root
-   writepid /dev/cpuset/system-background/tasks
 
 #service aostlmd /system/bin/aostlmd
 #   class late_start
 #   user system
 #   group system net_raw
 
-service perfd /vendor/bin/perfd
+service perfd /system/vendor/bin/perfd
    class main
    user root
-   writepid /dev/cpuset/system-background/tasks
    disabled
 
-service gamed /vendor/bin/gamed
+service gamed /system/vendor/bin/gamed
    class main
    user system
    group system
    disabled
    socket gamed seqpacket 0640 system system
 
-service thermal-engine /vendor/bin/thermal-engine
+service thermal-engine /system/vendor/bin/thermal-engine
    class main
    user root
    socket thermal-send-client stream 0666 system system
@@ -156,21 +153,22 @@ service thermal-engine /vendor/bin/thermal-engine
    socket thermal-recv-passive-client stream 0666 system system
    socket thermal-send-rule stream 0660 system system
    group root
-   writepid /dev/cpuset/system-background/tasks
 
-service time_daemon /vendor/bin/time_daemon
+service time_daemon /system/vendor/bin/time_daemon
    class late_start
    user root
    group root
-   writepid /dev/cpuset/system-background/tasks
 
-service audiod /vendor/bin/audiod
+service audiod /system/vendor/bin/audiod
    class late_start
    user system
    group system
 
 on boot
     start rmt_storage
+    insmod /system/lib/modules/adsprpc.ko
+    # enable sched boost in order to schedule tasks on perf cluster
+    write /proc/sys/kernel/sched_boost 1
 # access permission for secure touch
     chmod 0660 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch_enable
     chmod 0440 /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
@@ -180,8 +178,50 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b7000.i2c/i2c-3/3-0020/input/input0/secure_touch
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch_enable
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch
+    chown system system /sys/kernel/hbtp/display_pwr
 
-service wcnss-service /vendor/bin/wcnss_service
+   # Add a cpuset for the camera daemon
+   # We want all cores for camera
+   mkdir /dev/cpuset/camera-daemon
+   write /dev/cpuset/camera-daemon/cpus 0-3
+   write /dev/cpuset/camera-daemon/mems 0
+   chown cameraserver cameraserver /dev/cpuset/camera-daemon
+   chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
+   chmod 0660 /dev/cpuset/camera-daemon/tasks
+
+# access permissions for FPC service
+   chown system system /sys/bus/platform/devices/soc/soc:fpc1020/irq
+   chown system system /sys/bus/platform/devices/soc/soc:fpc1020/wakeup_enable
+   chmod 0666 /dev/qseecom
+
+####Regionalization config and prop files####
+    chmod 0644 /persist/speccfg/spec
+    chmod 0644 /persist/speccfg/devicetype
+    chmod 0644 /persist/speccfg/mbnversion
+    chmod 0644 /persist/speccfg/.not_triggered
+    chmod 0644 /persist/speccfg/vendor_ro.prop
+    chmod 0644 /persist/speccfg/vendor_persist.prop
+    chmod 0644 /persist/speccfg/submask
+    chmod 0644 /persist/speccfg/partition
+    chown system system /persist/speccfg/spec
+    chown system system /persist/speccfg/devicetype
+    chown system system /persist/speccfg/mbnversion
+    chown system system /persist/speccfg/.not_triggered
+    chown system system /persist/speccfg/vendor_ro.prop
+    chown system system /persist/speccfg/vendor_persist.prop
+    chown system system /persist/speccfg/submask
+    chown system system /persist/speccfg/partition
+
+# access permission for wlan
+    chown system system /mnt/vendor/persist/WCNSS_qcom_wlan_nv.bin
+
+#USB controller configuration
+    setprop vendor.usb.rndis.func.name "rndis"
+    setprop vendor.usb.rmnet.func.name "rmnet_bam"
+    setprop vendor.usb.rmnet.inst.name "rmnet_bam_dmux"
+    setprop vendor.usb.dpl.inst.name "dpl_bam_dmux"
+
+service wcnss-service /system/vendor/bin/wcnss_service
     class main
     user system
     group system wifi radio
@@ -194,17 +234,19 @@ service imsstarter /vendor/bin/init.qti.ims.sh
 on property:vold.decrypt=trigger_restart_framework
     start imsstarter
 
-service imsqmidaemon /vendor/bin/imsqmidaemon
+## imsqmidaemon starts with root and UID will be downgraded to SYSTEM.
+service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
     class main
     user system
     socket ims_qmid stream 0660 system radio
     group radio log diag
     disabled
 
-on property:service.qti.ims.enabled=1
-    start imsqmidaemon
+on property:vendor.service.qti.ims.enabled=1
+    start vendor.imsqmidaemon
 
-service imsdatadaemon /vendor/bin/imsdatadaemon
+# imsdatadaemon starts with root and UID will be downgraded to SYSTEM.
+service vendor.imsdatadaemon /system/vendor/bin/imsdatadaemon
     class main
     user system
     socket ims_datad stream 0660 system radio
@@ -212,25 +254,22 @@ service imsdatadaemon /vendor/bin/imsdatadaemon
     disabled
 
 on property:vendor.ims.QMI_DAEMON_STATUS=1
-    start imsdatadaemon
+    start vendor.imsdatadaemon
 
-service ims_rtp_daemon /vendor/bin/ims_rtp_daemon
+service vendor.ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
    class main
    user system
    group radio diag inet log
-   disabled
 
-service vendor.imsrcsservice /vendor/bin/imsrcsd
+service vendor.imsrcsservice /system/vendor/bin/imsrcsd
    class main
    user system
-   group radio diag inet log
-   disabled
+   group radio diag inet log wakelock
 
 on property:vendor.ims.DATA_DAEMON_STATUS=1
-    start ims_rtp_daemon
-    start vendor.imsrcsservice
+    restart vendor.ims_rtp_daemon
 
-service ppd /vendor/bin/mm-pp-dpps
+service ppd /system/vendor/bin/mm-pp-dpps
     class late_start
     disabled
     user system
@@ -263,9 +302,28 @@ on charger
     setprop persist.sys.usb.config mass_storage
     start qcom-post-boot
     setprop persist.sys.usb.config mass_storage
-    start hvdcp_opti
+    start vendor.hvdcp_opti
+    start vendor.vm_bms
 
-service adsprpcd /vendor/bin/adsprpcd
+service hbtp /system/vendor/bin/hbtp_daemon
+    class main
+    user system
+    group system
+    disabled
+
+service dts_configurator /system/vendor/bin/dts_configurator
+    class late_start
+    user system
+    group media audio
+    oneshot
+
+service dtseagleservice /system/vendor/bin/dts_eagle_service
+    class late_start
+    user system
+    group audio media
+    disabled
+
+service adsprpcd /system/vendor/bin/adsprpcd
     class main
     user media
     group media
@@ -273,29 +331,28 @@ service adsprpcd /vendor/bin/adsprpcd
 on property:init.svc.dts_configurator=stopped
     start dtseagleservice
 
-service per_mgr /vendor/bin/pm-service
+service vendor.per_mgr /system/vendor/bin/pm-service
     class core
     user system
     group system net_raw
-    writepid /dev/cpuset/system-background/tasks
 
-service per_proxy /vendor/bin/pm-proxy
+service vendor.per_proxy /system/vendor/bin/pm-proxy
     class core
     user system
     group system
     disabled
-    writepid /dev/cpuset/system-background/tasks
 
-on property:init.svc.per_mgr=running
-    start per_proxy
+on property:init.svc.vendor.per_mgr=running
+    start vendor.per_proxy
 
 on property:sys.shutdown.requested=*
-    stop per_proxy
+    stop vendor.per_proxy
+    stop vendor.ims_rtp_daemon
 
-service hvdcp_opti /vendor/bin/hvdcp_opti
+service vendor.hvdcp_opti /vendor/bin/hvdcp_opti
     class main
     user root
-    group root wakelock
+    group system wakelock
 
 service usb-config /system/bin/sh /init.marmite.usb.sh
     class core
@@ -311,42 +368,43 @@ service gx_fpd /vendor/bin/gx_fpd
     group root system
     disabled
 
+# FM
 on property:vendor.hw.fm.init=0
     write /sys/module/radio_iris_transport/parameters/fmsmd_set 0
 
 on property:vendor.hw.fm.init=1
     write /sys/module/radio_iris_transport/parameters/fmsmd_set 1
 
-# Configure IO scheduler
-on property:sys.io.scheduler=*
-    write /sys/block/mmcblk0/queue/scheduler ${sys.io.scheduler}
-    write /sys/block/mmcblk1/queue/scheduler ${sys.io.scheduler}
-    write /sys/block/sda/queue/scheduler ${sys.io.scheduler}
-    write /sys/block/sde/queue/scheduler ${sys.io.scheduler}
-    write /sys/block/dm-0/queue/scheduler ${sys.io.scheduler}
-
-on property:persist.sys.io.scheduler=*
-    setprop sys.io.scheduler ${persist.sys.io.scheduler}
-
-# Set slice_idle to 0 for CFQ
-on property:sys.io.scheduler=cfq
-    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
-    write /sys/block/mmcblk1/queue/iosched/slice_idle 0
-    write /sys/block/sda/queue/iosched/slice_idle 0
-    write /sys/block/sde/queue/iosched/slice_idle 0
-    write /sys/block/dm-0/queue/iosched/slice_idle 0
-
-# Set slice_idle to 0 for BFQ
-on property:sys.io.scheduler=bfq
-    write /sys/block/mmcblk0/queue/iosched/slice_idle 0
-    write /sys/block/mmcblk1/queue/iosched/slice_idle 0
-    write /sys/block/sda/queue/iosched/slice_idle 0
-    write /sys/block/sde/queue/iosched/slice_idle 0
-    write /sys/block/dm-0/queue/iosched/slice_idle 0
-
-service bugreport /system/bin/dumpstate \
-       -d -p -B -z -o/data/user_de/0/com.android.shell/files/bugreports/bugreport
+service vendor.vm_bms /vendor/bin/vm_bms
     class main
-    disabled
-    oneshot
-    keycodes 114 115 116
+    user root
+    group system wakelock
+
+service mdtpd /system/vendor/bin/mdtpd
+    class late_start
+    user root
+    group system radio drmrpc
+
+on boot
+    write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/fw_name PR1702898-s3528t_00260005_00380008.img
+    write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/update_fw 1
+
+service vendor.tlocd /vendor/bin/tloc_daemon
+    class late_start
+    user system
+    group drmrpc gps net_raw
+
+on boot
+    chown system system /sys/class/leds/red/blink
+    chown system system /sys/class/leds/red/breath
+    chown system system /sys/class/leds/red/delay_on
+    chown system system /sys/class/leds/red/delay_off
+    chown system system /sys/class/leds/green/blink
+    chown system system /sys/class/leds/green/breath
+    chown system system /sys/class/leds/green/delay_on
+    chown system system /sys/class/leds/green/delay_off
+    chown system system /sys/class/leds/blue/blink
+    chown system system /sys/class/leds/blue/breath
+    chown system system /sys/class/leds/blue/delay_on
+    chown system system /sys/class/leds/blue/delay_off
+
