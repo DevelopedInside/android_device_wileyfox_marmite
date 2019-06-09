@@ -16,11 +16,14 @@ PRODUCT_PACKAGES += \
     liboverlay \
     libtinyxml \
     vendor.display.config@1.0 \
-    vendor.display.config@1.0_vendor
+    vendor.display.config@1.0_vendor \
+    libqdMetaData.system \
+    libvulkan
+
 
 # Permissions
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.opengles.aep.xml:system/vendor/etc/permissions/android.hardware.opengles.aep.xml
+    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
