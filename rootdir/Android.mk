@@ -30,6 +30,14 @@ include $(BUILD_PREBUILT)
 # /vendor/bin
 # TODO: cleanup
 include $(CLEAR_VARS)
+LOCAL_MODULE       := init.class_late.sh
+LOCAL_MODULE_TAGS  := optional
+LOCAL_MODULE_CLASS := ETC
+LOCAL_SRC_FILES    := vendor/bin/init.class_late.sh
+LOCAL_MODULE_PATH  := $(TARGET_OUT_VENDOR_EXECUTABLES)
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
 LOCAL_MODULE       := init.class_main.sh
 LOCAL_MODULE_TAGS  := optional
 LOCAL_MODULE_CLASS := ETC
@@ -79,6 +87,14 @@ LOCAL_MODULE_PATH  := $(TARGET_OUT_VENDOR_ETC)
 include $(BUILD_PREBUILT)
 
 # /vendor/etc/init/hw
+include $(CLEAR_VARS)
+LOCAL_MODULE       := init.marmite.rc
+LOCAL_MODULE_TAGS  := optional
+LOCAL_MODULE_CLASS := ETC
+LOCAL_SRC_FILES    := vendor/etc/init/hw/init.marmite.rc
+LOCAL_MODULE_PATH  := $(TARGET_OUT_VENDOR_ETC)/init/hw
+include $(BUILD_PREBUILT)
+
 include $(CLEAR_VARS)
 LOCAL_MODULE       := init.msm.usb.configfs.rc
 LOCAL_MODULE_TAGS  := optional

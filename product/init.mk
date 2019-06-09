@@ -9,6 +9,7 @@ PRODUCT_PACKAGES += \
 
 # /vendor/bin
 PRODUCT_PACKAGES += \
+    init.class_late.sh \
     init.class_main.sh \
     init.qcom.early_boot.sh \
     init.qcom.sensors.sh \
@@ -21,6 +22,7 @@ PRODUCT_PACKAGES += \
 
 # /vendor/etc/init/hw
 PRODUCT_PACKAGES += \
+    init.marmite.rc \
     init.msm.usb.configfs.rc \
     init.qcom.rc \
     init.qcom.power.rc \
