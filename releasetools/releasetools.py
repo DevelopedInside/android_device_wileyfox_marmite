@@ -17,9 +17,9 @@ import common
 import re
 
 def InstallEnd_SetSpecificDeviceConfigs(info):
-    info.script.Mount("/system");
+    info.script.Mount("/vendor");
     info.script.AppendExtra('run_program("/tmp/install/bin/fixup.sh");');
-    info.script.Unmount("/system");
+    info.script.Unmount("/vendor");
     return
 
 def FullOTA_InstallEnd(info):
