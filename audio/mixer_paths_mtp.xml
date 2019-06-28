@@ -1194,13 +1194,6 @@
     <path name="speaker">
         <ctl name="RX3 MIX1 INP1" value="RX1" />
         <ctl name="SPK" value="Switch" />
-
-        <!-- AW89317 Amplifier -->
-        <ctl name="RX2 MIX1 INP1" value="RX1" />
-        <ctl name="RX2 MIX1 INP1" value="RX2" />
-        <ctl name="RDAC2 MUX" value="RX2" />
-        <ctl name="HPHR" value="Switch" />
-        <ctl name="Ext Spk Switch" value="On" />
     </path>
 
     <path name="speaker-and-hdmi">
