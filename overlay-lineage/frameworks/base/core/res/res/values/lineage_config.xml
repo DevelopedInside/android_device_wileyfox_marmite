@@ -12,6 +12,12 @@
      limitations under the License.
 -->
 <resources>
+    <!-- Button backlight -->
+    <bool name="config_deviceHasVariableButtonBrightness">false</bool>
+
+    <!-- Disable Button backlight settings -->
+    <integer name="config_buttonBrightnessSettingDefault">0</integer>
+
     <!-- Whether notify fingerprint client of successful cancelled authentication -->
     <bool name="config_notifyClientOnFingerprintCancelSuccess">true</bool>
 
