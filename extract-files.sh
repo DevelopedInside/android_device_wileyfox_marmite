@@ -70,14 +70,4 @@ sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/
 sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/acdbdata\/delta\/\x00\x00\x00\x00\x00|g" \
     "$DEVICE_BLOB_ROOT"/vendor/lib64/libaudcal.so
 
-#
-# Hax modem configs
-#
-sed -i "s|\/data\/vendor\/radio\/modem_config\/mcfg_hw\/|\/data\/vendor\/modem_config\/mcfg_hw\/\x00\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib64/libril-qc-qmi-1.so
-sed -i "s|\/data\/vendor\/radio\/modem_config\/mcfg_sw\/|\/data\/vendor\/modem_config\/mcfg_sw\/\x00\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib64/libril-qc-qmi-1.so
-sed -i "s|\/data\/vendor\/radio\/modem_config\/|\/data\/vendor\/modem_config\/\x00\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib64/libril-qc-qmi-1.so
-
 "$MY_DIR"/setup-makefiles.sh
