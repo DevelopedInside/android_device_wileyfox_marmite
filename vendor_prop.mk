@@ -77,11 +77,14 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Camera
 PRODUCT_PROPERTY_OVERRIDES += \
     camera.hal1.packagelist=com.skype.raider,com.google.android.talk \
+    vendor.camera.hal1.packagelist=com.skype.raider,com.google.android.talk \
     media.camera.ts.monotonic=1 \
     persist.camera.gyro.disable=0 \
     persist.camera.HAL3.enabled=1 \
     persist.camera.is_type_preview=3 \
     persist.camera.is_type=2 \
+    camera.display.lmax=1280x720 \
+    camera.display.umax=1920x1080 \
     persist.vendor.camera.display.lmax=1280x720 \
     persist.vendor.camera.display.umax=1920x1080
 
@@ -127,7 +130,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.display.disable_skip_validate=1 \
     vendor.display.enable_default_color_mode=1 \
     vendor.gralloc.enable_fb_ubwc=1 \
-    vendor.opengles.version=196610
+    vendor.opengles.version=196610 \
+    sdm.perf_hint_window=50
 
 # DRM
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -170,13 +174,21 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.emmc_size=16GB
 
-# NFC
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.nfc.smartcard.config=SIM1,eSE1
-
 # OEM Unlocking
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.oem_unlock_supported=true
+
+# Nitz
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.rild.nitz_long_ons_0="" \
+    persist.rild.nitz_long_ons_1="" \
+    persist.rild.nitz_long_ons_2="" \
+    persist.rild.nitz_long_ons_3="" \
+    persist.rild.nitz_plmn="" \
+    persist.rild.nitz_short_ons_0="" \
+    persist.rild.nitz_short_ons_1="" \
+    persist.rild.nitz_short_ons_2="" \
+    persist.rild.nitz_short_ons_3="" \
 
 # Perf
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -189,22 +201,12 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     DEVICE_PROVISIONED=1 \
-    persist.radio.flexmap_type=dds \
-    persist.radio.mt_sms_ack=20 \
     persist.radio.multisim.config=dsds \
-    persist.rild.nitz_long_ons_0="" \
-    persist.rild.nitz_long_ons_1="" \
-    persist.rild.nitz_long_ons_2="" \
-    persist.rild.nitz_long_ons_3="" \
-    persist.rild.nitz_plmn="" \
-    persist.rild.nitz_short_ons_0="" \
-    persist.rild.nitz_short_ons_1="" \
-    persist.rild.nitz_short_ons_2="" \
-    persist.rild.nitz_short_ons_3="" \
     persist.vendor.radio.apm_sim_not_pwdn=1 \
     persist.vendor.radio.custom_ecc=1 \
     persist.vendor.radio.rat_on=combine \
     persist.vendor.radio.sib16_support=1 \
+    vendor.rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
     ril.subscription.types=NV,RUIM \
     rild.libargs=-d/dev/smd0 \
     rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
