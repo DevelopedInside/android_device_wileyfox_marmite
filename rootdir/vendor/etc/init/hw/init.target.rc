@@ -146,11 +146,6 @@ service thermal-engine /system/vendor/bin/thermal-engine
    group root
    writepid /dev/cpuset/system-background/tasks
 
-service time_daemon /system/vendor/bin/time_daemon
-   class late_start
-   user root
-   group root
-
 service audiod /system/vendor/bin/audiod
    class late_start
    user system
