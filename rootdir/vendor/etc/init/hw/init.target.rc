@@ -166,15 +166,6 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch
     chown system system /sys/kernel/hbtp/display_pwr
 
-   # Add a cpuset for the camera daemon
-   # We want all cores for camera
-   mkdir /dev/cpuset/camera-daemon
-   write /dev/cpuset/camera-daemon/cpus 0-3
-   write /dev/cpuset/camera-daemon/mems 0
-   chown cameraserver cameraserver /dev/cpuset/camera-daemon
-   chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
-   chmod 0660 /dev/cpuset/camera-daemon/tasks
-
 # access permissions for FPC service
    chown system system /sys/bus/platform/devices/soc/soc:fpc1020/irq
    chown system system /sys/bus/platform/devices/soc/soc:fpc1020/wakeup_enable
