@@ -212,7 +212,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     rild.libargs=-d/dev/smd0 \
     rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
     ro.telephony.call_ring.multiple=false \
-    ro.telephony.default_network=9,9 \
+    ro.telephony.default_network=9,1 \
     telephony.lteOnCdmaDevice=1
 
 # Shutdown timeout
