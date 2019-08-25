@@ -152,38 +152,11 @@ void check_aw87319()
     }
 }
 
-void set_zram_size(void)
-{
-    FILE *f = fopen("/sys/block/zram0/disksize", "wb");
-    int MB = 1024 * 1024;
-    std::string zram_disksize;
-    struct sysinfo si;
-
-    // Check if zram exist
-    if (f == NULL) {
-        return;
-    }
-
-    // Initialize system info
-    sysinfo(&si);
-
-    // Set zram disksize (divide RAM size by 3)
-    zram_disksize = std::to_string(si.totalram / MB / 3);
-
-    // Write disksize to sysfs
-    fprintf(f, "%sM", zram_disksize.c_str());
-
-    // Close opened file
-    fclose(f);
-}
-
 void vendor_load_properties()
 {
     init_alarm_boot_properties();
 
     check_device();
-    set_zram_size();
-
     property_set("dalvik.vm.heapstartsize", heapstartsize);
     property_set("dalvik.vm.heapgrowthlimit", heapgrowthlimit);
     property_set("dalvik.vm.heapsize", heapsize);
