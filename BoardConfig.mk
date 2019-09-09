@@ -251,9 +251,6 @@ TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
 include device/qcom/sepolicy-legacy-um/sepolicy.mk
 #BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy # TEMP DISABLE
 
-# Soong namespaces
-PRODUCT_SOONG_NAMESPACES += $(DEVICE_PATH)
-
 # Treble
 PRODUCT_FULL_TREBLE_OVERRIDE := true
 PRODUCT_VENDOR_MOVE_ENABLED := true
