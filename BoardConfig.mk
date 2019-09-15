@@ -19,7 +19,6 @@ DEVICE_PATH := device/wileyfox/marmite
 # Use Snapdragon LLVM, if available
 TARGET_USE_SDCLANG := false
 
-
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := msm8937
 TARGET_NO_BOOTLOADER := true
@@ -245,7 +244,6 @@ BOARD_USES_QC_TIME_SERVICES := true
 # Recovery
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/root/fstab.full
 TARGET_RECOVERY_DEVICE_MODULES := libinit_marmite
-TARGET_RELEASETOOLS_EXTENSIONS := $(DEVICE_PATH)/releasetools
 
 # RIL
 TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
