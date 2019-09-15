@@ -364,8 +364,8 @@ PRODUCT_PACKAGES += \
     init.variant.mv3.rc
 
 # OTA
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/releasetools/fixup.sh:install/bin/fixup.sh
+#PRODUCT_COPY_FILES += \
+    #$(LOCAL_PATH)/releasetools/fixup.sh:install/bin/fixup.sh
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
