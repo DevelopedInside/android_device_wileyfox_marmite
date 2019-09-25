@@ -1,14 +1,9 @@
 cc_binary {
-    name: "android.hardware.biometrics.fingerprint@2.1-service-marmite",
+    name: "android.hardware.biometrics.fingerprint@2.0-service-marmite",
     defaults: ["hidl_defaults"],
-    init_rc: ["android.hardware.biometrics.fingerprint@2.1-service-marmite.rc"],
-    vendor: true,
+    init_rc: ["android.hardware.biometrics.fingerprint@2.0-service-marmite.rc"],
     relative_install_path: "hw",
-    srcs: [
-        "BiometricsFingerprint.cpp",
-        "service.cpp",
-    ],
-
+    srcs: ["service.cpp", "BiometricsFingerprint.cpp"],
     shared_libs: [
         "libbinder",
         "libcutils",
@@ -20,5 +15,5 @@ cc_binary {
         "libhwbinder",
         "android.hardware.biometrics.fingerprint@2.1",
     ],
-
+    proprietary: true,
 }
