@@ -248,7 +248,7 @@ TARGET_RECOVERY_DEVICE_MODULES := libinit_marmite
 TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
 
 # SELinux
-include device/qcom/sepolicy/sepolicy.mk
+include device/qcom/sepolicy-legacy-um/sepolicy.mk
 #BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy # TEMP DISABLE
 
 # Treble
