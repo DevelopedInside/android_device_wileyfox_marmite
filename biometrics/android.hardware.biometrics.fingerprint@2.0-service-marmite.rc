@@ -3,8 +3,10 @@ service vendor.fps_hal /vendor/bin/hw/android.hardware.biometrics.fingerprint@2.
     # in /data. As a workaround, postpone startup until later in boot once
     # /data is mounted.
     class late_start
+    socket fpce stream 0666 system system
     user system
-    group system input
+    group system sdcard_rw input
+    system system
     writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.vendor.fps_hal=running
@@ -12,8 +14,8 @@ on property:init.svc.vendor.fps_hal=running
 
 service vendor.gx_fpd /vendor/bin/gx_fpd
     class late_start
-    user root
-    group root system drmrpc
+    user system
+    group system
     writepid /dev/cpuset/system-background/tasks
     disabled
 
@@ -21,6 +23,7 @@ on boot
     # Goodix Fingerprint
     chown system system /dev/goodix_fp
     chmod 0644 /dev/goodix_fp
+    chmod 0666 /dev/qseecom
 
 on post-fs-data
     # Fingerprint
