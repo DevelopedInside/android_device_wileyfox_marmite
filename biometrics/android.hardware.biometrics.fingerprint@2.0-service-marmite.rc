@@ -17,7 +17,13 @@ service vendor.gx_fpd /vendor/bin/gx_fpd
     writepid /dev/cpuset/system-background/tasks
     disabled
 
+on boot
+    # Goodix Fingerprint
+    chown system system /dev/goodix_fp
+    chmod 0644 /dev/goodix_fp
+
 on post-fs-data
     # Fingerprint
     mkdir /data/system/fingerprint 0770 system system
     restorecon /data/system/fingerprint
+
