@@ -33,7 +33,7 @@ namespace V2_1 {
 namespace implementation {
 
 // Supported fingerprint HAL version
-//static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 0);
+static const uint16_t kVersion = HARDWARE_MODULE_API_VERSION(2, 0);
 
 using RequestStatus =
         android::hardware::biometrics::fingerprint::V2_1::RequestStatus;
@@ -199,8 +199,9 @@ Return<RequestStatus> BiometricsFingerprint::enumerate()  {
 
     ALOGD("Got %d enumerated templates, retval = %d", n, total_templates);
 
-    // TODO: Remove once enumeration is confirmed to work on Goodix
-    if (n == MAX_FINGERPRINTS) {
+    // Check if the function actually enumerated, or just simply sent a dummy retval.
+    if ((n == MAX_FINGERPRINTS && total_templates < MAX_FINGERPRINTS)
+            || mClientCallback == nullptr) {
         ALOGD("Skipping enumerate()");
         return RequestStatus::SYS_EINVAL;
     }
@@ -231,7 +232,7 @@ Return<RequestStatus> BiometricsFingerprint::setActiveGroup(uint32_t gid,
     }
     int ret = mDevice->set_active_group(mDevice, gid, storePath.c_str());
     /* set active group hack for goodix */
-    if ((ret > 0))
+    if (ret > 0)
         ret = 0;
     return ErrorFilter(ret);
 }
@@ -274,6 +275,12 @@ fingerprint_device_t* BiometricsFingerprint::openHal() {
     if (0 != (err = module->common.methods->open(hw_mdl, nullptr, &device))) {
         ALOGE("Can't open fingerprint methods, error: %d", err);
         return nullptr;
+    }
+
+    if (kVersion != device->version) {
+        // enforce version on new devices because of HIDL@2.1 translation layer
+        ALOGE("Wrong fp version. Expected %d, got %d", kVersion, device->version);
+        //return nullptr;
     }
 
     fingerprint_device_t* fp_device =
