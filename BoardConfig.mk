@@ -233,7 +233,6 @@ TARGET_PER_MGR_ENABLED := true
 
 # Power
 BOARD_POWER_CUSTOM_BOARD_LIB := libpower_msm8937
-TARGET_HAS_NO_WLAN_STATS:= true
 TARGET_USES_INTERACTION_BOOST := true
 
 # Qualcomm support
