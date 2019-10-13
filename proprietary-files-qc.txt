@@ -42,6 +42,7 @@ vendor/lib64/libaudcal.so
 vendor/lib64/libaudioalsa.so
 vendor/lib64/libmdsprpc.so
 vendor/lib64/libqtigef.so
+-vendor/lib64/libtinycompress_vendor.so 
 vendor/lib/soundfx/libasphere.so
 vendor/lib/soundfx/libqcbassboost.so
 vendor/lib/soundfx/libqcreverb.so
@@ -56,6 +57,7 @@ vendor/lib/libaudcal.so
 vendor/lib/libaudioalsa.so
 vendor/lib/libmdsprpc.so
 vendor/lib/libqtigef.so
+-vendor/lib/libtinycompress_vendor.so
 
 # Bluetooth
 vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti
