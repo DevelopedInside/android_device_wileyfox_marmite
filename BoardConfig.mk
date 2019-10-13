@@ -246,7 +246,9 @@ TARGET_RECOVERY_DEVICE_MODULES := libinit_marmite
 
 # RIL
 TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
-TARGET_RIL_VARIANT := caf
+PROTOBUF_SUPPORTED := true
+TARGET_RIL_VARIANT := caf	TARGET_RIL_VARIANT := caf
+TARGET_USES_OLD_MNC_FORMAT := true
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
