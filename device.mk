@@ -493,12 +493,12 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
 
 # WiFi Display
-PRODUCT_PACKAGES += \
-    libaacwrapper \
-    libnl
-
-PRODUCT_BOOT_JARS += \
-    WfdCommon
+#PRODUCT_PACKAGES += \
+#    libaacwrapper \
+#    libnl
+#
+#PRODUCT_BOOT_JARS += \
+#    WfdCommon
 
 # Inherit proprietary files
 $(call inherit-product, vendor/wileyfox/marmite/marmite-vendor.mk)
