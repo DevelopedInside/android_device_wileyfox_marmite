@@ -444,8 +444,8 @@
     </integer-array>
 
     <!-- Boolean indicating whether the HWC setColorTransform function can be performed efficiently
-         in hardware. -->
-    <bool name="config_setColorTransformAccelerated">true</bool>
+         in hardware. 
+    <bool name="config_setColorTransformAccelerated">true</bool>-->
 
     <!-- Amount of time it takes for the light sensor to warm up in milliseconds.
          For this time after the screen turns on, the Power Manager
