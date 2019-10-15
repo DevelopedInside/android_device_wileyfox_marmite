@@ -9,7 +9,8 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_SHARED_LIBRARIES := \
     libutils \
     libcutils \
-    libdl \
+    liblog \
+    libprocessgroup \
     liblog \
     libloc_core \
     libgps.utils
