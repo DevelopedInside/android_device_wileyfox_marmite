@@ -32,6 +32,7 @@ LOCAL_HEADER_LIBRARIES := \
 
 LOCAL_SHARED_LIBRARIES := \
     liblog \
+    libprocessgroup \
     libhidlbase \
     libhidltransport \
     libhwbinder \
@@ -75,6 +76,7 @@ LOCAL_HEADER_LIBRARIES := \
 
 LOCAL_SHARED_LIBRARIES := \
     liblog \
+    libprocessgroup \
     libcutils \
     libdl \
     libbase \
