@@ -40,4 +40,4 @@
 /dev/block/bootdevice/by-name/sysinfo      /sysinfo        ext4    ro,barrier=1,discard                                            wait,check,formattable
 /dev/block/bootdevice/by-name/modem          /firmware          vfat    ro,shortname=lower,uid=1000,gid=1000,dmask=227,fmask=337,context=u:object_r:firmware_file:s0 wait
 /dev/block/bootdevice/by-name/dsp            /dsp               ext4    ro,nosuid,nodev,barrier=1                   wait
-/dev/block/zram0                           none            swap    defaults                                                        zramsize=536870912,zramstreams=4
+/dev/block/zram0                           none            swap    defaults                                                        zramsize=1073741824,zramstreams=4
