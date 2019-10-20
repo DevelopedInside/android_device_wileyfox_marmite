@@ -53,6 +53,7 @@
 const int kMaxLaunchDuration = 5000; /* ms */
 const int kMaxInteractiveDuration = 5000; /* ms */
 const int kMinInteractiveDuration = 500; /* ms */
+const int kMinFlingDuration = 1500; /* ms */
 
 static int video_encode_hint_sent;
 
@@ -251,7 +252,9 @@ static void process_interaction_hint(void *data)
     s_previous_boost_timespec = cur_boost_timespec;
     s_previous_duration = duration;
 
-    perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, SCROLL_VERTICAL);
+    if (duration >= kMinFlingDuration) {
+        perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, SCROLL_VERTICAL);
+    }
 }
 
 int power_hint_override(power_hint_t hint, void *data)
