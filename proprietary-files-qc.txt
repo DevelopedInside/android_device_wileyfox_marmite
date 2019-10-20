@@ -145,7 +145,7 @@ lib64/libdpmctmgr.so|595449eff197e8c3bc6f7a4f0242188abe82418f
 lib64/libdpmfdmgr.so|f03869f7bee601182c545e892523d23529439e16
 lib64/libdpmframework.so|9dc137606c1cb73e3ec5a97c954df93e750dd459
 lib64/libdpmtcm.so|1f85ced85f541146756df0b4597a4c51300be63a
--priv-app/dpmserviceapp/dpmserviceapp.apk|a642336052f3e5d70580700e2aebba230a5f663f
+-priv-app/dpmserviceapp/dpmserviceapp.apk|8fe88af90b56c2dcf7c10b5f69080a5f4fe1a44b
 vendor/bin/dpmQmiMgr|31e019a02d25a959a2edfe2c9a04ab958562bb67
 vendor/lib64/com.qualcomm.qti.dpm.api@1.0.so|2af88934e4039edaac842576a1861cbdfe39838b
 vendor/lib64/libdpmqmihal.so|4254cc9f10f6f3d990958c17f4e43d8e9e09c382
@@ -269,7 +269,7 @@ vendor/firmware/a530v3_gpmu.fw2
 vendor/firmware/a530v3_seq.fw2
 
 # IMS - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
--app/uceShimService/uceShimService.apk|d2ecdb607749b0496664db52b706e9340bd9b9f0
+-app/uceShimService/uceShimService.apk|b540126bff4bfdf93b38bbaf2b5b845d0c3dc2f8
 lib64/lib-imscamera.so|6d9c63ad43e5dca62dea7a47e7b121bc4df317f9
 lib64/lib-imsvideocodec.so|3450d725416f8f45d788fadc43f88d25937508a0
 lib64/lib-imsvt.so|7dfc533fc3c439a608b219838281d6c5f605ee22
