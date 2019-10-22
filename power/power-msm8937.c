@@ -280,6 +280,7 @@ static void process_interaction_hint(void* data) {
 
 static int process_activity_launch_hint(void* data) {
     static int launch_handle = -1;
+    static int launch_handle_packing = -1;
     static int launch_mode = 0;
 
     // release lock early if launch has finished
@@ -287,6 +288,10 @@ static int process_activity_launch_hint(void* data) {
         if (CHECK_HANDLE(launch_handle)) {
             release_request(launch_handle);
             launch_handle = -1;
+        }
+        if (CHECK_HANDLE(launch_handle_packing)) {
+            release_request(launch_handle_packing);
+            launch_handle_packing = -1;
         }
         launch_mode = 0;
         return HINT_HANDLED;
@@ -297,6 +302,12 @@ static int process_activity_launch_hint(void* data) {
                                                    kMaxLaunchDuration, LAUNCH_BOOST_V1);
         if (!CHECK_HANDLE(launch_handle)) {
             ALOGE("Failed to perform launch boost");
+            return HINT_NONE;
+        }
+        launch_handle_packing = perf_hint_enable_with_type(VENDOR_HINT_FIRST_LAUNCH_BOOST,
+                kMaxLaunchDuration, LAUNCH_BOOST_V2);
+        if (!CHECK_HANDLE(launch_handle_packing)) {
+            ALOGE("Failed to perform launch boost packing");
             return HINT_NONE;
         }
         launch_mode = 1;
