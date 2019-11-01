@@ -142,20 +142,8 @@ on enable-low-power
     # Enable timer migration to little cluster
     write /proc/sys/kernel/power_aware_timer_migration 1
 
-    # Per-process reclaim
-    write /sys/module/process_reclaim/parameters/enable_process_reclaim 1
-    write /sys/module/process_reclaim/parameters/pressure_min 50
-    write /sys/module/process_reclaim/parameters/pressure_max 70
-    write /sys/module/process_reclaim/parameters/swap_opt_eff 30
-    write /sys/module/process_reclaim/parameters/per_swap_size 512
-
-    # Set allocstall_threshold to 0 for msm8937
-    write /sys/module/vmpressure/parameters/allocstall_threshold 0
-
-    # Set lowmemorykiller tuning parameters
-    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
-    write /sys/module/lowmemorykiller/parameters/minfree "18432,23040,27648,32256,55296,80640"
-    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 80640
+    # Start memory configuration
+    start qcom-mem
 
     # Set ZCache parameters
     write /sys/module/zcache/parameters/clear_percent 3
@@ -204,3 +192,7 @@ on property:dev.bootcomplete=1
 
 on property:vendor.post_boot.parsed=*
     setprop sys.post_boot.parsed ${vendor.post_boot.parsed}
+
+service qcom-mem /system/vendor/bin/init.qcom.mem.sh
+    disabled
+    oneshot

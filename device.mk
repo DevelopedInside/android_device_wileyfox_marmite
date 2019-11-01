@@ -348,6 +348,7 @@ PRODUCT_PACKAGES += \
     init.class_late.sh \
     init.class_main.sh \
     init.qcom.early_boot.sh \
+    init.qcom.mem.sh \
     init.qcom.sensors.sh \
     init.qcom.sh \
     init.qcom.usb.sh \
