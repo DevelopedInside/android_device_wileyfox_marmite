@@ -80,7 +80,7 @@ service qcamerasvr /system/vendor/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input graphics
-    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+    writepid /dev/cpuset/camera-daemon/tasks
 
 on init
    write /dev/stune/top-app/schedtune.colocate 1
