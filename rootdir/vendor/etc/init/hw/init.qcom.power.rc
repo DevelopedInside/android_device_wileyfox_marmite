@@ -149,6 +149,9 @@ on enable-low-power
     write /sys/module/process_reclaim/parameters/swap_opt_eff 30
     write /sys/module/process_reclaim/parameters/per_swap_size 512
 
+    # Set allocstall_threshold to 0 for msm8937
+    write /sys/module/vmpressure/parameters/allocstall_threshold 0
+
     # Set lowmemorykiller tuning parameters
     write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
     write /sys/module/lowmemorykiller/parameters/minfree "18432,23040,27648,32256,55296,80640"
