@@ -92,3 +92,6 @@ echo 512 > /sys/module/process_reclaim/parameters/per_swap_size
 
 # Set allocstall_threshold to 0 for all targets.
 echo 0 > /sys/module/vmpressure/parameters/allocstall_threshold
+
+# Set swappiness to 100 for msm8937
+echo 100 > /proc/sys/vm/swappiness
