@@ -286,6 +286,9 @@ int power_hint_override(power_hint_t hint, void *data)
         case POWER_HINT_VIDEO_ENCODE:
             process_video_encode_hint(data);
             return HINT_HANDLED;
+        case POWER_HINT_VIDEO_DECODE:
+            // do nothing
+            return HINT_HANDLED;
         case POWER_HINT_INTERACTION:
             process_interaction_hint(data);
             return HINT_HANDLED;
