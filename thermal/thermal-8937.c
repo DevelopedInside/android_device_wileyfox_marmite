@@ -73,7 +73,7 @@ static struct target_therm_cfg sensor_cfg_8937[] = {
         .sensor_list = &misc_sensors_8937[2],
         .sens_cnt = 1,
         .mult = 1.0,
-        .throt_thresh = 47,
+        .throt_thresh = 56,
         .shutdwn_thresh = 70,
         .label = "skin",
     }
