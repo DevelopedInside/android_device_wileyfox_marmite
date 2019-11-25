@@ -306,63 +306,37 @@
          backlight values for LUX levels between these control points.
          Must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLevels">
+        <item>10</item>
+        <item>30</item>
+        <item>60</item>
         <item>100</item>
-        <item>400</item>
-        <item>2000</item>
-        <item>10000</item>
-    </integer-array>
-
-    <!-- Array of desired screen brightness in nits corresponding to the lux values
-         in the config_autoBrightnessLevels array. As with config_screenBrightnessMinimumNits and
-         config_screenBrightnessMaximumNits, the display brightness is defined as the measured
-         brightness of an all-white image.
-         If this is defined then:
-            - config_autoBrightnessLcdBacklightValues should not be defined
-            - config_screenBrightnessNits must be defined
-            - config_screenBrightnessBacklight must be defined
-         This array should have size one greater than the size of the config_autoBrightnessLevels
-         array. The brightness values must be non-negative and non-decreasing. This must be
-         overridden in platform specific overlays -->
-    <integer-array name="config_autoBrightnessDisplayValuesNits">
-        <item>17</item>  <!-- 0-100 -->
-        <item>87</item>  <!-- 100-400 -->
-        <item>165</item> <!-- 400-2000 -->
-        <item>285</item> <!-- 2000-10000 -->
-        <item>432</item> <!-- 10000+ -->
-    </integer-array>
-
-    <!-- An array describing the screen's backlight values corresponding to the brightness
-         values in the config_screenBrightnessNits array.
-         This array should be equal in size to config_screenBrightnessNits. -->
-    <integer-array name="config_screenBrightnessBacklight">
-        <item>3</item>
-        <item>48</item>
-        <item>95</item>
-        <item>175</item>
+        <item>150</item>
+        <item>210</item>
         <item>255</item>
     </integer-array>
 
-    <!-- An array of floats describing the screen brightness in nits corresponding to the backlight
-         values in the config_screenBrightnessBacklight array.  On OLED displays these values
-         should be measured with an all white image while the display is in the fully on state.
-         Note that this value should *not* reflect the maximum brightness value for any high
-         brightness modes but only the maximum brightness value obtainable in a sustainable manner.
-
-         This array should be equal in size to config_screenBrightnessBacklight -->
-    <integer-array name="config_screenBrightnessNits">
-        <item>17</item>
-        <item>87</item>
-        <item>165</item>
-        <item>285</item>
-        <item>432</item>
+    <!-- Array of output values for LCD backlight corresponding to the LUX values
+         in the config_autoBrightnessLevels array.  This array should have size one greater
+         than the size of the config_autoBrightnessLevels array.
+         The brightness values must be between 0 and 255 and be non-decreasing.
+         This must be overridden in platform specific overlays -->
+    <integer-array name="config_autoBrightnessLcdBacklightValues">
+        <item>10</item>
+        <item>20</item>
+        <item>40</item>
+        <item>70</item>
+        <item>110</item>
+        <item>160</item>
+        <item>200</item>
+        <item>255</item>
     </integer-array>
 
     <!-- Minimum screen brightness allowed by the power manager. -->
-    <integer name="config_screenBrightnessDim">10</integer>
+    <integer name="config_screenBrightnessDim">5</integer>
 
     <!-- Minimum screen brightness setting allowed by the power manager.
          The user is forbidden from setting the brightness below this level. -->
-    <integer name="config_screenBrightnessSettingMinimum">3</integer>
+    <integer name="config_screenBrightnessSettingMinimum">10</integer>
 
     <!-- Maximum screen brightness allowed by the power manager.
          The user is forbidden from setting the brightness above this level. -->
