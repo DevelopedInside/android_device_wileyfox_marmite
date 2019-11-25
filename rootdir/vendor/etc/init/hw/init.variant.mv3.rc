@@ -1,2 +1,0 @@
-on early-init
-    setprop ro.product.model "Swift 2 X"

@@ -26,7 +26,6 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-import /vendor/etc/init/hw/init.variant.${ro.boot.cmv}.rc
 import /vendor/etc/init/hw/init.qcom.power.rc
 
 on init
