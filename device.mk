@@ -360,10 +360,7 @@ PRODUCT_PACKAGES += \
     init.qcom.rc \
     init.qcom.power.rc \
     init.qcom.usb.rc \
-    init.target.rc \
-    init.variant.mv1.rc \
-    init.variant.mv2.rc \
-    init.variant.mv3.rc
+    init.target.rc
 
 # OTA
 #PRODUCT_COPY_FILES += \

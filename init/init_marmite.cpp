@@ -85,16 +85,18 @@ void vendor_load_properties()
     if (cmv == "mv1")
     {
         /* Swift 2 */
+        property_set("ro.product.model", "Swift 2");
         property_set("ro.media.maxmem", "10590068224");
     }
     else if (cmv == "mv2")
     {
         /* Swift 2 Plus*/
-        /* nothing */
+        property_set("ro.product.model", "Swift 2 Plus");
     }
     else if (cmv == "mv3")
     {
         /* Swift 2 X */
+        property_set("ro.product.model", "Swift 2 X");
         display_density = 480;
     }
     char density[5];
