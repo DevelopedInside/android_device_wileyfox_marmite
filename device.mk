@@ -361,10 +361,6 @@ PRODUCT_PACKAGES += \
     init.qcom.usb.rc \
     init.target.rc
 
-# OTA
-#PRODUCT_COPY_FILES += \
-    #$(LOCAL_PATH)/releasetools/fixup.sh:install/bin/fixup.sh
-
 # RenderScript HAL
 PRODUCT_PACKAGES += \
     android.hardware.renderscript@1.0-impl \
