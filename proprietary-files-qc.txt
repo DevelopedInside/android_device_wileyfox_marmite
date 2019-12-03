@@ -352,7 +352,6 @@ vendor/etc/init/vendor.qti.hardware.perf@1.0-service.rc
 vendor/etc/perf/perfboostsconfig.xml
 vendor/etc/perf/perf-profile0.conf
 vendor/etc/perf/perf-profile1.conf
-vendor/etc/perf/perfboostsconfig.xml
 vendor/lib/hw/vendor.qti.hardware.iop@1.0-impl.so
 vendor/lib/libfeedbackhandler.so
 vendor/lib/libperfgluelayer.so
