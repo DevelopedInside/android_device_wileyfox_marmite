@@ -345,8 +345,8 @@ vendor/lib64/libfp_client.so
 # FM
 -lib/vendor.qti.hardware.fm@1.0.so
 -lib64/vendor.qti.hardware.fm@1.0.so
--lib/libbtconfigstore.so|a7e2f2d8f9e68754223ce6cb51f16260e4f03039
--lib64/libbtconfigstore.so|a342bed0c999bd0c5624da2ce9a8ca60475d53e9
+-lib/libbtconfigstore.so
+-lib64/libbtconfigstore.so
 vendor/lib/hw/vendor.qti.hardware.fm@1.0-impl.so
 vendor/lib/vendor.qti.hardware.fm@1.0_vendor.so
 vendor/lib64/hw/vendor.qti.hardware.fm@1.0-impl.so
@@ -363,4 +363,4 @@ vendor/firmware/libpn548ad_fw.so:vendor/lib/libpn548ad_fw.so
 etc/firmware/ice40.bin
 
 # Wi-Fi
-#vendor/bin/wcnss_service:vendor/bin/wcnss_service
+vendor/bin/wcnss_service:vendor/bin/wcnss_service
