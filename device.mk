@@ -118,7 +118,7 @@ PRODUCT_PACKAGES += \
     camera.device@3.2-impl \
     camera.msm8937 \
     libmm-qcamera \
-    Snap
+    GoogleCamera
 
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
