@@ -14,11 +14,6 @@
 # limitations under the License.
 #
 
-# Google Services
-GAPPS_VARIANT := nano
-GAPPS_PRODUCT_PACKAGES += Chrome GoogleDialer LatinImeGoogle PrebuiltBugle
-GAPPS_FORCE_PACKAGE_OVERRIDES := true
-
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Overlay
@@ -501,3 +496,9 @@ PRODUCT_BOOT_JARS += \
 
 # Inherit proprietary files
 $(call inherit-product, vendor/wileyfox/marmite/marmite-vendor.mk)
+
+
+# OpenGapps
+$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
+GAPPS_VARIANT := nano
+GAPPS_PRODUCT_PACKAGES += Chrome GoogleDialer LatinImeGoogle PrebuiltBugle

@@ -20,9 +20,6 @@ $(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
 # Inherit some common LineageOS stuff
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
-# OpenGapps
-$(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
-
 # Vendor security patch level
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.lineage.build.vendor_security_patch=2018-06-01
