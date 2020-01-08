@@ -192,9 +192,6 @@ on property:dev.bootcomplete=1
     # Tell perfd that we're ready to go
     setprop vendor.post_boot.parsed 1
 
-on property:vendor.post_boot.parsed=*
-    setprop sys.post_boot.parsed ${vendor.post_boot.parsed}
-
 service qcom-mem /system/vendor/bin/init.qcom.mem.sh
     disabled
     oneshot

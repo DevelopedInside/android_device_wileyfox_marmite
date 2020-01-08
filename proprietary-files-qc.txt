@@ -345,33 +345,22 @@ vendor/lib/libMpeg4SwEncoder.so
 vendor/lib/libOmxSwVdec.so
 vendor/lib/libOmxSwVencMpeg4.so
 
-# Perf
-vendor/bin/hw/vendor.qti.hardware.perf@1.0-service
-vendor/bin/msm_irqbalance
-vendor/etc/init/vendor.qti.hardware.perf@1.0-service.rc
-vendor/etc/perf/perfboostsconfig.xml
-vendor/etc/perf/perf-profile0.conf
-vendor/etc/perf/perf-profile1.conf
-vendor/lib/hw/vendor.qti.hardware.iop@1.0-impl.so
-vendor/lib/libfeedbackhandler.so
-vendor/lib/libperfgluelayer.so
-vendor/lib/libqti-iopd-client.so
-vendor/lib/libqti-iopd.so
-vendor/lib/libqti-perfd-client.so
-vendor/lib/libqti-perfd.so
-vendor/lib/libqti-util.so
-vendor/lib/vendor.qti.hardware.iop@1.0_vendor.so
-vendor/lib/vendor.qti.hardware.perf@1.0_vendor.so
-vendor/lib64/hw/vendor.qti.hardware.iop@1.0-impl.so
-vendor/lib64/libfeedbackhandler.so
-vendor/lib64/libperfgluelayer.so
-vendor/lib64/libqti-iopd-client.so
-vendor/lib64/libqti-iopd.so
-vendor/lib64/libqti-perfd-client.so
-vendor/lib64/libqti-perfd.so
-vendor/lib64/libqti-util.so
-vendor/lib64/vendor.qti.hardware.iop@1.0_vendor.so
-vendor/lib64/vendor.qti.hardware.perf@1.0_vendor.so
+# Perf - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
+vendor/bin/energy-awareness|d9b3f1cc791e0e9612a5ff5df6836af4c921a52b
+vendor/bin/msm_irqbalance|bf933b58332cf94fe4a2072bc3e976a6a82efe3c
+vendor/bin/hw/vendor.qti.hardware.perf@1.0-service|3f4cf13499019e7e3747679220b280f4f204b8de
+vendor/etc/init/vendor.qti.hardware.perf@1.0-service.rc|b50182aadab2e31409df61c523d0fb914a394e43
+vendor/etc/perf/commonresourceconfigs.xml|20280e40ca43784316e96be09fe2d2296d79e972
+vendor/lib/libperfgluelayer.so|3e6074dca57a25dd07c6398e8a7fc89e7a1d3f2a
+vendor/lib/libqti-perfd-client.so|9d39e6040aae2bda16389679ae2d892cf2d522d1
+vendor/lib/libqti-perfd.so|aab65a0c9d84c8161306a6de81f989cb7e5cb573
+vendor/lib/libqti-util.so|ca0e14efdcec2a85b894ce1b8559f481da2db1ed
+vendor/lib/vendor.qti.hardware.perf@1.0.so|279ed2463248210c433c615c50ec94ecd624f7ac
+vendor/lib64/libperfgluelayer.so|e8bc850cbb8d2c2b9ed8c6b9c48eb4b1fd197622
+vendor/lib64/libqti-perfd-client.so|d9fb126fb7aff2db61978f46f78e0284e95183be
+vendor/lib64/libqti-perfd.so|96806732f4e5f8c25ba2e12a3a939fc2889c7341
+vendor/lib64/libqti-util.so|30dc90c1636fd100a8e101dfa659e0b7299ff813
+vendor/lib64/vendor.qti.hardware.perf@1.0.so|978a16bc6f27967f6345c5b51386d50768553ab5
 
 # Peripheral manager
 vendor/bin/pm-proxy
