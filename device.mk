@@ -61,18 +61,10 @@ PRODUCT_PACKAGES += \
     tinymix
 
 PRODUCT_PACKAGES += \
-    android.hardware.audio@2.0-impl \
     android.hardware.audio@2.0-service \
-    android.hardware.audio@4.0 \
     android.hardware.audio@4.0-impl \
-    android.hardware.audio.common@4.0 \
-    android.hardware.audio.common@4.0-util \
-    android.hardware.audio.effect@2.0-impl \
-    android.hardware.audio.effect@2.0-service \
-    android.hardware.audio.effect@4.0 \
     android.hardware.audio.effect@4.0-impl \
-    android.hardware.soundtrigger@2.1-impl \
-    android.hardware.soundtrigger@2.1-service
+    android.hardware.soundtrigger@2.1-impl
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_tuning_mixer.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer.txt \
