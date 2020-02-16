@@ -238,9 +238,9 @@ vendor/lib64/libsdm-diag.so|87373a043267b9b3bb923931a910119a9deb425f
 vendor/lib64/libsdmextension.so|47b7fcfb790df4417654c566af1a8a74d4bf3e2f
 vendor/lib64/libtinyxml2_1.so|56d4d5d0ea010f951de219c7b9fd2c9695a5b9d2
 
-# Graphics (Vulkan) - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
-vendor/lib/hw/vulkan.msm8953.so:vendor/lib/hw/vulkan.msm8937.so|6259874ee4fe1a414b5e2109ec63af55a70d3733
-vendor/lib64/hw/vulkan.msm8953.so:vendor/lib64/hw/vulkan.msm8937.so|e1905916771354829868a65e6757615c7de20b71
+# Graphics (Vulkan) - from daisy - QKQ1.191002.002/V11.0.4.0.QDLMIXM
+vendor/lib/hw/vulkan.msm8953.so:vendor/lib/hw/vulkan.msm8937.so|c24dee59782e94c119e1e6ae00ac05c2d67c3f93
+vendor/lib64/hw/vulkan.msm8953.so:vendor/lib64/hw/vulkan.msm8937.so|8c01e237bdc542ca682cb97ce28f264135033fab
 
 # Graphics firmware
 vendor/firmware/a530_gpmu.fw2
