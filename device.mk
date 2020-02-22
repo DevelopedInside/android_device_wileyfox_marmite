@@ -435,6 +435,7 @@ PRODUCT_COPY_FILES += \
 
 # VNDK
 PRODUCT_PACKAGES += \
+    vndk-ext \
     vndk-sp
 
 # Vibrator
