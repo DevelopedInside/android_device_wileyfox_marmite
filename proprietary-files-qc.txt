@@ -261,7 +261,7 @@ vendor/firmware/a530v3_gpmu.fw2
 vendor/firmware/a530v3_seq.fw2
 
 # IMS - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
--app/uceShimService/uceShimService.apk|b540126bff4bfdf93b38bbaf2b5b845d0c3dc2f8
+-app/uceShimService/uceShimService.apk|844cffec329602b02299ecf022f21462711e4f78
 lib64/lib-imscamera.so|6d9c63ad43e5dca62dea7a47e7b121bc4df317f9
 lib64/lib-imsvideocodec.so|3450d725416f8f45d788fadc43f88d25937508a0
 lib64/lib-imsvt.so|7dfc533fc3c439a608b219838281d6c5f605ee22
