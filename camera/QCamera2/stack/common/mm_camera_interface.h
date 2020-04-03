@@ -182,7 +182,16 @@ typedef struct {
     uint8_t primary_only;
 } mm_camera_req_buf_t;
 
-typedef cam_event_t mm_camera_event_t;
+/** mm_camera_event_t: structure for event
+*    @server_event_type : event type from serer
+*    @status : status of an event, value could be
+*              CAM_STATUS_SUCCESS
+*              CAM_STATUS_FAILED
+**/
+typedef struct {
+    cam_event_type_t server_event_type;
+    uint32_t status;
+} mm_camera_event_t;
 
 /** mm_camera_event_notify_t: function definition for event
 *   notify handling
@@ -210,14 +219,12 @@ typedef void (*mm_camera_buf_notify_t) (mm_camera_super_buf_t *bufs,
 *                   the index to plane (0..num_of_planes)
 *    @fd : file descriptor of the stream buffer
 *    @size: size of the stream buffer
-*    @buffer: Pointer to buffer to register
 *    @userdata : user data pointer
 **/
 typedef int32_t (*map_stream_buf_op_t) (uint32_t frame_idx,
                                         int32_t plane_idx,
                                         int fd,
                                         size_t size,
-                                        void *buffer,
                                         cam_mapping_buf_type type,
                                         void *userdata);
 
@@ -371,8 +378,6 @@ typedef enum {
 *                     queue
 *    @enable_frame_sync: Enables frame sync for dual camera
 *    @priority : save matched priority frames only
-*    @user_expected_frame_id : Number of frames, camera interface
-*                     will wait for getting the instant capture frame.
 **/
 typedef struct {
     mm_camera_super_buf_notify_mode_t notify_mode;
@@ -382,7 +387,6 @@ typedef struct {
     uint8_t max_unmatched_frames;
     uint8_t enable_frame_sync;
     mm_camera_super_buf_priority_t priority;
-    uint8_t user_expected_frame_id;
 } mm_camera_channel_attr_t;
 
 typedef struct {
@@ -429,8 +433,7 @@ typedef struct {
     int32_t (*map_buf) (uint32_t camera_handle,
                         uint8_t buf_type,
                         int fd,
-                        size_t size,
-                        void *buffer);
+                        size_t size);
 
     /** map_bufs: function definition for mapping multiple camera buffers
      *           via domain socket
@@ -636,8 +639,7 @@ typedef struct {
                                uint32_t buf_idx,
                                int32_t plane_idx,
                                int fd,
-                               size_t size,
-                               void *buffer);
+                               size_t size);
 
     /** map_stream_bufs: function definition for mapping multiple
      *                 stream buffers via domain socket
@@ -739,24 +741,6 @@ typedef struct {
     int32_t (*qbuf) (uint32_t camera_handle,
                      uint32_t ch_id,
                      mm_camera_buf_def_t *buf);
-
-    /** cancel_buffer: fucntion definition for recalling a frame
-     *        buffer from the kernel this is most likely when h/w
-     *        failed to use this buffer and dropped the frame we use
-     *        this API to recall the buffer and return it to the
-     *        framework
-     *    @camera_handle : camer handler
-     *    @ch_id : channel handler
-     *    @stream_id : stream handle
-     *    @buf : a frame buffer to be queued back to kernel
-     *  Return value: 0 -- success
-     *                -1 -- failure
-     **/
-    int32_t (*cancel_buffer) (uint32_t camera_handle,
-                     uint32_t ch_id,
-                     uint32_t stream_id,
-                     uint32_t buf_idx);
-
 
     /** get_queued_buf_count: fucntion definition for querying queued buf count
      *    @camera_handle : camer handler

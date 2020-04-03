@@ -1,0 +1,6 @@
+allow init hwservicemanager:binder  { transfer call };
+allow init hwservicemanager:dir { search };
+allow hwservicemanager init:dir search;
+allow hwservicemanager init:file { open read write };
+allow hwservicemanager init:process getattr;
+allow hwservicemanager init:binder transfer;

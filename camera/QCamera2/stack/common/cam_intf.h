@@ -32,7 +32,7 @@
 
 // System dependencies
 #include <string.h>
-#include <media/msmb_isp.h>
+#include <media/msmb_isp-land.h>
 
 // Camera dependencies
 #include "cam_types.h"
@@ -60,124 +60,6 @@ typedef enum {
     /* flush */
     CAM_PRIV_FLUSH
 } cam_private_ioctl_enum_t;
-
-typedef enum {
-    /* start syncing for related cameras */
-    CAM_SYNC_RELATED_SENSORS_ON = 1,
-    /* stop syncing for related cameras */
-    CAM_SYNC_RELATED_SENSORS_OFF
-} cam_sync_related_sensors_control_t;
-
-typedef enum {
-    /* Driving camera of the related camera sub-system */
-    /* Certain features are enabled only for primary camera
-       such as display mode for preview, autofocus etc
-       In certain configurations for eg. when optical zoom
-       limit is reached, Aux Camera would become
-       the driving camera and there will be role switch.*/
-    CAM_MODE_PRIMARY = 0,
-    /* Non-driving camera of the related camera sub-system
-       no display mode set for secondary camera */
-    CAM_MODE_SECONDARY
-} cam_sync_mode_t;
-
-/* Payload for sending bundling info to backend */
-typedef struct {
-    cam_sync_related_sensors_control_t sync_control;
-    cam_sync_type_t type;
-    cam_sync_mode_t mode;
-    /* session Id of the other camera session
-       Linking will be done with this session in the
-       backend */
-    uint32_t related_sensor_session_id;
-    uint8_t is_frame_sync_enabled;
-}cam_sync_related_sensors_event_info_t;
-
-/* Related camera sensor specific calibration data */
-// Align bytes according to API document.
-#pragma pack(2)
-typedef struct {
-    /* Focal length in pixels @ calibration resolution.*/
-    float       normalized_focal_length;
-    /* Native sensor resolution W that was used to capture calibration image */
-    uint16_t    native_sensor_resolution_width;
-    /* Native sensor resolution H that was used to capture calibration image */
-    uint16_t    native_sensor_resolution_height;
-    /* Image size W used internally by calibration tool */
-    uint16_t    calibration_sensor_resolution_width;
-    /* Image size H used internally by calibration tool */
-    uint16_t    calibration_sensor_resolution_height;
-    /* Focal length ratio @ Calibration */
-    float       focal_length_ratio;
-}cam_related_sensor_calibration_data_t;
-#pragma pack()
-
-/* Related Camera System Calibration data
-   Calibration data for the entire related cam sub-system is
-   in a shared EEPROM. We have 2 fields which are specific to
-   each sensor followed by a set of common calibration of the
-   entire related cam system*/
-// Align bytes according to API document.
-#pragma pack(2)
-typedef struct {
-    /* Version information */
-    uint32_t    calibration_format_version;
-    /* Main Camera Sensor specific calibration */
-    cam_related_sensor_calibration_data_t  main_cam_specific_calibration;
-    /* Aux Camera Sensor specific calibration */
-    cam_related_sensor_calibration_data_t  aux_cam_specific_calibration;
-    /* Relative viewpoint matching matrix w.r.t Main */
-    float      relative_rotation_matrix[RELCAM_CALIB_ROT_MATRIX_MAX];
-    /* Relative geometric surface description parameters */
-    float      relative_geometric_surface_parameters[
-            RELCAM_CALIB_SURFACE_PARMS_MAX];
-    /* Relative offset of sensor center from optical axis along horizontal dimension */
-    float      relative_principle_point_x_offset;
-    /* Relative offset of sensor center from optical axis along vertical dimension */
-    float      relative_principle_point_y_offset;
-    /* 0=Main Camera is on the left of Aux; 1=Main Camera is on the right of Aux */
-    uint16_t   relative_position_flag;
-    /* Camera separation in mm */
-    float      relative_baseline_distance;
-    /* main sensor setting during cal: 0-none, 1-hor-mirror, 2-ver-flip, 3-both */
-    uint16_t   main_sensor_mirror_flip_setting;
-    /* aux sensor setting during cal: 0-none, 1-hor-mirror, 2-ver-flip, 3-both */
-    uint16_t   aux_sensor_mirror_flip_setting;
-    /* module orientation during cal: 0-sensors in landscape, 1-sensors in portrait */
-    uint16_t   module_orientation_during_calibration;
-    /* cal images required rotation: 0-no, 1-90 degrees right, 2-90 degrees left */
-    uint16_t   rotation_flag;
-    /* AEC sync OTP data */
-    /* AEC sync brightness ration. Fixed Point Q10*/
-    int16_t    brightness_ratio;
-    /* Reference mono gain value obtained from setup stage and used during calibration stage */
-    /* Fixed Point Q10 */
-    int16_t    ref_mono_gain;
-    /* Reference mono line count obtained from setup stage and used during calibration stage */
-    uint16_t   ref_mono_linecount;
-    /* Reference bayer gain value obtained from setup stage and used during calibration stage */
-    /* Fixed Point Q10 */
-    int16_t    ref_bayer_gain;
-    /* Reference bayer line count obtained from setup stage and used during calibration stage */
-    uint16_t   ref_bayer_linecount;
-    /* Reference bayer color temperature */
-    uint16_t   ref_bayer_color_temperature;
-    /* Reserved for future use */
-    float      reserved[RELCAM_CALIB_RESERVED_MAX];
-} cam_related_system_calibration_data_t;
-
-typedef struct {
-    int meta_type;
-    int data_len;
-    cam_related_system_calibration_data_t otp_data;
-} cam_otp_data_t;
-#pragma pack()
-
-typedef struct {
-  uint32_t default_sensor_flip;
-  uint32_t sensor_mount_angle;
-  cam_related_system_calibration_data_t otp_calibration_data;
-} cam_jpeg_metadata_t;
 
 /* capability struct definition for HAL 1*/
 typedef struct{
@@ -289,11 +171,6 @@ typedef struct{
     size_t zzhdr_sizes_tbl_cnt;                             /* Number of resolutions in zzHDR mode*/
     cam_dimension_t zzhdr_sizes_tbl[MAX_SIZES_CNT];         /* Table for ZZHDR supported sizes */
 
-    size_t supported_quadra_cfa_dim_cnt;              /* Number of resolutions in Quadra CFA mode */
-    cam_dimension_t quadra_cfa_dim[MAX_SIZES_CNT];    /* Table for Quadra CFA supported sizes */
-    cam_format_t quadra_cfa_format;                   /* Quadra CFA output format */
-    uint32_t is_remosaic_lib_present;                 /* Flag indicating if remosaic lib present */
-
     /* supported preview formats */
     size_t supported_preview_fmt_cnt;
     cam_format_t supported_preview_fmts[CAM_FORMAT_MAX];
@@ -341,8 +218,8 @@ typedef struct{
     /* QCOM HDR specific control. Indicates number of frames and exposure needs for the frames */
     cam_hdr_bracketing_info_t hdr_bracketing_setting;
 
-    cam_feature_mask_t qcom_supported_feature_mask; /* mask of qcom specific features supported:
-                                                     * such as CAM_QCOM_FEATURE_SUPPORTED_FACE_DETECTION*/
+    uint32_t qcom_supported_feature_mask; /* mask of qcom specific features supported:
+                                           * such as CAM_QCOM_FEATURE_SUPPORTED_FACE_DETECTION*/
     cam_padding_info_t padding_info;      /* padding information from PP */
     uint32_t min_num_pp_bufs;             /* minimum number of buffers needed by postproc module */
     cam_format_t rdi_mode_stream_fmt;  /* stream format supported in rdi mode */
@@ -429,6 +306,7 @@ typedef struct{
     cam_format_t supported_scalar_fmts[CAM_FORMAT_MAX];
 
     uint32_t max_face_detection_count;
+    uint8_t hw_analysis_supported;
 
     uint8_t histogram_supported;
     /* Number of histogram buckets supported */
@@ -448,9 +326,6 @@ typedef struct{
 
     cam_sensitivity_range_t sensitivity_range;
     int32_t max_analog_sensitivity;
-
-    /* ISP digital gain */
-    cam_sensitivity_range_t isp_sensitivity_range;
 
     /* picture sizes need scale*/
     cam_scene_mode_overrides_t scene_mode_overrides[CAM_SCENE_MODE_MAX];
@@ -507,16 +382,18 @@ typedef struct{
      * timestamps from other sub-systems (gyro, accelerometer etc.) */
     uint8_t isTimestampCalibrated;
 
+    /* Analysis stream max supported size */
+    cam_dimension_t analysis_max_res;
+    /* Analysis stream padding info */
+    cam_padding_info_t analysis_padding_info;
     /* Max size supported by ISP viewfinder path */
     cam_dimension_t max_viewfinder_size;
 
-    /* Max size supported by ISP encoder path */
-    cam_dimension_t max_encoder_size;
+    /* Analysis recommended size */
+    cam_dimension_t analysis_recommended_res;
 
-    cam_dimension_t bokeh_snapshot_size;
-
-    /* Analysis buffer requirements */
-    cam_analysis_info_t analysis_info[CAM_ANALYSIS_INFO_MAX];
+    /* Analysis recommended format */
+    cam_format_t analysis_recommended_format;
 
     /* This is set to 'true' if sensor cannot guarantee per frame control */
     /* Default value of this capability is 'false' indicating per-frame */
@@ -553,21 +430,6 @@ typedef struct{
     uint8_t hotPixel_mode;
     uint32_t hotPixel_count;
     cam_coordinate_type_t hotPixelMap[512];
-
-    /* supported instant capture/AEC convergence modes */
-    size_t supported_instant_aec_modes_cnt;
-    cam_aec_convergence_type supported_instant_aec_modes[CAM_AEC_CONVERGENCE_MAX];
-
-    /* Dual cam calibration data */
-    cam_related_system_calibration_data_t related_cam_calibration;
-
-    /* Meta_RAW capability */
-    uint8_t meta_raw_channel_count;
-    uint8_t vc[MAX_SIZES_CNT];
-    uint8_t dt[MAX_SIZES_CNT];
-    cam_format_t supported_meta_raw_fmts[CAM_FORMAT_MAX];
-    cam_dimension_t raw_meta_dim[MAX_SIZES_CNT];
-    cam_sub_format_type_t sub_fmt[CAM_FORMAT_SUBTYPE_MAX];
 } cam_capability_t;
 
 typedef enum {
@@ -591,17 +453,113 @@ typedef struct {
     uint32_t meta_stream_handle;  /* meta data stream ID. only valid if meta_present != 0 */
     uint32_t meta_buf_index;      /* buf index to meta data buffer. only valid if meta_present != 0 */
 
-    uint8_t is_offline_meta_bypass;
-
     /* opaque metadata required for reprocessing */
     int32_t private_data[MAX_METADATA_PRIVATE_PAYLOAD_SIZE_IN_BYTES];
     cam_rect_t crop_rect;
-    uint8_t is_uv_subsampled;
 } cam_reprocess_param;
 
 typedef struct {
     uint32_t flip_mask;
 } cam_flip_mode_t;
+
+typedef enum {
+    /* start syncing for related cameras */
+    CAM_SYNC_RELATED_SENSORS_ON = 1,
+    /* stop syncing for related cameras */
+    CAM_SYNC_RELATED_SENSORS_OFF
+} cam_sync_related_sensors_control_t;
+
+typedef enum {
+    /* Driving camera of the related camera sub-system */
+    /* Certain features are enabled only for primary camera
+       such as display mode for preview, autofocus etc
+       In certain configurations for eg. when optical zoom
+       limit is reached, Aux Camera would become
+       the driving camera and there will be role switch.*/
+    CAM_MODE_PRIMARY = 0,
+    /* Non-driving camera of the related camera sub-system
+       no display mode set for secondary camera */
+    CAM_MODE_SECONDARY
+} cam_sync_mode_t;
+
+typedef enum {
+    /* Main camera of the related cam subsystem which controls
+       HW sync at sensor level*/
+    CAM_TYPE_MAIN = 0,
+    /* Aux camera of the related cam subsystem */
+    CAM_TYPE_AUX
+} cam_sync_type_t;
+
+/* Payload for sending bundling info to backend */
+typedef struct {
+    cam_sync_related_sensors_control_t sync_control;
+    cam_sync_type_t type;
+    cam_sync_mode_t mode;
+    /* session Id of the other camera session
+       Linking will be done with this session in the
+       backend */
+    uint32_t related_sensor_session_id;
+    uint8_t is_frame_sync_enabled;
+}cam_sync_related_sensors_event_info_t;
+
+/* Related camera sensor specific calibration data */
+typedef struct {
+    /* Focal length in pixels @ calibration resolution.*/
+    float       normalized_focal_length;
+    /* Native sensor resolution W that was used to capture calibration image */
+    uint16_t    native_sensor_resolution_width;
+    /* Native sensor resolution H that was used to capture calibration image */
+    uint16_t    native_sensor_resolution_height;
+    /* Image size W used internally by calibration tool */
+    uint16_t    calibration_sensor_resolution_width;
+    /* Image size H used internally by calibration tool */
+    uint16_t    calibration_sensor_resolution_height;
+    /* Focal length ratio @ Calibration */
+    float       focal_length_ratio;
+}cam_related_sensor_calibration_data_t;
+
+/* Related Camera System Calibration data
+   Calibration data for the entire related cam sub-system is
+   in a shared EEPROM. We have 2 fields which are specific to
+   each sensor followed by a set of common calibration of the
+   entire related cam system*/
+typedef struct {
+    /* Version information */
+    uint32_t    calibration_format_version;
+    /* Main Camera Sensor specific calibration */
+    cam_related_sensor_calibration_data_t  main_cam_specific_calibration;
+    /* Aux Camera Sensor specific calibration */
+    cam_related_sensor_calibration_data_t  aux_cam_specific_calibration;
+    /* Relative viewpoint matching matrix w.r.t Main */
+    float      relative_rotation_matrix[RELCAM_CALIB_ROT_MATRIX_MAX];
+    /* Relative geometric surface description parameters */
+    float      relative_geometric_surface_parameters[
+            RELCAM_CALIB_SURFACE_PARMS_MAX];
+    /* Relative offset of sensor center from optical axis along horizontal dimension */
+    float      relative_principle_point_x_offset;
+    /* Relative offset of sensor center from optical axis along vertical dimension */
+    float      relative_principle_point_y_offset;
+    /* 0=Main Camera is on the left of Aux; 1=Main Camera is on the right of Aux */
+    uint16_t   relative_position_flag;
+    /* Camera separation in mm */
+    float      relative_baseline_distance;
+    /* main sensor setting during cal: 0-none, 1-hor-mirror, 2-ver-flip, 3-both */
+    uint16_t   main_sensor_mirror_flip_setting;
+    /* aux sensor setting during cal: 0-none, 1-hor-mirror, 2-ver-flip, 3-both */
+    uint16_t   aux_sensor_mirror_flip_setting;
+    /* module orientation during cal: 0-sensors in landscape, 1-sensors in portrait */
+    uint16_t   module_orientation_during_calibration;
+    /* cal images required rotation: 0-no, 1-90 degrees right, 2-90 degrees left */
+    uint16_t   rotation_flag;
+    /* Reserved for future use */
+    float      reserved[RELCAM_CALIB_RESERVED_MAX];
+} cam_related_system_calibration_data_t;
+
+typedef struct {
+  uint32_t default_sensor_flip;
+  uint32_t sensor_mount_angle;
+  cam_related_system_calibration_data_t otp_calibration_data;
+} cam_jpeg_metadata_t;
 
 #define IMG_NAME_SIZE 32
 typedef struct {
@@ -683,16 +641,6 @@ typedef struct {
 
     /* if frames will not be received */
     uint8_t noFrameExpected;
-
-    /* DT for this stream */
-    int32_t dt;
-
-    /* VC for this stream */
-    int32_t vc;
-
-   /* Subformat for this stream */
-    cam_sub_format_type_t sub_format_type;
-
 } cam_stream_info_t;
 
 /*****************************************************************************
@@ -806,7 +754,7 @@ typedef struct {
     INCLUDE(CAM_INTF_META_PREP_SNAPSHOT_DONE,           int32_t,                        1);
     INCLUDE(CAM_INTF_META_GOOD_FRAME_IDX_RANGE,         cam_frame_idx_range_t,          1);
     INCLUDE(CAM_INTF_META_ASD_HDR_SCENE_DATA,           cam_asd_hdr_scene_data_t,       1);
-    INCLUDE(CAM_INTF_META_ASD_SCENE_INFO,               cam_asd_decision_t,             1);
+    INCLUDE(CAM_INTF_META_ASD_SCENE_TYPE,               int32_t,                        1);
     INCLUDE(CAM_INTF_META_CURRENT_SCENE,                cam_scene_mode_type,            1);
     INCLUDE(CAM_INTF_META_AWB_INFO,                     cam_awb_params_t,               1);
     INCLUDE(CAM_INTF_META_FOCUS_POSITION,               cam_focus_pos_info_t,           1);
@@ -821,7 +769,7 @@ typedef struct {
     /* Specific to HAL3 */
     INCLUDE(CAM_INTF_META_FRAME_NUMBER_VALID,           int32_t,                     1);
     INCLUDE(CAM_INTF_META_URGENT_FRAME_NUMBER_VALID,    int32_t,                     1);
-    INCLUDE(CAM_INTF_META_FRAME_DROPPED,                cam_stream_ID_t,             1);
+    INCLUDE(CAM_INTF_META_FRAME_DROPPED,                cam_frame_dropped_t,         1);
     INCLUDE(CAM_INTF_META_FRAME_NUMBER,                 uint32_t,                    1);
     INCLUDE(CAM_INTF_META_URGENT_FRAME_NUMBER,          uint32_t,                    1);
     INCLUDE(CAM_INTF_META_COLOR_CORRECT_MODE,           uint32_t,                    1);
@@ -850,8 +798,6 @@ typedef struct {
     INCLUDE(CAM_INTF_META_LENS_FILTERDENSITY,           float,                       1);
     INCLUDE(CAM_INTF_META_LENS_FOCAL_LENGTH,            float,                       1);
     INCLUDE(CAM_INTF_META_LENS_FOCUS_DISTANCE,          float,                       1);
-    INCLUDE(CAM_INTF_META_FOCUS_VALUE,                  float,                       1);
-    INCLUDE(CAM_INTF_META_SPOT_LIGHT_DETECT,            uint8_t,                     1);
     INCLUDE(CAM_INTF_META_LENS_FOCUS_RANGE,             float,                       2);
     INCLUDE(CAM_INTF_META_LENS_STATE,                   cam_af_lens_state_t,         1);
     INCLUDE(CAM_INTF_META_LENS_OPT_STAB_MODE,           uint32_t,                    1);
@@ -864,7 +810,6 @@ typedef struct {
     INCLUDE(CAM_INTF_META_SENSOR_EXPOSURE_TIME,         int64_t,                     1);
     INCLUDE(CAM_INTF_META_SENSOR_FRAME_DURATION,        int64_t,                     1);
     INCLUDE(CAM_INTF_META_SENSOR_SENSITIVITY,           int32_t,                     1);
-    INCLUDE(CAM_INTF_META_ISP_SENSITIVITY ,             int32_t,                     1);
     INCLUDE(CAM_INTF_META_SENSOR_TIMESTAMP,             int64_t,                     1);
     INCLUDE(CAM_INTF_META_SENSOR_ROLLING_SHUTTER_SKEW,  int64_t,                     1);
     INCLUDE(CAM_INTF_META_SHADING_MODE,                 uint32_t,                    1);
@@ -880,10 +825,7 @@ typedef struct {
     INCLUDE(CAM_INTF_META_EXIF_DEBUG_AWB,               cam_awb_exif_debug_t,        1);
     INCLUDE(CAM_INTF_META_EXIF_DEBUG_AF,                cam_af_exif_debug_t,         1);
     INCLUDE(CAM_INTF_META_EXIF_DEBUG_ASD,               cam_asd_exif_debug_t,        1);
-    INCLUDE(CAM_INTF_META_EXIF_DEBUG_STATS,             cam_stats_buffer_exif_debug_t,   1);
-    INCLUDE(CAM_INTF_META_EXIF_DEBUG_BESTATS,           cam_bestats_buffer_exif_debug_t, 1);
-    INCLUDE(CAM_INTF_META_EXIF_DEBUG_BHIST,             cam_bhist_buffer_exif_debug_t,   1);
-    INCLUDE(CAM_INTF_META_EXIF_DEBUG_3A_TUNING,         cam_q3a_tuning_info_t,       1);
+    INCLUDE(CAM_INTF_META_EXIF_DEBUG_STATS,             cam_stats_buffer_exif_debug_t, 1);
     INCLUDE(CAM_INTF_META_ASD_SCENE_CAPTURE_TYPE,       cam_auto_scene_t,            1);
     INCLUDE(CAM_INTF_PARM_EFFECT,                       uint32_t,                    1);
     /* Defining as int32_t so that this array is 4 byte aligned */
@@ -965,12 +907,7 @@ typedef struct {
     INCLUDE(CAM_INTF_PARM_LONGSHOT_ENABLE,              int8_t,                      1);
     INCLUDE(CAM_INTF_PARM_TONE_MAP_MODE,                uint32_t,                    1);
     INCLUDE(CAM_INTF_META_TOUCH_AE_RESULT,              int32_t,                     1);
-    INCLUDE(CAM_INTF_PARM_LED_CALIBRATION,              cam_led_calibration_mode_t,  1);
-    INCLUDE(CAM_INTF_PARM_ADV_CAPTURE_MODE,             uint8_t,                     1);
-    INCLUDE(CAM_INTF_PARM_QUADRA_CFA,                   int32_t,                     1);
-    INCLUDE(CAM_INTF_META_RAW,                          cam_dimension_t,             1);
-    INCLUDE(CAM_INTF_META_STREAM_INFO_FOR_PIC_RES,      cam_stream_size_info_t,      1);
-
+    INCLUDE(CAM_INTF_PARM_DUAL_LED_CALIBRATION,         int32_t,                    1);
 
     /* HAL3 specific */
     INCLUDE(CAM_INTF_META_STREAM_INFO,                  cam_stream_size_info_t,      1);
@@ -1020,12 +957,6 @@ typedef struct {
     INCLUDE(CAM_INTF_PARM_MANUAL_CAPTURE_TYPE,          cam_manual_capture_type,     1);
     INCLUDE(CAM_INTF_AF_STATE_TRANSITION,               uint8_t,                     1);
     INCLUDE(CAM_INTF_PARM_INITIAL_EXPOSURE_INDEX,       uint32_t,                    1);
-    INCLUDE(CAM_INTF_PARM_INSTANT_AEC,                  uint8_t,                     1);
-    INCLUDE(CAM_INTF_META_REPROCESS_FLAGS,              uint8_t,                     1);
-    INCLUDE(CAM_INTF_PARM_JPEG_ENCODE_CROP,             cam_stream_crop_info_t,      1);
-    INCLUDE(CAM_INTF_PARM_JPEG_SCALE_DIMENSION,         cam_dimension_t,             1);
-    INCLUDE(CAM_INTF_META_FOCUS_DEPTH_INFO,             uint8_t,                     1);
-    INCLUDE(CAM_INTF_PARM_HAL_BRACKETING_HDR,           cam_hdr_param_t,             1);
 } metadata_data_t;
 
 /* Update clear_metadata_buffer() function when a new is_xxx_valid is added to
@@ -1062,16 +993,6 @@ typedef struct {
 
     uint8_t is_statsdebug_stats_params_valid;
     cam_stats_buffer_exif_debug_t statsdebug_stats_buffer_data;
-
-    uint8_t is_statsdebug_bestats_params_valid;
-    cam_bestats_buffer_exif_debug_t statsdebug_bestats_buffer_data;
-
-    uint8_t is_statsdebug_bhist_params_valid;
-    cam_bhist_buffer_exif_debug_t statsdebug_bhist_data;
-
-    uint8_t is_statsdebug_3a_tuning_params_valid;
-    cam_q3a_tuning_info_t statsdebug_3a_tuning_data;
-
 } metadata_buffer_t;
 
 typedef metadata_buffer_t parm_buffer_t;
@@ -1093,9 +1014,6 @@ static inline void clear_metadata_buffer(metadata_buffer_t *meta)
       meta->is_statsdebug_af_params_valid = 0;
       meta->is_statsdebug_asd_params_valid = 0;
       meta->is_statsdebug_stats_params_valid = 0;
-      meta->is_statsdebug_bestats_params_valid = 0;
-      meta->is_statsdebug_bhist_params_valid = 0;
-      meta->is_statsdebug_3a_tuning_params_valid = 0;
     }
 }
 

@@ -16,16 +16,8 @@
         </interface>
     </hal>
     <hal format="hidl" optional="false">
-        <name>android.hidl.allocator</name>
-        <version>1.0</version>
-        <interface>
-            <name>IAllocator</name>
-            <instance>ashmem</instance>
-        </interface>
-    </hal>
-    <hal format="hidl" optional="false">
         <name>android.hidl.manager</name>
-        <version>1.0</version>
+        <version>1.2</version>
         <interface>
             <name>IServiceManager</name>
             <instance>default</instance>
@@ -55,5 +47,4 @@
             <instance>default</instance>
         </interface>
     </hal>
-
 </compatibility-matrix>

@@ -1,0 +1,6 @@
+type qseecomd, domain;
+allow tee system_file:file { write read open getattr execute};
+allow tee mnt_vendor_file:file { write read open };
+allow qseecomd system_file:file getattr;
+allow qseecomd mnt_vendor_file:file { write read open };
+allow qseecomd mnt_vendor_file:dir remove_name;

@@ -1,0 +1,4 @@
+allow wcnss_service sysfs:file { write read open }; 
+allow wcnss_service property_socket:sock_file { write read open };
+allow wcnss_service init:unix_stream_socket connectto;
+allow wcnss_service serialno_prop:file { write read open getattr };

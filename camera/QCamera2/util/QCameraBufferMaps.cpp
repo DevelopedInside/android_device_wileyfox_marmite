@@ -107,11 +107,10 @@ QCameraBufferMaps::QCameraBufferMaps(cam_mapping_buf_type pType,
         int32_t pPlaneIndex,
         uint32_t pCookie,
         int32_t pFd,
-        size_t pSize,
-        void *buffer)
+        size_t pSize)
 {
     memset(&mBufMapList, 0, sizeof(mBufMapList));
-    enqueue(pType, pStreamId, pFrameIndex, pPlaneIndex, pCookie, pFd, pSize, buffer);
+    enqueue(pType, pStreamId, pFrameIndex, pPlaneIndex, pCookie, pFd, pSize);
 }
 
 /*===========================================================================
@@ -169,8 +168,7 @@ uint32_t QCameraBufferMaps::enqueue(cam_mapping_buf_type pType,
         int32_t pPlaneIndex,
         uint32_t pCookie,
         int32_t pFd,
-        size_t pSize,
-        void *buffer)
+        size_t pSize)
 {
     uint32_t pos = mBufMapList.length++;
     mBufMapList.buf_maps[pos].type = pType;
@@ -180,7 +178,6 @@ uint32_t QCameraBufferMaps::enqueue(cam_mapping_buf_type pType,
     mBufMapList.buf_maps[pos].cookie = pCookie;
     mBufMapList.buf_maps[pos].fd = pFd;
     mBufMapList.buf_maps[pos].size = pSize;
-    mBufMapList.buf_maps[pos].buffer = buffer;
 
     return NO_ERROR;
 }
@@ -230,8 +227,7 @@ uint32_t QCameraBufferMaps::makeSingletonBufMapList(cam_mapping_buf_type pType,
         uint32_t pCookie,
         int32_t pFd,
         size_t pSize,
-        cam_buf_map_type_list& pBufMapList,
-        void *buffer)
+        cam_buf_map_type_list& pBufMapList)
 {
     uint32_t rc = NO_ERROR;
 
@@ -241,8 +237,7 @@ uint32_t QCameraBufferMaps::makeSingletonBufMapList(cam_mapping_buf_type pType,
             pPlaneIndex,
             pCookie,
             pFd,
-            pSize,
-            buffer);
+            pSize);
     rc = bufferMaps.getCamBufMapList(pBufMapList);
 
     return rc;

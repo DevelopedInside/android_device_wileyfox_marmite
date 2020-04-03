@@ -33,7 +33,6 @@
 #ifndef __CAMLIST_H
 #define __CAMLIST_H
 
-#include <stddef.h>
 // System dependency
 #include <stdlib.h>
 

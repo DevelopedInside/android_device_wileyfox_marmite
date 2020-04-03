@@ -1,0 +1,99 @@
+on boot
+    # Update foreground and background cpusets
+    # Reserve CPU 7 for the top app
+    write /dev/cpuset/cpus 0-7
+    write /dev/cpuset/foreground/cpus 0-7
+    write /dev/cpuset/foreground/boost/cpus 0-7
+    write /dev/cpuset/background/cpus 4-7
+    write /dev/cpuset/system-background/cpus 4-7
+    write /dev/cpuset/top-app/cpus 0-7
+
+on enable-low-power
+    start qcom-post-boot
+
+    # Set Memory parameters
+    write /proc/sys/vm/swappiness 100
+    swapon_all /vendor/etc/fstab.qcom
+
+    # HMP Task packing settings (for power cluster)
+    write /sys/devices/system/cpu/cpu4/sched_mostly_idle_load 50
+    write /sys/devices/system/cpu/cpu5/sched_mostly_idle_load 50
+    write /sys/devices/system/cpu/cpu6/sched_mostly_idle_load 50
+    write /sys/devices/system/cpu/cpu7/sched_mostly_idle_load 50
+
+    write /sys/devices/system/cpu/cpu4/sched_mostly_idle_nr_run 10
+    write /sys/devices/system/cpu/cpu5/sched_mostly_idle_nr_run 10
+    write /sys/devices/system/cpu/cpu6/sched_mostly_idle_nr_run 10
+    write /sys/devices/system/cpu/cpu7/sched_mostly_idle_nr_run 10
+
+    write /sys/devices/system/cpu/cpu4/sched_prefer_idle 1
+    write /sys/devices/system/cpu/cpu4/sched_prefer_idle 1
+    write /sys/devices/system/cpu/cpu4/sched_prefer_idle 1
+    write /sys/devices/system/cpu/cpu4/sched_prefer_idle 1
+
+    # HMP scheduler settings
+    write /proc/sys/kernel/sched_window_stats_policy 2
+    write /proc/sys/kernel/sched_ravg_hist_size 5
+
+    # Set GPU idle freq & default gov
+    write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 5
+    write /sys/class/kgsl/kgsl-3d0/devfreq/governor simple_ondemand
+
+    # Enable core control
+    write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 2
+    write /sys/devices/system/cpu/cpu0/core_ctl/max_cpus 4
+    write /sys/devices/system/cpu/cpu0/core_ctl/disable 0
+    write /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres 90
+    write /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres 50
+    write /sys/devices/system/cpu/cpu0/core_ctl/offline_delay_ms 100
+    write /sys/devices/system/cpu/cpu0/core_ctl/is_big_cluster 1
+    write /sys/devices/system/cpu/cpu0/core_ctl/task_thres 20
+
+    write /sys/devices/system/cpu/cpu4/core_ctl/min_cpus 2
+    write /sys/devices/system/cpu/cpu4/core_ctl/max_cpus 4
+    write /sys/devices/system/cpu/cpu4/core_ctl/disable 0
+    write /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres 85
+    write /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres 50
+    write /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms 1000
+    write /sys/devices/system/cpu/cpu0/core_ctl/is_big_cluster 0
+    write /sys/devices/system/cpu/cpu4/core_ctl/task_thres 10
+
+    # Enable power efficient workqueue
+    write /sys/module/workqueue/parameters/power_efficient Y
+
+    # Turn on fsync
+    write /sys/module/sync/parameters/fsync_enabled Y
+
+    # Set parameters for sound control
+    write /sys/kernel/sound_control/headphone_gain 0
+    write /sys/kernel/sound_control/mic_gain 10
+    write /sys/kernel/sound_control/speaker_gain 10
+
+    # Work against lineage-governor.rc
+    chown root root /dev/cpuctl/cpu.notify_on_migrate
+
+on charger
+    # Offline all cores other than CPU0
+    write /sys/devices/system/cpu/cpu1/online 0
+    write /sys/devices/system/cpu/cpu2/online 0
+    write /sys/devices/system/cpu/cpu3/online 0
+    write /sys/devices/system/cpu/cpu4/online 0
+    write /sys/devices/system/cpu/cpu5/online 0
+    write /sys/devices/system/cpu/cpu6/online 0
+    write /sys/devices/system/cpu/cpu7/online 0
+
+    write /sys/module/lpm_levels/parameters/sleep_disabled 0
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
+
+service qcom-post-boot /vendor/bin/init.qcom.post_boot.sh
+    class late_start
+    user root
+    disabled
+    oneshot
+
+on property:init.svc.recovery=running
+    trigger enable-low-power
+
+on property:sys.boot_completed=1
+    trigger enable-low-power
+    setprop sys.io.scheduler bfq

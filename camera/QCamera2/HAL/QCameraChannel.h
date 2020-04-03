@@ -73,7 +73,7 @@ public:
     void deleteChannel();
     int32_t setStreamSyncCB (cam_stream_type_t stream_type,
             stream_cb_routine stream_cb);
-    bool isActive() { return m_bIsActive; }
+
 protected:
     uint32_t m_camHandle;
     mm_camera_ops_t *m_camOps;
@@ -84,7 +84,6 @@ protected:
     Vector<QCameraStream *> mStreams;
     mm_camera_buf_notify_t mDataCB;
     void *mUserData;
-    Mutex mStreamLock;
 };
 
 // burst pic channel: i.e. zsl burst mode
@@ -139,7 +138,7 @@ public:
             uint8_t meta_buf_index);
 
     // offline reprocess
-    int32_t doReprocess(int buf_fd, void *buffer, size_t buf_length, int32_t &ret_val);
+    int32_t doReprocess(int buf_fd, size_t buf_length, int32_t &ret_val);
 
     int32_t doReprocessOffline(mm_camera_super_buf_t *frame,
              mm_camera_buf_def_t *meta_buf, QCameraParametersIntf &param);

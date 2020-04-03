@@ -1,0 +1,9 @@
+allow hal_camera_default camera_data_file:dir create_dir_perms;
+allow hal_camera_default camera_data_file:file create_file_perms;
+allow hal_camera_default camera_data_file:sock_file write;
+allow hal_camera_default system_file:file { write read open getattr execute };
+allow hal_camera_default init:binder { call transfer };
+allow hal_camera_default sysfs_kgsl:lnk_file { write read open };
+
+# For interfacing with PowerHAL
+hal_client_domain(hal_camera_default, hal_power)

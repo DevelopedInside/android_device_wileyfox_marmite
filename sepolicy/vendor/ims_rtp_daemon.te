@@ -1,0 +1,1 @@
+allow hal_imsrtp sysfs:file { write read open };

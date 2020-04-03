@@ -1,0 +1,3 @@
+allow netmgrd sysfs:file { write read open };
+allow netmgrd system_file:file { write read open execute execute_no_trans getattr };
+allow netmgrd netmgrd:capability sys_resource;

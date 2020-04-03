@@ -1,0 +1,3 @@
+allow servicemanager mm-qcamerad:dir { read write open search remove_name add_name };
+allow servicemanager mm-qcamerad:file { read write open };
+allow servicemanager mm-qcamerad:process getattr;

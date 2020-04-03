@@ -1,0 +1,4 @@
+allow time_daemon self:capability { setgid setuid };
+allow time_daemon sysfs:file { write read open };
+allow time_daemon self:capability { dac_override };
+allow time_daemon self:capability { dac_read_search };

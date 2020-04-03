@@ -1,0 +1,1 @@
+allow surfaceflinger sysfs_kgsl:lnk_file { write read open };

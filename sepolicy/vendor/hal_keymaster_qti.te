@@ -1,0 +1,4 @@
+#11-23 21:59:46.357  2797  2797 W vendor.qti.hard: type=1400 audit(0.0:162): avc: denied { read } for name="vendor.qti.hardware.cryptfshw@1.0.so" dev="mmcblk0p24" ino=2937 scontext=u:r:hal_keymaster_qti:s0 tcontext=u:object_r:system_file:s0 tclass=file permissive=0
+
+allow hal_keymaster_qti system_file:file { write read open getattr execute };
+

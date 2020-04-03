@@ -1,0 +1,4 @@
+allow system_app sysfs:file { open write read getattr };
+#allow system_app dpmservice:service_manager add;
+allow system_app sysfs_vibrator:file write;
+#allow system_app dpmd_socket:sock_file write;

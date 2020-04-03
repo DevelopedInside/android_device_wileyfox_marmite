@@ -31,7 +31,7 @@
 #define __QCamera3_POSTPROC_H__
 
 // Camera dependencies
-#include "hardware/camera3.h"
+#include "camera3.h"
 #include "QCamera3HALHeader.h"
 #include "QCameraCmdThread.h"
 #include "QCameraQueue.h"
@@ -86,17 +86,6 @@ typedef struct {
     uint32_t frameNumber;
 } qcamera_hal3_pp_buffer_t;
 
-typedef struct {
-    mm_camera_super_buf_t *metabuf;
-    uint32_t metaFrameNumber;
-    bool dropFrame;
-}qcamera_hal3_meta_pp_buffer_t;
-
-typedef struct {
-    qcamera_hal3_pp_buffer_t *reprocBuf;
-    qcamera_hal3_meta_pp_buffer_t *metaBuffer;
-}ReprocessBuffer;
-
 #define MAX_HAL3_EXIF_TABLE_ENTRIES 23
 class QCamera3Exif
 {
@@ -122,7 +111,8 @@ public:
     QCamera3PostProcessor(QCamera3ProcessingChannel *ch_ctrl);
     virtual ~QCamera3PostProcessor();
 
-    int32_t init(QCamera3StreamMem *mMemory);
+    int32_t init(QCamera3StreamMem *mMemory,
+            uint32_t postprocess_mask);
     int32_t initJpeg(jpeg_encode_callback_t jpeg_cb,
             cam_dimension_t *m_max_pic_dim,
             void *user_data);
@@ -135,15 +125,13 @@ public:
             buffer_handle_t *output, uint32_t frameNumber);
     int32_t processData(mm_camera_super_buf_t *input);
     int32_t processPPData(mm_camera_super_buf_t *frame);
-    int32_t processPPMetadata(mm_camera_super_buf_t *reproc_meta,uint32_t framenum, bool dropFrame);
+    int32_t processPPMetadata(mm_camera_super_buf_t *reproc_meta);
     int32_t processJpegSettingData(jpeg_settings_t *jpeg_settings);
     qcamera_hal3_pp_data_t *dequeuePPJob(uint32_t frameNumber);
     qcamera_hal3_jpeg_data_t *findJpegJobByJobId(uint32_t jobId);
     void releaseJpegJobData(qcamera_hal3_jpeg_data_t *job);
     int32_t releaseOfflineBuffers(bool all);
     void releasePPJobData(qcamera_hal3_pp_data_t *job);
-    int32_t timeoutFrame(uint32_t frameNumber);
-    bool releaseReprocMetaBuffer(uint32_t);
 
 private:
     int32_t sendEvtNotify(int32_t msg_type, int32_t ext1, int32_t ext2);
@@ -156,7 +144,7 @@ private:
             qcamera_fwk_input_pp_data_t *frame,
             jpeg_settings_t *jpeg_settings);
     QCamera3Exif * getExifData(metadata_buffer_t *metadata,
-            jpeg_settings_t *jpeg_settings, bool needJpegExifRotation);
+            jpeg_settings_t *jpeg_settings);
     int32_t encodeData(qcamera_hal3_jpeg_data_t *jpeg_job_data,
                        uint8_t &needNewSess);
     int32_t encodeFWKData(qcamera_hal3_jpeg_data_t *jpeg_job_data,
@@ -169,12 +157,8 @@ private:
     static void releasePPInputData(void *data, void *user_data);
     static void releaseMetadata(void *data, void *user_data);
     static void releaseOngoingPPData(void *data, void *user_data);
-    static bool matchMetaFrameNum(void *data, void *user_data, void *match_data);
-    static bool matchReprocessFrameNum(void *data, void *user_data, void *match_data);
+
     static void *dataProcessRoutine(void *data);
-    qcamera_hal3_meta_pp_buffer_t * isMetaMatched(uint32_t resultFrameNumber);
-    qcamera_hal3_pp_buffer_t * isFrameMatched(uint32_t resultFrameNumber);
-    bool needsReprocess(qcamera_fwk_input_pp_data_t *frame);
 
 private:
     QCamera3ProcessingChannel  *m_parent;
@@ -183,13 +167,11 @@ private:
     mm_jpeg_ops_t              mJpegHandle;
     uint32_t                   mJpegClientHandle;
     uint32_t                   mJpegSessionId;
-    cam_jpeg_metadata_t        mJpegMetadata;
+    uint32_t                   mPostProcMask;
 
     uint32_t                   m_bThumbnailNeeded;
     QCamera3StreamMem          *mOutputMem;
     QCamera3ReprocessChannel *  m_pReprocChannel;
-    uint32_t             mReprocessFrameNum;
-    List<ReprocessBuffer> mReprocessNode;
 
     QCameraQueue m_inputPPQ;            // input queue for postproc
     QCameraQueue m_inputFWKPPQ;         // framework input queue for postproc

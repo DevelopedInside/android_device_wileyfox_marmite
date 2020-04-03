@@ -44,6 +44,7 @@
 #include "QCameraTrace.h"
 
 // Media dependencies
+#include "OMX_QCOMExtns.h"
 #ifdef USE_MEDIA_EXTENSIONS
 #include <media/hardware/HardwareAPI.h>
 typedef struct VideoNativeHandleMetadata media_metadata_buffer;
@@ -652,7 +653,7 @@ int QCameraMemoryPool::findBufferLocked(
         size_t size, bool cached, cam_stream_type_t streamType)
 {
     int rc = NAME_NOT_FOUND;
-    size_t alignsize = (size + 4095U) & (~4095U);
+
     if (mPools[streamType].empty()) {
         return NAME_NOT_FOUND;
     }
@@ -660,7 +661,7 @@ int QCameraMemoryPool::findBufferLocked(
     List<struct QCameraMemory::QCameraMemInfo>::iterator it = mPools[streamType].begin();
     if (streamType == CAM_STREAM_TYPE_OFFLINE_PROC) {
         for( ; it != mPools[streamType].end() ; it++) {
-            if( ((*it).size == alignsize) &&
+            if( ((*it).size == size) &&
                     ((*it).heap_id == heap_id) &&
                     ((*it).cached == cached) ) {
                 memInfo = *it;
@@ -820,7 +821,7 @@ int QCameraHeapMemory::allocate(uint8_t count, size_t size, uint32_t isSecure)
                     deallocOneBuffer(mMemInfo[j]);
                 }
                 // Deallocate remaining buffers that have already been allocated
-                for (int j = i; j < count; j++) {
+                for (int j = i; j < count; j --) {
                     deallocOneBuffer(mMemInfo[j]);
                 }
                 ATRACE_END();
@@ -1290,7 +1291,7 @@ QCameraVideoMemory::QCameraVideoMemory(camera_request_memory memory, void* cbCoo
     mMetaBufCount = 0;
     mBufType = bufType;
     //Set Default color conversion format
-    mUsage = private_handle_t::PRIV_FLAGS_ITU_R_601_FR;
+    mUsage = private_handle_t::PRIV_FLAGS_ITU_R_709;
 
     //Set Default frame format
     mFormat = OMX_COLOR_FormatYUV420SemiPlanar;
@@ -1805,8 +1806,6 @@ QCameraGrallocMemory::QCameraGrallocMemory(camera_request_memory memory, void* c
         mBufferHandle[i] = NULL;
         mLocalFlag[i] = BUFFER_NOT_OWNED;
         mPrivateHandle[i] = NULL;
-        mBufferStatus[i] = STATUS_IDLE;
-        mCameraMemory[i] = NULL;
     }
 }
 
@@ -2507,24 +2506,5 @@ uint8_t QCameraGrallocMemory::checkIfAllBuffersMapped() const
     return (mBufferCount == mMappableBuffers);
 }
 
-/*===========================================================================
- * FUNCTION   : setBufferStatus
- *
- * DESCRIPTION: set buffer status
- *
- * PARAMETERS :
- *   @index   : index of the buffer
- *   @status  : status of the buffer, whether skipped,etc
- *
- * RETURN     : none
- *==========================================================================*/
-void QCameraGrallocMemory::setBufferStatus(uint32_t index, BufferStatus status)
-{
-    if (index >= mBufferCount) {
-        LOGE("index out of bound");
-        return;
-    }
-    mBufferStatus[index] = status;
-}
 
 }; //namespace qcamera

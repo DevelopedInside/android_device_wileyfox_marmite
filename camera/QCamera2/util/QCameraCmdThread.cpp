@@ -72,7 +72,6 @@ QCameraCmdThread::QCameraCmdThread() :
  *==========================================================================*/
 QCameraCmdThread::~QCameraCmdThread()
 {
-    exit();
     cam_sem_destroy(&sync_sem);
     cam_sem_destroy(&cmd_sem);
 }

@@ -1,0 +1,9 @@
+allow priv_app device:dir { read open };
+allow priv_app proc_interrupts:file { read open };
+allow priv_app proc_modules:file { read getattr open };
+allow priv_app firmware_file:filesystem getattr;
+allow priv_app mnt_vendor_file:dir search;
+allow priv_app sysfs:file read;
+allow priv_app adsprpcd_file:filesystem getattr;
+allow priv_app sysfs:file { read open write };
+allow priv_app sysfs_kgsl:lnk_file { getattr open read };

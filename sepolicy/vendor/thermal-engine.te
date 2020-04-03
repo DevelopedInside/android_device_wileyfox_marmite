@@ -1,0 +1,8 @@
+allow thermal-engine file_contexts_file:file { getattr read open };
+allow thermal-engine self:process { setfscreate };
+allow thermal-engine socket_device:sock_file { create relabelfrom relabelto setattr };
+allow thermal-engine thermal_socket:sock_file { relabelfrom relabelto };
+allow thermal-engine vendor_shell_exec:file execute_no_trans;
+allow thermal-engine vendor_toolbox_exec:file execute_no_trans;
+allow thermal-engine sysfs:file { write read open };
+allow thermal-engine sysfs:dir { write read open };

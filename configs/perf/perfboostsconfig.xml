@@ -16,7 +16,10 @@
 
     <!--app lauch boost-->
         <!-- SCHEDBOOST resource opcode, value-->
+        <!-- CPUBOOST_MAX_FREQ BIG Core resource opcode, value-->
+        <!-- CPUBOOST_MAX_FREQ LITTLE Core resource opcode, value-->
         <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <!-- CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
         <!-- DISABLE_POWER_COLLAPSE resource opcode, value-->
         <!-- CLUSTR_0_CPUS_ON resource opcode, value-->
         <!-- GPU_MIN_PWRLVL resource opcode, value-->
@@ -24,24 +27,65 @@
 
         <!-- Type="1", main launch boost of 2sec -->
         <Config
-            Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="msm8937"
-            Resources="0x40C00000, 0x1, 0x40800000, 0x5DC, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+            Id="0x00001081" Type="1" Enable="true" Timeout="3000" Target="msm8937"
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
 
         <Config
             Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="msm8917"
-            Resources="0x40C00000, 0x1, 0x40800000, 0x5DC, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
 
         <Config
             Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="sdm439"
-            Resources="0x40C00000, 0x1, 0x40800000, 0x5DC, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
 
         <Config
             Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="sdm429"
-            Resources="0x40C00000, 0x1, 0x40800000, 0x5DC, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
 
         <Config
             Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="qm215"
-            Resources="0x40C00000, 0x1, 0x40800000, 0x5DC, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+
+    <!--app resume boost-->
+        <!-- SCHEDBOOST resource opcode, value-->
+        <!-- CPUBOOST_MAX_FREQ BIG Core resource opcode, value-->
+        <!-- CPUBOOST_MAX_FREQ LITTLE Core resource opcode, value-->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <!-- CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
+        <!-- DISABLE_POWER_COLLAPSE resource opcode, value-->
+        <!-- CLUSTR_0_CPUS_ON resource opcode, value-->
+        <!-- GPU_MIN_PWRLVL resource opcode, value-->
+        <!-- SWAP_RATIO resource opcode, value-->
+
+        <Config
+            Id="0x00001082" Type="1" Enable="true" Timeout="400" Target="msm8937"
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+
+        <Config
+            Id="0x00001082" Type="1" Enable="true" Timeout="400" Target="msm8917"
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+
+        <Config
+            Id="0x00001082" Type="1" Enable="true" Timeout="400" Target="sdm439"
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+
+        <Config
+            Id="0x00001082" Type="1" Enable="true" Timeout="400" Target="sdm429"
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
+
+        <Config
+            Id="0x00001082" Type="1" Enable="true" Timeout="400" Target="qm215"
+            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40400000, 0x1, 0x41000000, 0x4, 0x42804000, 0x1, 0x42C0C000, 0x64" />
 
     <!--app lauch boost (disabling packing)-->
         <!-- SCHED_PREFER_IDLE resource opcode, value-->
@@ -194,6 +238,24 @@
         <Config
             Id="0x00001080" Type="2" Enable="true" Target="qm215"
             Resources="0x40C00000, 0x1, 0x40800000, 0x514" />
+
+    <!--Pre-Fling boost-->
+        <!-- SCHEDBOOST resource opcode, value-->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <!-- GPU MIN_FREQUENCY resource opcode,value-->
+        <Config
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="qm215" Resolution="HD+"
+            Resources="0x40C00000, 0x1, 0x40800000, 0x514, 0x4280C000, 596" />
+
+    <!--Drag boost-->
+        <!-- SCHEDBOOST resource opcode, value-->
+        <!-- CPUBOOST_MIN_FREQ BIG Core resource opcode, value-->
+        <!-- GPU MIN_FREQUENCY resource opcode,value-->
+
+        <!-- Type="1", Drag boost -->
+        <Config
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="qm215" Resolution="HD+"
+            Resources="0x40C00000, 0x1, 0x40800000, 0x514, 0x4280C000, 596" />
 
     <!--Rotation latency boost-->
         <!-- SCHEDBOOST resource opcode, value-->

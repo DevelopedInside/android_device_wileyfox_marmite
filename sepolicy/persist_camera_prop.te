@@ -1,0 +1,1 @@
+allow persist_camera_prop system_server:file r_file_perms;

@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+** Copyright (c) 2012-2016, The Linux Foundation. All rights reserved.
 ** Not a Contribution. Apache license notifications and license are
 ** retained for attribution purposes only.
 **
@@ -24,7 +24,7 @@
 #include <cutils/properties.h>
 
 // System dependencies
-//#include <camera/CameraParameters.h>
+#include <CameraParameters.h>
 #include <utils/Errors.h>
 
 // Camera dependencies
@@ -32,14 +32,13 @@
 #include "QCameraMem.h"
 #include "QCameraParametersIntf.h"
 #include "QCameraThermalAdapter.h"
-#include "QCameraCommon.h"
-#include "CameraParameters.h"
-
 
 extern "C" {
 #include "mm_jpeg_interface.h"
 }
 
+using ::android::hardware::camera::common::V1_0::helper::CameraParameters;
+using ::android::hardware::camera::common::V1_0::helper::Size;
 using namespace android;
 
 namespace qcamera {
@@ -83,11 +82,6 @@ private:
         cam_dimension_t *getTotalSizeTbl();
         int32_t getPicSizeFromAPK(int &width, int &height);
         int32_t getPicSizeSetted(int &width, int &height);
-        bool mScaleEnabled;
-        bool mIsUnderScaling;  //if in scale status
-        bool isBokehEnabled;
-        int32_t bokehSnapshotWidth;
-        int32_t bokehSnapshotHeight;
 
     private:
         bool isScalePicSize(int width, int height);
@@ -95,6 +89,10 @@ private:
         int32_t setSensorSupportedPicSize();
         size_t checkScaleSizeTable(size_t scale_cnt, cam_dimension_t *scale_tbl,
                 size_t org_cnt, cam_dimension_t *org_tbl);
+
+        bool mScaleEnabled;
+        bool mIsUnderScaling;   //if in scale status
+
         // picture size cnt that need scale operation
         size_t mNeedScaleCnt;
         cam_dimension_t mNeedScaledSizeTbl[MAX_SCALE_SIZES_CNT];
@@ -213,11 +211,6 @@ private:
     static const char FOCUS_MODE_MANUAL_POSITION[];
     static const char KEY_QC_LONG_SHOT[];
     static const char KEY_QC_INITIAL_EXPOSURE_INDEX[];
-    static const char KEY_QC_INSTANT_AEC[];
-    static const char KEY_QC_INSTANT_CAPTURE[];
-    static const char KEY_QC_INSTANT_AEC_SUPPORTED_MODES[];
-    static const char KEY_QC_INSTANT_CAPTURE_SUPPORTED_MODES[];
-    static const char KEY_QC_LED_CALIBRATION_MODES[];
 
     static const char KEY_QC_MANUAL_FOCUS_POSITION[];
     static const char KEY_QC_MANUAL_FOCUS_POS_TYPE[];
@@ -263,6 +256,10 @@ private:
     //Face Recognition
     static const char KEY_QC_FACE_RECOGNITION[];
     static const char KEY_QC_SUPPORTED_FACE_RECOGNITION[];
+
+    // supported camera features to be queried by Snapdragon SDK
+    //Read only
+    static const char KEY_QC_SUPPORTED_CAMERA_FEATURES[];
 
     //Indicates number of faces requested by the application.
     //This value will be rejected if the requested faces
@@ -338,11 +335,6 @@ private:
     //Longshot
     static const char KEY_QC_LONGSHOT_SUPPORTED[];
 
-    // Dual camera mode
-    static const char KEY_QC_DUAL_CAMERA_MODE[];
-    static const char KEY_QC_DUAL_CAMERA_ID[];
-    static const char KEY_QC_DUAL_CAMERA_MAIN_CAMERA[];
-
     //ZSL+HDR
     static const char KEY_QC_ZSL_HDR_SUPPORTED[];
 
@@ -378,10 +370,6 @@ private:
     static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_12GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_12RGGB[];
     static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_12BGGR[];
-    static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_14GBRG[];
-    static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_14GRBG[];
-    static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_14RGGB[];
-    static const char QC_PIXEL_FORMAT_BAYER_QCOM_RAW_14BGGR[];
     static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_8GBRG[];
     static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_8GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_8RGGB[];
@@ -394,10 +382,6 @@ private:
     static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_12GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_12RGGB[];
     static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_12BGGR[];
-    static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_14GBRG[];
-    static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_14GRBG[];
-    static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_14RGGB[];
-    static const char QC_PIXEL_FORMAT_BAYER_MIPI_RAW_14BGGR[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_8GBRG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_8GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_8RGGB[];
@@ -410,10 +394,6 @@ private:
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_12GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_12RGGB[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_12BGGR[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_14GBRG[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_14GRBG[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_14RGGB[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_QCOM_14BGGR[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_8GBRG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_8GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_8RGGB[];
@@ -426,10 +406,6 @@ private:
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_12GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_12RGGB[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_12BGGR[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_14GBRG[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_14GRBG[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_14RGGB[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_MIPI_14BGGR[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN8_8GBRG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN8_8GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN8_8RGGB[];
@@ -446,10 +422,6 @@ private:
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_12GRBG[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_12RGGB[];
     static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_12BGGR[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_14GBRG[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_14GRBG[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_14RGGB[];
-    static const char QC_PIXEL_FORMAT_BAYER_IDEAL_PLAIN16_14BGGR[];
 
     // ISO values
     static const char ISO_AUTO[];
@@ -470,21 +442,6 @@ private:
     static const char AUTO_EXPOSURE_USER_METERING[];
     static const char AUTO_EXPOSURE_SPOT_METERING_ADV[];
     static const char AUTO_EXPOSURE_CENTER_WEIGHTED_ADV[];
-
-    // Values for instant AEC modes
-    static const char KEY_QC_INSTANT_AEC_DISABLE[];
-    static const char KEY_QC_INSTANT_AEC_AGGRESSIVE_AEC[];
-    static const char KEY_QC_INSTANT_AEC_FAST_AEC[];
-
-    // Values for instant capture modes
-    static const char KEY_QC_INSTANT_CAPTURE_DISABLE[];
-    static const char KEY_QC_INSTANT_CAPTURE_AGGRESSIVE_AEC[];
-    static const char KEY_QC_INSTANT_CAPTURE_FAST_AEC[];
-
-    // Values for led calibration modes
-    static const char KEY_QC_LED_CALIBRATION_OFF[];
-    static const char KEY_QC_LED_CALIBRATION_DUAL[];
-    static const char KEY_QC_LED_CALIBRATION_SINGLE[];
 
     static const char KEY_QC_SHARPNESS[];
     static const char KEY_QC_MIN_SHARPNESS[];
@@ -645,7 +602,6 @@ public:
     int32_t commitParameters();
 
     char* getParameters();
-    bool getDualCameraMode();
     void getPreviewFpsRange(int *min_fps, int *max_fps) const {
             CameraParameters::getPreviewFpsRange(min_fps, max_fps);
     }
@@ -659,9 +615,6 @@ public:
                                cam_dimension_t &dim);
     int32_t getStreamFormat(cam_stream_type_t streamType,
                              cam_format_t &format);
-  int32_t getStreamSubFormat(cam_stream_type_t streamType,
-             cam_sub_format_type_t &sub_format);
-
     int32_t getStreamDimension(cam_stream_type_t streamType,
             cam_dimension_t &dim);
     void getThumbnailSize(int *width, int *height) const;
@@ -693,10 +646,6 @@ public:
     uint32_t getJpegExifRotation();
     bool useJpegExifRotation();
     int32_t getEffectValue();
-    bool isInstantAECEnabled() {return m_bInstantAEC;};
-    bool isInstantCaptureEnabled() {return m_bInstantCapture;};
-    uint8_t getAecFrameBoundValue() {return mAecFrameBound;};
-    uint8_t getAecSkipDisplayFrameBound() {return mAecSkipDisplayFrameBound;};
 
     int32_t getExifDateTime(String8 &dateTime, String8 &subsecTime);
     int32_t getExifFocalLength(rat_t *focalLenght);
@@ -714,7 +663,6 @@ public:
     bool isFpsDebugEnabled() {return m_bDebugFps;};
     bool isHistogramEnabled() {return m_bHistogramEnabled;};
     bool isSceneSelectionEnabled() {return m_bSceneSelection;};
-    bool isSmallJpegSizeEnabled() {return m_bSmallJpegSize;};
     int32_t setSelectedScene(cam_scene_mode_type scene);
     cam_scene_mode_type getSelectedScene();
     bool isFaceDetectionEnabled() {return ((m_nFaceProcMask &
@@ -730,14 +678,8 @@ public:
     bool isAutoHDREnabled();
     int32_t stopAEBracket();
     int32_t updateRAW(cam_dimension_t max_dim);
-    bool isAVTimerEnabled();
     bool isDISEnabled();
-    int32_t setISType();
-    void setSmallJpegSize(cam_dimension_t sensor_dim, cam_dimension_t snap_dim);
-    int32_t updateSnapshotPpMask(cam_stream_size_info_t &stream_config_info);
-    int32_t getSensorOutputSize(cam_dimension_t max_dim, cam_dimension_t &sensor_dim);
-    cam_is_type_t getVideoISType();
-    cam_is_type_t getPreviewISType();
+    cam_is_type_t getISType();
     uint8_t getMobicatMask();
 
     cam_focus_mode_type getFocusMode() const {return mFocusMode;};
@@ -766,15 +708,14 @@ public:
 
     const char *getASDStateString(cam_auto_scene_t scene);
     bool isHDRThumbnailProcessNeeded() { return m_bHDRThumbnailProcessNeeded; };
-    void setMinPpMask(cam_feature_mask_t min_pp_mask) { m_nMinRequiredPpMask = min_pp_mask; };
-    bool setStreamConfigure(bool isCapture, bool previewAsPostview, bool resetConfig,
-            uint32_t* sessionId);
+    void setMinPpMask(uint32_t min_pp_mask) { m_nMinRequiredPpMask = min_pp_mask; };
+    bool setStreamConfigure(bool isCapture, bool previewAsPostview, bool resetConfig);
     int32_t addOnlineRotation(uint32_t rotation, uint32_t streamId, int32_t device_rotation);
     uint8_t getNumOfExtraBuffersForImageProc();
     uint8_t getNumOfExtraBuffersForVideo();
     uint8_t getNumOfExtraBuffersForPreview();
     uint32_t getExifBufIndex(uint32_t captureIndex);
-    bool needThumbnailReprocess(cam_feature_mask_t *pFeatureMask);
+    bool needThumbnailReprocess(uint32_t *pFeatureMask);
     inline bool isUbiFocusEnabled() {return m_bAFBracketingOn && !m_bReFocusOn;};
     inline bool isChromaFlashEnabled() {return m_bChromaFlashOn;};
     inline bool isHighQualityNoiseReductionMode() {return m_bHighQualityNoiseReductionMode;};
@@ -816,16 +757,15 @@ public:
     int32_t updateOisValue(bool oisValue);
     int32_t setIntEvent(cam_int_evt_params_t params);
     bool getofflineRAW() {return mOfflineRAW;}
-    bool getQuadraCfa();
     int32_t updatePpFeatureMask(cam_stream_type_t stream_type);
-    int32_t getStreamPpMask(cam_stream_type_t stream_type, cam_feature_mask_t &pp_mask);
+    int32_t getStreamPpMask(cam_stream_type_t stream_type, uint32_t &pp_mask);
     int32_t getSharpness() {return m_nSharpness;};
     int32_t getEffect() {return mParmEffect;};
     int32_t updateFlashMode(cam_flash_mode_t flash_mode);
     int32_t configureAEBracketing(cam_capture_frame_config_t &frame_config);
     int32_t configureHDRBracketing(cam_capture_frame_config_t &frame_config);
     int32_t configFrameCapture(bool commitSettings);
-    int32_t resetFrameCapture(bool commitSettings, bool lowLightEnabled);
+    int32_t resetFrameCapture(bool commitSettings);
     cam_still_more_t getStillMoreSettings() {return m_stillmore_config;};
     void setStillMoreSettings(cam_still_more_t stillmore_config)
             {m_stillmore_config = stillmore_config;};
@@ -842,7 +782,6 @@ public:
     bool    isPostProcScaling();
     bool    isLLNoiseEnabled();
     void    setCurPPCount(int8_t count) {mCurPPCount = count;};
-    int32_t setQuadraCfaMode(uint32_t value, bool initCommit);
     int32_t setToneMapMode(uint32_t value, bool initCommit);
     void setTintless(bool enable);
     uint8_t getLongshotStages();
@@ -871,12 +810,10 @@ public:
             cam_sync_related_sensors_event_info_t* info);
     const cam_sync_related_sensors_event_info_t*
             getRelatedCamSyncInfo(void);
-    int32_t setFrameSyncEnabled(bool enable);
-    bool isFrameSyncEnabled(void);
     int32_t getRelatedCamCalibration(
             cam_related_system_calibration_data_t* calib);
     int32_t bundleRelatedCameras(bool sync, uint32_t sessionid);
-    uint8_t fdModeInVideo();
+    bool isFDInVideoEnabled();
     bool isOEMFeatEnabled() { return m_bOEMFeatEnabled; }
 
     int32_t setZslMode(bool value);
@@ -887,21 +824,6 @@ public:
     int32_t getPicSizeFromAPK(int &width, int &height);
 
     int32_t checkFeatureConcurrency();
-    int32_t setInstantAEC(uint8_t enable, bool initCommit);
-
-    int32_t getAnalysisInfo(
-        bool fdVideoEnabled,
-        bool hal3,
-        cam_feature_mask_t featureMask,
-        cam_analysis_info_t *pAnalysisInfo);
-
-    int32_t getMetaRawInfo();
-    bool sendStreamConfigForPickRes(cam_stream_size_info_t &stream_config_info);
-    int32_t updateDtVc(int32_t *dt, int32_t *vc);
-    bool isLinkPreviewForLiveShot();
-    bool m_bDualCameraMode;
-    cam_dimension_t originalSnapshotDim;
-
 private:
     int32_t setPreviewSize(const QCameraParameters& );
     int32_t setVideoSize(const QCameraParameters& );
@@ -956,9 +878,6 @@ private:
     int32_t setTruePortrait(const QCameraParameters& );
     int32_t setSeeMore(const QCameraParameters& );
     int32_t setStillMore(const QCameraParameters& );
-#ifdef TARGET_TS_MAKEUP
-    int32_t setTsMakeup(const QCameraParameters& );
-#endif
     int32_t setNoiseReductionMode(const QCameraParameters& );
     int32_t setRedeyeReduction(const QCameraParameters& );
     int32_t setGpsLocation(const QCameraParameters& );
@@ -973,6 +892,7 @@ private:
     int32_t setSceneSelectionMode(const QCameraParameters& params);
     int32_t setFaceRecognition(const QCameraParameters& );
     int32_t setFlip(const QCameraParameters& );
+    int32_t setBurstNum(const QCameraParameters& params);
     int32_t setRetroActiveBurstNum(const QCameraParameters& params);
     int32_t setBurstLEDOnPeriod(const QCameraParameters& params);
     int32_t setSnapshotFDReq(const QCameraParameters& );
@@ -981,14 +901,11 @@ private:
     int32_t setTintlessValue(const QCameraParameters& params);
     int32_t setCDSMode(const QCameraParameters& params);
     int32_t setInitialExposureIndex(const QCameraParameters& params);
-    int32_t setInstantCapture(const QCameraParameters& params);
-    int32_t setInstantAEC(const QCameraParameters& params);
     int32_t setMobicat(const QCameraParameters& params);
     int32_t setRdiMode(const QCameraParameters& );
     int32_t setSecureMode(const QCameraParameters& );
     int32_t setCacheVideoBuffers(const QCameraParameters& params);
     int32_t setCustomParams(const QCameraParameters& params);
-    int32_t setDualCameraMode(const QCameraParameters& params);
     int32_t setAutoExposure(const char *autoExp);
     int32_t setPreviewFpsRange(int min_fps,int max_fps,
             int vid_min_fps,int vid_max_fps);
@@ -1056,16 +973,17 @@ private:
     void setBufBatchCount(int8_t buf_cnt);
     void setVideoBatchSize();
     void setDcrf();
-    int32_t setStreamPpMask(cam_stream_type_t stream_type, cam_feature_mask_t pp_mask);
+    int32_t setStreamPpMask(cam_stream_type_t stream_type, uint32_t pp_mask);
     void setOfflineRAW(bool value = 0);
-    int32_t setQuadraCfa(const QCameraParameters& params);
     int32_t configureFlash(cam_capture_frame_config_t &frame_config);
     int32_t configureLowLight(cam_capture_frame_config_t &frame_config);
     int32_t configureManualCapture(cam_capture_frame_config_t &frame_config);
 
     bool isTNRPreviewEnabled() {return m_bTNRPreviewOn;};
     bool isTNRVideoEnabled() {return m_bTNRVideoOn;};
+    uint8_t getBurstNum();
     bool getFaceDetectionOption() { return  m_bFaceDetectionOn;}
+    bool isAVTimerEnabled();
     void getLiveSnapshotSize(cam_dimension_t &dim);
     int32_t getRawSize(cam_dimension_t &dim) {dim = m_rawSize; return NO_ERROR;};
     int getAutoFlickerMode();
@@ -1091,9 +1009,7 @@ private:
             size_t len, int &default_fps_index);
     String8 createFpsString(cam_fps_range_t &fps);
     String8 createZoomRatioValuesString(uint32_t *zoomRatios, size_t length);
-    int32_t setLedCalibration(const QCameraParameters& params);
-    int32_t setLedCalibration(const char *calibration_mode);
-    int32_t setAdvancedCaptureMode();
+    int32_t setDualLedCalibration(const QCameraParameters& params);
 
     // ops for batch set/get params with server
     int32_t initBatchUpdate(parm_buffer_t *p_table);
@@ -1108,9 +1024,6 @@ private:
     // Map from strings to values
     static const cam_dimension_t THUMBNAIL_SIZES_MAP[];
     static const QCameraMap<cam_auto_exposure_mode_type> AUTO_EXPOSURE_MAP[];
-    static const QCameraMap<cam_aec_convergence_type> INSTANT_CAPTURE_MODES_MAP[];
-    static const QCameraMap<cam_aec_convergence_type> INSTANT_AEC_MODES_MAP[];
-    static const QCameraMap<cam_led_calibration_mode_t> LED_CALIBRATION_MODE_MAP[];
     static const QCameraMap<cam_format_t> PREVIEW_FORMATS_MAP[];
     static const QCameraMap<cam_format_t> PICTURE_TYPES_MAP[];
     static const QCameraMap<cam_focus_mode_type> FOCUS_MODES_MAP[];
@@ -1142,7 +1055,6 @@ private:
     static const QCameraMap<int> NOISE_REDUCTION_MODES_MAP[];
 
     QCameraReprocScaleParam m_reprocScaleParam;
-    QCameraCommon           mCommon;
 
     cam_capability_t *m_pCapability;
     mm_camera_vtbl_t *m_pCamOpsTbl;
@@ -1153,9 +1065,7 @@ private:
     /* ptr to sync buffer in m_pRelCamSyncHeap */
     cam_sync_related_sensors_event_info_t *m_pRelCamSyncBuf;
     cam_sync_related_sensors_event_info_t m_relCamSyncInfo;
-    bool m_bFrameSyncEnabled;
-    cam_is_type_t mIsTypeVideo;
-    cam_is_type_t mIsTypePreview;
+    cam_is_type_t mIsType;
 
     bool m_bZslMode;                // if ZSL is enabled
     bool m_bZslMode_new;
@@ -1178,6 +1088,7 @@ private:
     bool m_bTNRVideoOn;
     bool m_bTNRSnapshotOn;
     bool m_bInited;
+    uint8_t m_nBurstNum;
     int m_nRetroBurstNum;
     int m_nBurstLEDOnPeriod;
     cam_exp_bracketing_t m_AEBracketingClient;
@@ -1189,7 +1100,7 @@ private:
     bool m_bFixedFrameRateSet;      // Indicates that a fixed frame rate is set
     qcamera_thermal_mode m_ThermalMode; // adjust fps vs adjust frameskip
     cam_dimension_t m_LiveSnapshotSize; // live snapshot size
-    cam_dimension_t m_rawSize; // Raw size
+    cam_dimension_t m_rawSize; // live snapshot size
     cam_dimension_t m_maxPicSize;
     bool m_bHDREnabled;             // if HDR is enabled
     bool m_bLocalHDREnabled;   // This flag tells whether HDR enabled or not regarless of APP mode
@@ -1197,7 +1108,6 @@ private:
     bool m_bDISEnabled;
     bool m_bOISEnabled;
     cam_still_more_t m_stillmore_config;
-    bool m_bMetaRawEnabled;
 
     uint8_t m_MobiMask;
     QCameraAdjustFPS *m_AdjustFPS;
@@ -1230,12 +1140,13 @@ private:
     bool m_bHDRModeSensor;
     bool mOfflineRAW;
     bool m_bTruePortraitOn;
-    cam_feature_mask_t m_nMinRequiredPpMask;
-    cam_feature_mask_t mStreamPpMask[CAM_STREAM_TYPE_MAX];
+    uint32_t m_nMinRequiredPpMask;
+    uint32_t mStreamPpMask[CAM_STREAM_TYPE_MAX];
     int32_t m_nSharpness;
     int8_t mTotalPPCount;
     int8_t mCurPPCount;
     int32_t mZoomLevel;
+    bool m_bStreamsConfigured;
     int32_t mParmZoomLevel;
     bool m_bIsLowMemoryDevice;
     int32_t mCds_mode;
@@ -1255,19 +1166,7 @@ private:
     int32_t m_isoValue;
     QCameraManualCaptureModes m_ManualCaptureMode;
     cam_dyn_img_data_t m_DynamicImgData;
-    cam_led_calibration_mode_t m_ledCalibrationMode;
-    // Param to trigger instant AEC.
-    bool m_bInstantAEC;
-    // Param to trigger instant capture.
-    bool m_bInstantCapture;
-    // Number of frames, camera interface will wait for getting the instant capture frame.
-    uint8_t mAecFrameBound;
-    // Number of preview frames, that HAL will hold without displaying, for instant AEC mode.
-    uint8_t mAecSkipDisplayFrameBound;
-    bool m_bQuadraCfa;
-    bool m_bSmallJpegSize;
-    int32_t mDualCamId;
-    bool m_bMainCamera;
+    int32_t m_dualLedCalibration;
 };
 
 }; // namespace qcamera

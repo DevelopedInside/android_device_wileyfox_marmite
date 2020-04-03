@@ -49,19 +49,10 @@ enum qcamera3_ext_tags qcamera3_ext3_section_bounds[QCAMERA3_SECTIONS_END -
         QCAMERA3_CROP_END,
         QCAMERA3_TUNING_META_DATA_END,
         QCAMERA3_TEMPORAL_DENOISE_END,
-        QCAMERA3_ISO_EXP_PRIORITY_END,
-        QCAMERA3_SATURATION_END,
-        QCAMERA3_EXPOSURE_METER_END,
         QCAMERA3_AV_TIMER_END,
         QCAMERA3_SENSOR_META_DATA_END,
-        QCAMERA3_DUALCAM_LINK_META_DATA_END,
-        QCAMERA3_DUALCAM_CALIB_META_DATA_END,
-        QCAMERA3_HAL_PRIVATEDATA_END,
-        QCAMERA3_JPEG_ENCODE_CROP_END,
-        QCAMERA3_SHARPNESS_END,
-        QCAMERA3_STATS_END,
-        QCAMERA3_BRIGHTNESS_END
-};
+        NEXUS_EXPERIMENTAL_2015_END,
+} ;
 
 typedef struct vendor_tag_info {
     const char *tag_name;
@@ -76,18 +67,9 @@ const char *qcamera3_ext_section_names[QCAMERA3_SECTIONS_END -
     "org.codeaurora.qcamera3.crop",
     "org.codeaurora.qcamera3.tuning_meta_data",
     "org.codeaurora.qcamera3.temporal_denoise",
-    "org.codeaurora.qcamera3.iso_exp_priority",
-    "org.codeaurora.qcamera3.saturation",
-    "org.codeaurora.qcamera3.exposure_metering",
     "org.codeaurora.qcamera3.av_timer",
     "org.codeaurora.qcamera3.sensor_meta_data",
-    "org.codeaurora.qcamera3.dualcam_link_meta_data",
-    "org.codeaurora.qcamera3.dualcam_calib_meta_data",
-    "org.codeaurora.qcamera3.hal_private_data",
-    "org.codeaurora.qcamera3.jpeg_encode_crop",
-    "org.codeaurora.qcamera3.sharpness",
-    "org.codeaurora.qcamera3.stats",
-    "org.codeaurora.qcamera3.brightness"
+    "com.google.nexus.experimental2015"
 };
 
 vendor_tag_info_t qcamera3_privatedata[QCAMERA3_PRIVATEDATA_END - QCAMERA3_PRIVATEDATA_START] = {
@@ -122,22 +104,6 @@ vendor_tag_info_t qcamera3_temporal_denoise[QCAMERA3_TEMPORAL_DENOISE_END -
     { "process_type", TYPE_INT32 }
 };
 
-vendor_tag_info qcamera3_iso_exp_priority[QCAMERA3_ISO_EXP_PRIORITY_END -
-                                  QCAMERA3_ISO_EXP_PRIORITY_START] = {
-    { "use_iso_exp_priority", TYPE_INT64 },
-    { "select_priority", TYPE_INT32 }
-};
-
-vendor_tag_info qcamera3_saturation[QCAMERA3_SATURATION_END -
-                                  QCAMERA3_SATURATION_START] = {
-    { "use_saturation", TYPE_INT32 }
-};
-
-vendor_tag_info qcamera3_exposure_metering[QCAMERA3_EXPOSURE_METER_END -
-                                  QCAMERA3_EXPOSURE_METER_START] = {
-    { "exposure_metering_mode", TYPE_INT32}
-};
-
 vendor_tag_info qcamera3_av_timer[QCAMERA3_AV_TIMER_END -
                                   QCAMERA3_AV_TIMER_START] = {
    {"use_av_timer", TYPE_BYTE }
@@ -145,57 +111,14 @@ vendor_tag_info qcamera3_av_timer[QCAMERA3_AV_TIMER_END -
 
 vendor_tag_info qcamera3_sensor_meta_data[QCAMERA3_SENSOR_META_DATA_END -
                                   QCAMERA3_SENSOR_META_DATA_START] = {
-   {"dynamic_black_level_pattern", TYPE_FLOAT },
-   {"is_mono_only",                TYPE_BYTE }
+   {"dynamic_black_level_pattern", TYPE_FLOAT }
 };
 
-vendor_tag_info_t
-        qcamera3_dualcam_link_meta_data[QCAMERA3_DUALCAM_LINK_META_DATA_END -
-        QCAMERA3_DUALCAM_LINK_META_DATA_START] = {
-    { "enable",            TYPE_BYTE },
-    { "is_main",           TYPE_BYTE },
-    { "related_camera_id", TYPE_INT32 }
+vendor_tag_info_t nexus_experimental_2015[NEXUS_EXPERIMENTAL_2015_END -
+        NEXUS_EXPERIMENTAL_2015_START] = {
+    {"sensor.dynamicBlackLevel", TYPE_FLOAT },
+    {"sensor.info.opticallyShieldedRegions", TYPE_INT32 }
 };
-
-vendor_tag_info_t
-        qcamera3_dualcam_calib_meta_data[QCAMERA3_DUALCAM_CALIB_META_DATA_END -
-        QCAMERA3_DUALCAM_CALIB_META_DATA_START] = {
-    { "dualcam_calib_meta_data_blob", TYPE_BYTE }
-};
-
-vendor_tag_info_t
-        qcamera3_hal_privatedata[QCAMERA3_HAL_PRIVATEDATA_END -
-        QCAMERA3_HAL_PRIVATEDATA_START] = {
-    { "reprocess_flags",      TYPE_BYTE },
-    { "reprocess_data_blob",  TYPE_BYTE }
-};
-
-vendor_tag_info_t
-        qcamera3_jpep_encode_crop[QCAMERA3_JPEG_ENCODE_CROP_END -
-        QCAMERA3_JPEG_ENCODE_CROP_START] = {
-    { "enable", TYPE_BYTE },
-    { "rect",   TYPE_INT32 },
-    { "roi",    TYPE_INT32}
-};
-
-vendor_tag_info_t qcamera3_sharpness[QCAMERA3_SHARPNESS_END -
-        QCAMERA3_SHARPNESS_START] = {
-    {"strength", TYPE_INT32 },
-    {"range", TYPE_INT32 }
-};
-
-
-vendor_tag_info_t qcamera3_stats[QCAMERA3_STATS_END -
-        QCAMERA3_STATS_START] = {
-    { "is_hdr_scene", TYPE_BYTE },
-    { "is_hdr_scene_confidence", TYPE_FLOAT }
-};
-
-vendor_tag_info_t qcamera3_brightness[QCAMERA3_BRIGHTNESS_END -
-        QCAMERA3_BRIGHTNESS_START] = {
-    {"brightness_val", TYPE_FLOAT }
-};
-
 
 vendor_tag_info_t *qcamera3_tag_info[QCAMERA3_SECTIONS_END -
         VENDOR_SECTION] = {
@@ -205,18 +128,9 @@ vendor_tag_info_t *qcamera3_tag_info[QCAMERA3_SECTIONS_END -
     qcamera3_crop,
     qcamera3_tuning_meta_data,
     qcamera3_temporal_denoise,
-    qcamera3_iso_exp_priority,
-    qcamera3_saturation,
-    qcamera3_exposure_metering,
     qcamera3_av_timer,
     qcamera3_sensor_meta_data,
-    qcamera3_dualcam_link_meta_data,
-    qcamera3_dualcam_calib_meta_data,
-    qcamera3_hal_privatedata,
-    qcamera3_jpep_encode_crop,
-    qcamera3_sharpness,
-    qcamera3_stats,
-    qcamera3_brightness
+    nexus_experimental_2015,
 };
 
 uint32_t qcamera3_all_tags[] = {
@@ -242,50 +156,15 @@ uint32_t qcamera3_all_tags[] = {
     // QCAMERA3_TEMPORAL_DENOISE
     (uint32_t)QCAMERA3_TEMPORAL_DENOISE_ENABLE,
     (uint32_t)QCAMERA3_TEMPORAL_DENOISE_PROCESS_TYPE,
-
-    // QCAMERA3_ISO_EXP_PRIORITY
-    (uint32_t)QCAMERA3_USE_ISO_EXP_PRIORITY,
-    (uint32_t)QCAMERA3_SELECT_PRIORITY,
-
-    // QCAMERA3_SATURATION
-    (uint32_t)QCAMERA3_USE_SATURATION,
-
-    // QCAMERA3_EXPOSURE_METERING
-    (uint32_t)QCAMERA3_EXPOSURE_METER,
-
     //QCAMERA3_AVTIMER
     (uint32_t)QCAMERA3_USE_AV_TIMER,
 
     //QCAMERA3_SENSOR_META_DATA
     (uint32_t)QCAMERA3_SENSOR_DYNAMIC_BLACK_LEVEL_PATTERN,
-    (uint32_t)QCAMERA3_SENSOR_IS_MONO_ONLY,
 
-    // QCAMERA3_DUALCAM_LINK_META_DATA
-    (uint32_t)QCAMERA3_DUALCAM_LINK_ENABLE,
-    (uint32_t)QCAMERA3_DUALCAM_LINK_IS_MAIN,
-    (uint32_t)QCAMERA3_DUALCAM_LINK_RELATED_CAMERA_ID,
-
-    // QCAMERA3_DUALCAM_CALIB_META_DATA
-    (uint32_t)QCAMERA3_DUALCAM_CALIB_META_DATA_BLOB,
-
-    // QCAMERA3_HAL_PRIVATEDATA
-    (uint32_t)QCAMERA3_HAL_PRIVATEDATA_REPROCESS_FLAGS,
-    (uint32_t)QCAMERA3_HAL_PRIVATEDATA_REPROCESS_DATA_BLOB,
-
-    // QCAMERA3_JPEG_ENCODE_CROP
-    (uint32_t)QCAMERA3_JPEG_ENCODE_CROP_ENABLE,
-    (uint32_t)QCAMERA3_JPEG_ENCODE_CROP_RECT,
-    (uint32_t)QCAMERA3_JPEG_ENCODE_CROP_ROI,
-
-    //QCAMERA3_SHARPNESS
-    (uint32_t)QCAMERA3_SHARPNESS_STRENGTH,
-    (uint32_t)QCAMERA3_SHARPNESS_RANGE,
-
-    // QCAMERA3_STATS
-    (uint32_t)QCAMERA3_STATS_IS_HDR_SCENE,
-    (uint32_t)QCAMERA3_STATS_IS_HDR_SCENE_CONFIDENCE,
-    //QCAMERA3_BRIGHTNESS
-    (uint32_t)QCAMERA3_BRIGHTNESS_VALUE
+    //NEXUS_EXPERIMENTAL_2015
+    (uint32_t)NEXUS_EXPERIMENTAL_2015_SENSOR_DYNAMIC_BLACK_LEVEL,
+    (uint32_t)NEXUS_EXPERIMENTAL_2015_SENSOR_INFO_OPTICALLY_SHIELDED_REGIONS,
 };
 
 const vendor_tag_ops_t* QCamera3VendorTags::Ops = NULL;

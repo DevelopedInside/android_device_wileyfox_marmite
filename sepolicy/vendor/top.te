@@ -1,0 +1,3 @@
+allow thermal-engine init:file { read write open };
+allow thermal-engine thermal-engine:capability sys_ptrace;
+allow thermal-engine kernel:file { read write open };

@@ -1,0 +1,22 @@
+typeattribute vendor_init data_between_core_and_vendor_violators;
+
+
+allow vendor_init {
+  camera_data_file
+  system_data_file
+  tombstone_data_file
+  rootfs
+  fpc_data_file
+  gx_fpd_data_file
+  media_rw_data_file
+}:dir { create search getattr open read setattr ioctl relabelto write add_name remove_name rmdir relabelfrom };
+
+allow vendor_init dhcp_data_file:dir setattr;
+allow vendor_init media_rw_data_file:dir setattr;
+allow vendor_init rootfs:dir write;
+allow vendor_init rootfs:lnk_file setattr;
+allow vendor_init wifi_data_file:dir { search setattr };
+allow vendor_init vendor_file:file { execute getattr };
+allow vendor_init ipa_dev:file create;
+allow vendor_init gx_fpd_data_file:file relabelto;
+

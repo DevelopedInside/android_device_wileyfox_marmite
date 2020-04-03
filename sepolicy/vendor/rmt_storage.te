@@ -1,0 +1,13 @@
+allow rmt_storage {
+    modem_efs_partition_device
+}:blk_file rw_file_perms;
+
+r_dir_file(rmt_storage, persist_file)
+
+allow rmt_storage sysfs_uio:file r_file_perms;
+allow rmt_storage sysfs_uio:dir { read open search };
+allow rmt_storage sysfs_uio:lnk_file { read };
+
+allow rmt_storage self:capability dac_override;
+
+allow rmt_storage sysfs:file { read open write };

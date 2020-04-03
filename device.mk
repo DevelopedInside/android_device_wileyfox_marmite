@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2017 The LineageOS Project
+# Copyright (C) 2016 The CyanogenMod Project
+#           (C) 2017-2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,52 +15,15 @@
 # limitations under the License.
 #
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
-# Overlay
-DEVICE_PACKAGE_OVERLAYS += \
-    $(LOCAL_PATH)/overlay \
-    $(LOCAL_PATH)/overlay-lineage
-
-PRODUCT_ENFORCE_RRO_TARGETS := framework-res
-
-# Properties
--include $(LOCAL_PATH)/vendor_prop.mk
-
-# AAPT
-PRODUCT_AAPT_CONFIG := normal
-PRODUCT_AAPT_PREF_CONFIG := xxhdpi
-
 # Additional native libraries
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
-
-# Bootanimation
-TARGET_SCREEN_HEIGHT := 1280
-TARGET_SCREEN_WIDTH := 720
+    $(LOCAL_PATH)/configs/native/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
 # ANT
 PRODUCT_PACKAGES += \
-    AntHalService \
-    com.dsi.ant.antradio_library \
-    libantradio \
-    antradio_app
-
-PRODUCT_COPY_FILES += \
-    external/ant-wireless/antradio-library/com.dsi.ant.antradio_library.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.dsi.ant.antradio_library.xml
+    AntHalService
 
 # Audio
-PRODUCT_PACKAGES += \
-    audio.a2dp.default \
-    audio.primary.msm8937 \
-    audio.r_submix.default \
-    audio.usb.default \
-    libaudio-resampler \
-    libqcomvisualizer \
-    libqcomvoiceprocessing \
-    libqcompostprocbundle \
-    tinymix
-
 PRODUCT_PACKAGES += \
     android.hardware.audio@2.0-impl \
     android.hardware.audio@2.0-service \
@@ -71,129 +35,136 @@ PRODUCT_PACKAGES += \
     android.hardware.audio.effect@2.0-service \
     android.hardware.audio.effect@5.0 \
     android.hardware.audio.effect@5.0-impl \
-    android.hardware.soundtrigger@2.1-impl \
-    android.hardware.soundtrigger@2.1-service
+    android.hardware.bluetooth.audio@2.0-impl \
+    android.hardware.soundtrigger@2.2-impl \
+    android.hardware.soundtrigger@2.2-service \
+    audio.a2dp.default \
+    audio.bluetooth.default \
+    audio.primary.msm8937 \
+    audio.r_submix.default \
+    audio.usb.default \
+    libaudio-resampler \
+    libqcompostprocbundle \
+    libqcomvisualizer \
+    libqcomvoiceprocessing \
+    libvolumelistener \
+    tinymix
 
-# Audio configuration
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/audio/audio_output_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_output_policy.conf \
-    $(LOCAL_PATH)/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
-    $(LOCAL_PATH)/audio/sound_trigger_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_mixer_paths.xml \
-    $(LOCAL_PATH)/audio/sound_trigger_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_platform_info.xml \
-    $(LOCAL_PATH)/audio/audio_tuning_mixer.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer.txt
-
-# Audio XML configuration files
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/configs/audio/mixer_paths_qrd_sku1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths_qrd_sku1.xml \
+    $(LOCAL_PATH)/configs/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/audio_effects.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.conf \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/audio_output_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_output_policy.conf \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/audio_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_platform_info.xml \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/audio_platform_info_extcodec.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_platform_info_extcodec.xml \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/audio_policy.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy.conf \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/audio_tuning_mixer.txt:$(TARGET_COPY_OUT_VENDOR)/etc/audio_tuning_mixer.txt \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/sound_trigger_mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_mixer_paths.xml \
+    hardware/qcom-caf/msm8996/audio/configs/msm8937/sound_trigger_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sound_trigger_platform_info.xml \
     frameworks/av/services/audiopolicy/config/a2dp_in_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_in_audio_policy_configuration.xml \
     frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
     frameworks/av/services/audiopolicy/config/bluetooth_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_audio_policy_configuration.xml \
     frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
     frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
-    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml \
-    $(LOCAL_PATH)/audio/audio_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_platform_info.xml \
-    $(LOCAL_PATH)/audio/mixer_paths_qrd_sku1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths_qrd_sku1.xml
-
-# Bluetooth
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
-
-PRODUCT_PACKAGES += \
-    libldacBT_dec
+    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml
+    
+# Boot animation
+TARGET_SCREEN_HEIGHT := 1280
+TARGET_SCREEN_WIDTH := 720
 
 # Camera
 PRODUCT_PACKAGES += \
-    camera.device@3.2-impl \
     camera.device@1.0-impl \
-    camera.msm8937 \
-    libmm-qcamera \
-    Snap
-
-PRODUCT_PACKAGES += \
+    camera.device@3.2-impl \
     android.hardware.camera.provider@2.4-impl \
-    android.hardware.camera.provider@2.4-service
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
-    frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml
-
-# CNE
+    android.hardware.camera.provider@2.4-service \
+    vendor.qti.hardware.camera.device@1.0 \
+    vendor.qti.hardware.camera.device@1.0_vendor \
+    camera.msm8937 \
+    GCam
+    
+# Configstore
 PRODUCT_PACKAGES += \
-    libcnefeatureconfig
+    android.hardware.configstore@1.0-service
+
+# ConsumerIr
+PRODUCT_PACKAGES += \
+    android.hardware.ir@1.0-impl \
+    android.hardware.ir@1.0-service
+
+
+# CarrierConfig
+PRODUCT_PACKAGES += \
+    CarrierConfig
+
+# Dex
+PRODUCT_DEXPREOPT_SPEED_APPS += \
+    SystemUI
 
 # Display
 PRODUCT_PACKAGES += \
-    android.hardware.graphics.allocator@2.0-impl \
-    android.hardware.graphics.allocator@2.0-service \
-    android.hardware.graphics.composer@2.1-impl \
-    android.hardware.graphics.composer@2.1-service \
-    android.hardware.graphics.mapper@2.0-impl-2.1 \
-    android.hardware.memtrack@1.0-impl \
-    android.hardware.memtrack@1.0-service \
     copybit.msm8937 \
     gralloc.msm8937 \
     hwcomposer.msm8937 \
     memtrack.msm8937 \
     libdisplayconfig \
-    liboverlay \
-    libqdMetaData.system \
+    libhwc2on1adapter \
     libgenlock \
-    libtinyxml
+    libtinyxml \
+    libqdMetaData.system
+
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.mapper@2.0-impl \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.composer@2.1-service \
+    android.hardware.memtrack@1.0-impl \
+    android.hardware.memtrack@1.0-service \
+    android.hardware.renderscript@1.0-impl
 
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml
+    $(LOCAL_PATH)/configs/display/qdcm_calib_data_hx8394F_HD720p_video_BOE.xml:$(TARGET_COPY_OUT_VENDOR)/etc/qdcm_calib_data_hx8394F_HD720p_video_BOE.xml \
+    $(LOCAL_PATH)/configs/display/qdcm_calib_data_ili9881c_HD720p_video_Tianma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/qdcm_calib_data_ili9881c_HD720p_video_Tianma.xml \
+    $(LOCAL_PATH)/configs/display/qdcm_calib_data_nt35521s_HD720p_video_EBBG.xml:$(TARGET_COPY_OUT_VENDOR)/etc/qdcm_calib_data_nt35521s_HD720p_video_EBBG.xml
 
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.0-impl \
     android.hardware.drm@1.0-service \
-    android.hardware.drm@1.1-service.clearkey
+    android.hardware.drm@1.2-service.clearkey \
+    libprotobuf-cpp-lite
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.0-service-marmite
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml
+    android.hardware.biometrics.fingerprint@2.0-service.custom
 
 # FM
 PRODUCT_PACKAGES += \
-    FM2 \
-    libqcomfm_jni \
-    qcom.fmradio
+    FMRadio \
+    libfmjni
 
-# For config.fs
+# Fwk-detect
 PRODUCT_PACKAGES += \
-    fs_config_files
+    libqti_vndfwk_detect
 
-# Gatekeeper
+# Gatekeeper HAL
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
     android.hardware.gatekeeper@1.0-service
 
-# GNSS HAL
+# GPS
 PRODUCT_PACKAGES += \
-    libcurl \
-    libgnss \
-    libgnsspps \
-    libsensorndkbridge
-
-PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl-qti \
-    android.hardware.gnss@1.0-service-qti
+    libwifi-hal-ctrl
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/gps/etc/apdr.conf:$(TARGET_COPY_OUT_VENDOR)/etc/apdr.conf \
-    $(LOCAL_PATH)/gps/etc/flp.conf:$(TARGET_COPY_OUT_VENDOR)/etc/flp.conf \
-    $(LOCAL_PATH)/gps/etc/gps.conf:$(TARGET_COPY_OUT_VENDOR)/etc/gps.conf \
-    $(LOCAL_PATH)/gps/etc/izat.conf:$(TARGET_COPY_OUT_VENDOR)/etc/izat.conf \
-    $(LOCAL_PATH)/gps/etc/lowi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/lowi.conf \
-    $(LOCAL_PATH)/gps/etc/sap.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sap.conf \
-    $(LOCAL_PATH)/gps/etc/xtwifi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/xtwifi.conf
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml
+    $(LOCAL_PATH)/configs/gps/flp.conf:$(TARGET_COPY_OUT_VENDOR)/etc/flp.conf \
+    $(LOCAL_PATH)/configs/gps/gps.conf:$(TARGET_COPY_OUT_VENDOR)/etc/gps.conf \
+    $(LOCAL_PATH)/configs/gps/izat.conf:$(TARGET_COPY_OUT_VENDOR)/etc/izat.conf \
+    $(LOCAL_PATH)/configs/gps/lowi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/lowi.conf \
+    $(LOCAL_PATH)/configs/gps/sap.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sap.conf \
+    $(LOCAL_PATH)/configs/gps/xtwifi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/xtwifi.conf
 
 # Healthd
 PRODUCT_PACKAGES += \
@@ -203,7 +174,10 @@ PRODUCT_PACKAGES += \
 # HIDL
 PRODUCT_PACKAGES += \
     android.hidl.base@1.0 \
-    android.hidl.manager@1.0
+    android.hidl.manager@1.0-java
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/hidl/qti_libpermissions.xml:system/etc/permissions/qti_libpermissions.xml
 
 # HW crypto
 PRODUCT_PACKAGES += \
@@ -211,21 +185,33 @@ PRODUCT_PACKAGES += \
 
 # IMS
 PRODUCT_PACKAGES += \
-    ims-ext-common \
-    ims_ext_common.xml
+    com.android.ims.rcsmanager
 
-# IPA Manager
+# Init scripts ramdisk
+PRODUCT_PACKAGES += \
+    init.msm.usb.configfs.rc \
+    init.recovery.qcom.rc \
+    init.qcom.rc \
+    init.qcom.power.rc \
+    init.qcom.usb.rc \
+    ueventd.qcom.rc \
+    init.qcom.early_boot.sh \
+    init.qcom.post_boot.sh \
+    init.qcom.usb.sh \
+    init.qcom.sh \
+    init.target.rc \
+    init.goodix.sh \
+    fstab.qcom
+    
+# IRQ
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/irq/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf \
+    $(LOCAL_PATH)/configs/irq/msm_irqbalance_little_big.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance_little_big.conf
+
+# IPACM
 PRODUCT_PACKAGES += \
     ipacm \
     IPACM_cfg.xml
-
-# IRQ balance
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
-
-# IRSC
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/sec_config:$(TARGET_COPY_OUT_VENDOR)/etc/sec_config
 
 # IPv6
 PRODUCT_PACKAGES += \
@@ -235,103 +221,130 @@ PRODUCT_PACKAGES += \
 
 # Keylayout
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keylayout/ft5x06_ts.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/ft5x06_ts.kl \
-    $(LOCAL_PATH)/keylayout/Generic.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/Generic.kl \
-    $(LOCAL_PATH)/keylayout/gpio-keys.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/gpio-keys.kl \
-    $(LOCAL_PATH)/keylayout/qpnp_pon.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/qpnp_pon.kl \
-    $(LOCAL_PATH)/keylayout/qwerty.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/qwerty.kl \
-    $(LOCAL_PATH)/keylayout/synaptics_dsx.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/synaptics_dsx.kl \
-    $(LOCAL_PATH)/keylayout/synaptics_rmi4_i2c.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/synaptics_rmi4_i2c.kl
+    $(LOCAL_PATH)/configs/keylayout/ft5x06_720p.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/ft5x06_720p.kl \
+    $(LOCAL_PATH)/configs/keylayout/gf3208.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/gf3208.kl \
+    $(LOCAL_PATH)/configs/keylayout/ist30xx_ts_input.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/ist30xx_ts_input.kl \
+    $(LOCAL_PATH)/configs/keylayout/msm8952-sku1-snd-card_Button_Jack.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/msm8952-sku1-snd-card_Button_Jack.kl \
+    $(LOCAL_PATH)/configs/keylayout/uinput-fpc.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/uinput-fpc.kl
 
 # Keymaster
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
     android.hardware.keymaster@3.0-service
+    
+# Libshims
+PRODUCT_PACKAGES += \
+    libshim_mutexdestroy \
+    libshim_pthreadts
 
 # Lights
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-service.aw2013
-
-# LiveDisplay native
+    android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service \
+    lights.msm8937
+    
+# LiveDisplay
 PRODUCT_PACKAGES += \
     vendor.lineage.livedisplay@2.0-service-sdm
-
+    
 # Media
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
-    $(LOCAL_PATH)/configs/media_profiles_V1_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_V1_0.xml \
-    $(LOCAL_PATH)/configs/media_codecs_performance.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance.xml
-
-PRODUCT_COPY_FILES += \
-    frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
-    frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
-    frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml
-
 PRODUCT_PACKAGES += \
-    com.android.media.swcodec \
-    libsfplugin_ccodec
-
-# Net
-PRODUCT_PACKAGES += \
-    android.system.net.netd@1.0 \
-    libandroid_net \
-    libnl \
-    netutils-wrapper-1.0
-
-# NFC
-PRODUCT_PACKAGES += \
-    android.hardware.nfc@1.1-service \
-    com.android.nfc_extras \
-    NfcNci \
-    SecureElement \
-    Tag
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/nfc/libnfc-brcm.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-brcm.conf \
-    $(LOCAL_PATH)/configs/nfc/libnfc-nci.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-nci.conf \
-    $(LOCAL_PATH)/configs/nfc/libnfc-nxp.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-nxp.conf
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
-    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
-    frameworks/native/data/etc/com.android.nfc_extras.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.android.nfc_extras.xml \
-    frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
-
-# OMX
-PRODUCT_PACKAGES += \
+    android.hardware.media.omx@1.0-service \
     libc2dcolorconvert \
+    libmm-omxcore \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
     libOmxEvrcEnc \
     libOmxQcelp13Enc \
-    libOmxSwVencHevc \
     libOmxVdec \
     libOmxVenc \
-    libstagefrighthw \
-    libstagefright_soft_flacdec
+    libstagefrighthw
 
-# Power
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/media/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
+    $(LOCAL_PATH)/configs/media/media_codecs_performance.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance.xml \
+    $(LOCAL_PATH)/configs/media/media_codecs_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_vendor.xml \
+    $(LOCAL_PATH)/configs/media/media_codecs_vendor_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_vendor_audio.xml \
+    $(LOCAL_PATH)/configs/media/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles.xml \
+    $(LOCAL_PATH)/configs/media/media_profiles_V1_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_V1_0.xml \
+    $(LOCAL_PATH)/configs/media/media_profiles_vendor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_vendor.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml
+   
+# NET
 PRODUCT_PACKAGES += \
-    android.hardware.power@1.1-service-qti
+    netutils-wrapper-1.0 \
+    android.system.net.netd@1.0 \
+    libandroid_net
+    
+# Overlay
+DEVICE_PACKAGE_OVERLAYS += \
+    $(LOCAL_PATH)/overlay
 
+# Permissions
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/perf/powerhint.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/powerhint.xml
+    frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
+    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
+    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
+    frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
+    frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
+    frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml \
+    frameworks/native/data/etc/android.hardware.consumerir.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.consumerir.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute-0.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level-0.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.version-1_1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version-1_1.xml \
+    frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
+    frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml \
+    frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
+    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.xml \
+    frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.ims.xml \
+    frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
+    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
+    frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
+    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.gyroscope.xml \
+    frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
+    frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepcounter.xml \
+    frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml \
+    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+    frameworks/native/data/etc/android.hardware.ethernet.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.ethernet.xml \
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
+    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
+    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
+    frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
+    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.hardware.telephony.ims.xml:system/etc/permissions/android.hardware.telephony.ims.xml \
+    frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml 
 
+# Perf configuration
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/perf/powerhint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.xml \
     $(LOCAL_PATH)/configs/perf/perfboostsconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfboostsconfig.xml \
+    $(LOCAL_PATH)/configs/perf/perfconfigstore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfconfigstore.xml \
     $(LOCAL_PATH)/configs/perf/perf-profile0.conf:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perf-profile0.conf \
     $(LOCAL_PATH)/configs/perf/targetconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetconfig.xml \
     $(LOCAL_PATH)/configs/perf/targetresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetresourceconfigs.xml
 
-# QCOM
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/privapp-permissions-qti.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/privapp-permissions-qti.xml \
-    $(LOCAL_PATH)/configs/qti_whitelist.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/qti_whitelist.xml
+# Power
+PRODUCT_PACKAGES += \
+	android.hardware.power@1.2-service-qti
+
+#Properties
+-include $(LOCAL_PATH)/vendor_prop.mk
 
 # QMI
 PRODUCT_PACKAGES += \
     libjson
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/qmi/sec_config:$(TARGET_COPY_OUT_VENDOR)/etc/sec_config
 
 # RCS
 PRODUCT_PACKAGES += \
@@ -340,41 +353,39 @@ PRODUCT_PACKAGES += \
     rcs_service_api \
     rcs_service_api.xml
 
-# Ramdisk
-PRODUCT_PACKAGES += \
-    init.marmite.usb.sh \
-    init.recovery.qcom.rc \
-    ueventd.rc \
-    init.class_late.sh \
-    init.class_main.sh \
-    init.qcom.early_boot.sh \
-    init.qcom.mem.sh \
-    init.qcom.sensors.sh \
-    init.qcom.sh \
-    init.qcom.usb.sh \
-    move_time_data.sh \
-    fstab.qcom \
-    init.marmite.rc \
-    init.msm.usb.configfs.rc \
-    init.qcom.rc \
-    init.qcom.power.rc \
-    init.qcom.usb.rc \
-    init.target.rc
-
-# RenderScript HAL
-PRODUCT_PACKAGES += \
-    android.hardware.renderscript@1.0-impl \
-    android.hardware.renderscript@1.0-service
-
 # RIL
 PRODUCT_PACKAGES += \
     android.hardware.radio@1.2 \
-    android.hardware.radio@1.4 \
     android.hardware.radio.config@1.0 \
     android.hardware.secure_element@1.0 \
-    librmnetctl \
     libcnefeatureconfig \
-    libxml2 \
+    librmnetctl \
+    libprotobuf-cpp-full \
+    libxml2
+    
+# Screen density
+PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
+
+# Seccomp policy
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/seccomp/mediacodec-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec.policy \
+    $(LOCAL_PATH)/configs/seccomp/mediaextractor-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediaextractor.policy
+
+# Sensors
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@1.0-impl \
+    android.hardware.sensors@1.0-service \
+    libsensorndkbridge
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/sensors/hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/hals.conf \
+    $(LOCAL_PATH)/configs/sensors/sensor_def_qcomdev.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/sensor_def_qcomdev.conf
+
+# Telephony
+PRODUCT_PACKAGES += \
+    ims-ext-common \
+    ims_ext_common.xml \
     qti-telephony-hidl-wrapper \
     qti_telephony_hidl_wrapper.xml \
     qti-telephony-utils \
@@ -384,121 +395,88 @@ PRODUCT_PACKAGES += \
 PRODUCT_BOOT_JARS += \
     telephony-ext
 
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.xml \
-    frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
-    frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.ims.xml 
-
-# Seccomp policy
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/seccomp/mediacodec-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec.policy \
-    $(LOCAL_PATH)/seccomp/mediaextractor-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediaextractor.policy
-
-# Sensors
+# TextClassifier
 PRODUCT_PACKAGES += \
-    android.hardware.sensors@1.0-impl \
-    android.hardware.sensors@1.0-service
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/sensors/hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/hals.conf \
-    $(LOCAL_PATH)/configs/sensors/sensor_def_qcomdev.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/sensor_def_qcomdev.conf
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
-    frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
-    frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
-    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
-    frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepcounter.xml \
-    frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml \
-    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
-
-
-# Thermal
-PRODUCT_PACKAGES += \
-    thermal.msm8937 \
-    android.hardware.thermal@1.0-impl \
-    android.hardware.thermal@1.0-service
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/thermal-engine.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine.conf \
-    $(LOCAL_PATH)/configs/thermal-engine.x50l.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine.x50l.conf
-
-# Touchscreen
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml
-
-# Trust HAL
-PRODUCT_PACKAGES += \
-    vendor.lineage.trust@1.0-service
+    textclassifier.bundle1
 
 # USB
 PRODUCT_PACKAGES += \
     android.hardware.usb@1.0-service.basic
 
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml
-
-# VNDK
+# Thermal
 PRODUCT_PACKAGES += \
-    vndk-sp
+    android.hardware.thermal@1.0-impl \
+    android.hardware.thermal@1.0-service \
+    thermal.msm8937
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/thermal/thermal-engine.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine.conf
+    
+# Updater
+PRODUCT_PACKAGES += \
+    Updater
 
 # Vibrator
 PRODUCT_PACKAGES += \
     android.hardware.vibrator@1.0-impl \
     android.hardware.vibrator@1.0-service
 
-# Vulkan
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.vulkan.compute-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.compute-0.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level-0.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.version-1_1.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version-1_1.xml
-
-# WCNSS firmware (taked from CAF-wlan)
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wifi/fstman.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/fstman.ini \
-    $(LOCAL_PATH)/wifi/WCNSS_cfg.dat:system/etc/firmware/wlan/prima/WCNSS_cfg.dat \
-    $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini
-
+# VNDK-SP
 PRODUCT_PACKAGES += \
-    wcnss_service \
-    wifi_symlinks
-
+    vndk-sp
+    
+# whitelisted app
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml
-
-# WiFi HAL
-PRODUCT_PACKAGES += \
-    android.hardware.wifi@1.0-service
+    $(LOCAL_PATH)/configs/whitelist/qti_whitelist.xml:system/etc/sysconfig/qti_whitelist.xml \
+    $(LOCAL_PATH)/configs/whitelist/privapp-permissions-qti.xml:system/etc/permissions/privapp-permissions-qti.xml
 
 # WiFi
 PRODUCT_PACKAGES += \
+    android.hardware.wifi@1.0-service \
+    libcld80211 \
+    hostapd \
     libqsap_sdk \
     libQWiFiSoftApCfg \
+    wificond \
     libwpa_client \
-    libwcnss_qmi
-
-PRODUCT_PACKAGES += \
-    hostapd \
     wpa_supplicant \
     wpa_supplicant.conf
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
-    $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
+    $(LOCAL_PATH)/configs/wifi/hostapd.accept:$(TARGET_COPY_OUT_VENDOR)/etc/hostapd/hostapd.accept \
+    $(LOCAL_PATH)/configs/wifi/hostapd_default.conf:$(TARGET_COPY_OUT_VENDOR)/etc/hostapd/hostapd_default.conf \
+    $(LOCAL_PATH)/configs/wifi/hostapd.deny:$(TARGET_COPY_OUT_VENDOR)/etc/hostapd/hostapd.deny \
+    $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
+    $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf \
+    $(LOCAL_PATH)/configs/wifi/fstman.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/fstman.ini \
+    $(LOCAL_PATH)/configs/wifi/WCNSS_cfg.dat:system/etc/firmware/wlan/prima/WCNSS_cfg.dat \
+    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini
 
-#Installs gsi keys into ramdisk, to boot a GSI with verified boot.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
+PRODUCT_PROPERTY_OVERRIDES += \
+    wifi.interface=wlan0
 
 # WiFi Display
-#PRODUCT_PACKAGES += \
-#    libaacwrapper \
-#    libnl
-#
-#PRODUCT_BOOT_JARS += \
-#    WfdCommon
+PRODUCT_PACKAGES += \
+    libaacwrapper \
+    libnl
+
+PRODUCT_BOOT_JARS += \
+    WfdCommon
+ 
+    
+# XiaomiParts
+PRODUCT_PACKAGES += \
+   XiaomiParts
+
+# XiaomiDoze
+PRODUCT_PACKAGES += \
+   XiaomiDoze
+
+PRODUCT_GMS_CLIENTID_BASE := android-wileyfox
+
+# Installs gsi keys into ramdisk, to boot a GSI with verified boot.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_keys.mk)
 
 # Inherit proprietary files
-$(call inherit-product, vendor/wileyfox/marmite/marmite-vendor.mk)
+$(call inherit-product-if-exists, vendor/wileyfox/marmite/marmite-vendor.mk)
+#$(call inherit-product-if-exists, vendor/xiaomi/msm8937-common/msm8937-common-vendor.mk)

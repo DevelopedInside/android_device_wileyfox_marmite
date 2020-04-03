@@ -1,0 +1,2 @@
+allow adsprpcd_file self:filesystem associate;
+

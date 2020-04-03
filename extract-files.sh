@@ -1,12 +1,13 @@
 #!/bin/bash
 #
+# Copyright (C) 2016 The CyanogenMod Project
 # Copyright (C) 2017 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +21,7 @@ set -e
 DEVICE=marmite
 VENDOR=wileyfox
 
-# Load extract_utils and do some sanity checks
+# Load extractutils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
 
@@ -57,17 +58,7 @@ fi
 # Initialize the helper
 setup_vendor "$DEVICE" "$VENDOR" "$LINEAGE_ROOT" false "$CLEAN_VENDOR"
 
-extract "$MY_DIR"/proprietary-files-qc.txt "$SRC" "$SECTION"
 extract "$MY_DIR"/proprietary-files.txt "$SRC" "$SECTION"
-
-DEVICE_BLOB_ROOT="$LINEAGE_ROOT"/vendor/"$VENDOR"/"$DEVICE"/proprietary
-
-#
-# Hax libaudcal.so to store acdbdata in new path
-#
-sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/acdbdata\/delta\/\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib/libaudcal.so
-sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/acdbdata\/delta\/\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib64/libaudcal.so
+extract "$MY_DIR"/proprietary-files-qc.txt "$SRC" "$SECTION"
 
 "$MY_DIR"/setup-makefiles.sh

@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-#               2017 The LineageOS Project
+# Copyright (C) 2017-2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,10 +15,16 @@
 # limitations under the License.
 #
 
-$(call inherit-product, device/wileyfox/marmite/full_marmite.mk)
+# Inherit from those products. Most specific first.
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_m.mk)
 
-# Inherit some common LineageOS stuff
+# Inherit some common Pixel Experience stuff
 $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+
+# Inherit from marmite device
+$(call inherit-product, $(LOCAL_PATH)/device.mk)
 
 # Vendor security patch level
 PRODUCT_PROPERTY_OVERRIDES += \
