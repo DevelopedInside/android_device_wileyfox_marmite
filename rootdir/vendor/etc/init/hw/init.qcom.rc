@@ -122,6 +122,32 @@ on boot
     chown bluetooth net_bt /sys/class/rfkill/rfkill0/device/extldo
     chmod 0660 /sys/class/rfkill/rfkill0/device/extldo
 
+    #SSC/SLPI sensors
+    chown system system /persist/sensors
+    chown system system /persist/sensors/registry
+    chown system system /persist/sensors/registry/registry
+    chown system system /persist/sensors/registry/registry/sensors_registry
+    chown system system /persist/sensors/sensors_settings
+    chown system system /persist/sensors/registry/config
+    chmod 0664 /persist/sensors/sensors_settings
+
+    chown system system /mnt/vendor/persist/sensors
+    chown system system /mnt/vendor/persist/sensors/sns.reg
+    chown system system /mnt/vendor/persist/sensors/sensors_list.txt
+    chown system system /mnt/vendor/persist/sensors/registry
+    chown system system /mnt/vendor/persist/sensors/registry/registry
+    chown system system /mnt/vendor/persist/sensors/registry/registry/sensors_registry
+    chown system system /mnt/vendor/persist/sensors/sensors_settings
+    chown system system /mnt/vendor/persist/sensors/registry/sns_reg_config
+    chown system system /mnt/vendor/persist/sensors/registry/sns_reg_version
+    chown system system /mnt/vendor/persist/sensors/registry/config
+    chmod 0664 /mnt/vendor/persist/sensors/sensors_settings
+
+    # /dev/sensors only supports an ioctl to get the current SLPI timestamp;
+    # allow the sensors daemon to perform this as non-root
+    chown root system /dev/sensors
+    chmod 0660 /dev/sensors
+
     #Create QMUX deamon socket area
     mkdir /dev/socket/qmux_radio 0770 radio radio
     chmod 2770 /dev/socket/qmux_radio
@@ -682,13 +708,15 @@ service vendor.sensors /vendor/bin/sscrpcd
     class core
     user system
     group system
-    disabled
+    
 
 service vendor.sensors.qti /vendor/bin/sensors.qti
     class core
     user system
     group system
-    disabled
+    # Grants the ability for this daemon to bind IPC router ports so it can
+    # register QMI services
+    capabilities NET_BIND_SERVICE
     writepid /dev/cpuset/system-background/tasks
 
 on property:ro.vendor.use_data_netmgrd=false
@@ -1255,3 +1283,13 @@ service vendor.audio-hal-2-0 /vendor/bin/hw/android.hardware.audio@2.0-service
     oneshot
     interface android.hardware.audio@4.0::IDevicesFactory default
     interface android.hardware.audio@2.0::IDevicesFactory default
+
+service vendor.sensors-hal-1-0 /vendor/bin/hw/android.hardware.sensors@1.0-service
+    override
+    class hal
+    user system
+    group system input wakelock uhid
+    capabilities BLOCK_SUSPEND
+    rlimit rtprio 10 10
+
+
