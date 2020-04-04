@@ -279,6 +279,11 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/devices/virtual/input/input*                   set_delay_ms     0660  system   input
 /sys/devices/virtual/input/input*                   do_flush         0660  system   input
 
+#nfc permissions
+/dev/nfc-nci              0660    nfc         nfc
+/dev/nq-nci               0660    nfc         nfc
+/dev/assd                 0660    nfc         nfc
+
 # vm_bms
 /dev/vm_bms               0660   system     system
 /dev/battery_data         0660   system     system

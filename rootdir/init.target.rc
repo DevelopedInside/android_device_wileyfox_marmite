@@ -69,6 +69,11 @@ on post-fs-data
     mkdir /persist/data/tz 0700 system system
     mkdir /data/vendor/hbtp 0750 system system
     mkdir /data/misc/dts 0770 media audio
+        # NFC local data and nfcee xml storage
+    mkdir /data/nfc 0770 nfc nfc
+    mkdir /data/nfc/param 0770 nfc nfc
+    mkdir /data/vendor/nfc 0770 nfc nfc
+    mkdir /data/vendor/nfc/param 0770 nfc nfc
 
 
 #Create folder for mm-qcamera-daemon
