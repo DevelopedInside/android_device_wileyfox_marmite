@@ -163,6 +163,7 @@ typedef enum {
     QCAMERA_INTERNAL_EVT_HDR_UPDATE,         // HDR scene update
     QCAMERA_INTERNAL_EVT_RETRO_AEC_UNLOCK,   // retro burst AEC unlock event
     QCAMERA_INTERNAL_EVT_ZSL_CAPTURE_DONE,   // ZSL capture done event
+    QCAMERA_INTERNAL_EVT_DUAL_CAM_UPDATE,    // Dual camera parameters update
     QCAMERA_INTERNAL_EVT_MAX
 } qcamera_internal_evt_type_t;
 
@@ -174,12 +175,13 @@ typedef struct {
         cam_faces_data_t faces_data;
         cam_hist_stats_t stats_data;
         cam_crop_data_t crop_data;
-        cam_auto_scene_t asd_data;
+        cam_asd_decision_t asd_data;
         cam_flash_mode_t led_data;
         cam_awb_params_t awb_data;
         cam_3a_params_t ae_data;
         cam_focus_pos_info_t focus_pos;
         cam_asd_hdr_scene_data_t hdr_data;
+        cam_reprocess_info_t repro_info;
     };
 } qcamera_sm_internal_evt_payload_t;
 
@@ -200,8 +202,6 @@ public:
     bool isRecording();
     void releaseThread();
 
-    bool isDisplayFrameNeeded() { return m_bDisplayFrame; };
-    int32_t setDisplayFrame(bool enabled) {m_bDisplayFrame=enabled; return 0;};
     bool isPreviewCallbackNeeded() { return m_bPreviewCallbackNeeded; };
     int32_t setPreviewCallbackNeeded(bool enabled) {m_bPreviewCallbackNeeded=enabled; return 0;};
 private:
@@ -257,8 +257,6 @@ private:
     bool m_bPreviewDelayedRestart;        // Preview delayed restart
     int32_t m_DelayedMsgs;
     bool m_RestoreZSL;
-
-    bool m_bDisplayFrame;
     bool m_bPreviewCallbackNeeded;
 };
 

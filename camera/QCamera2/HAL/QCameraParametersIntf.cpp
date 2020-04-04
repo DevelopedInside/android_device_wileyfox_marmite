@@ -1,4 +1,4 @@
-/* Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2015-2017, The Linux Foundation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -111,6 +111,12 @@ char* QCameraParametersIntf::QCameraParametersIntf::getParameters()
     return mImpl->getParameters();
 }
 
+bool QCameraParametersIntf::QCameraParametersIntf::getDualCameraMode()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getDualCameraMode();
+}
 void QCameraParametersIntf::getPreviewFpsRange(int *min_fps, int *max_fps) const
 {
     Mutex::Autolock lock(mLock);
@@ -143,6 +149,15 @@ int32_t QCameraParametersIntf::getStreamRotation(cam_stream_type_t streamType,
     return mImpl->getStreamRotation(streamType, featureConfig, dim);
 
 }
+
+int32_t QCameraParametersIntf::getStreamSubFormat(cam_stream_type_t streamType,
+                                            cam_sub_format_type_t &sub_format)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getStreamSubFormat(streamType, sub_format);
+}
+
 
 int32_t QCameraParametersIntf::getStreamFormat(cam_stream_type_t streamType,
                                             cam_format_t &format)
@@ -342,6 +357,34 @@ int32_t QCameraParametersIntf::getEffectValue()
     return mImpl->getEffectValue();
 }
 
+bool QCameraParametersIntf::isInstantAECEnabled()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->isInstantAECEnabled();
+}
+
+bool QCameraParametersIntf::isInstantCaptureEnabled()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->isInstantCaptureEnabled();
+}
+
+uint8_t QCameraParametersIntf::getAecFrameBoundValue()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getAecFrameBoundValue();
+}
+
+uint8_t QCameraParametersIntf::getAecSkipDisplayFrameBound()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getAecSkipDisplayFrameBound();
+}
+
 int32_t QCameraParametersIntf::getExifDateTime(
         String8 &dateTime, String8 &subsecTime)
 {
@@ -446,6 +489,13 @@ bool QCameraParametersIntf::isSceneSelectionEnabled()
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
     return mImpl->isSceneSelectionEnabled();
+}
+
+bool QCameraParametersIntf::isSmallJpegSizeEnabled()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->isSmallJpegSizeEnabled();
 }
 
 int32_t QCameraParametersIntf::setSelectedScene(cam_scene_mode_type scene)
@@ -553,11 +603,33 @@ bool QCameraParametersIntf::isDISEnabled()
     return mImpl->isDISEnabled();
 }
 
-cam_is_type_t QCameraParametersIntf::getISType()
+bool QCameraParametersIntf::isAVTimerEnabled()
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
-    return mImpl->getISType();
+    return mImpl->isAVTimerEnabled();
+}
+
+
+int32_t QCameraParametersIntf::setISType()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->setISType();
+}
+
+cam_is_type_t QCameraParametersIntf::getVideoISType()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getVideoISType();
+}
+
+cam_is_type_t QCameraParametersIntf::getPreviewISType()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getPreviewISType();
 }
 
 uint8_t QCameraParametersIntf::getMobicatMask()
@@ -722,7 +794,7 @@ bool QCameraParametersIntf::isHDRThumbnailProcessNeeded()
     return mImpl->isHDRThumbnailProcessNeeded();
 }
 
-void QCameraParametersIntf::setMinPpMask(uint32_t min_pp_mask)
+void QCameraParametersIntf::setMinPpMask(cam_feature_mask_t min_pp_mask)
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
@@ -730,12 +802,12 @@ void QCameraParametersIntf::setMinPpMask(uint32_t min_pp_mask)
 }
 
 bool QCameraParametersIntf::setStreamConfigure(bool isCapture,
-        bool previewAsPostview, bool resetConfig)
+        bool previewAsPostview, bool resetConfig, uint32_t* sessionId)
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
     return mImpl->setStreamConfigure(isCapture,
-            previewAsPostview, resetConfig);
+            previewAsPostview, resetConfig, sessionId);
 }
 
 int32_t QCameraParametersIntf::addOnlineRotation(uint32_t rotation,
@@ -774,7 +846,7 @@ uint32_t QCameraParametersIntf::getExifBufIndex(uint32_t captureIndex)
     return mImpl->getExifBufIndex(captureIndex);
 }
 
-bool QCameraParametersIntf::needThumbnailReprocess(uint32_t *pFeatureMask)
+bool QCameraParametersIntf::needThumbnailReprocess(cam_feature_mask_t *pFeatureMask)
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
@@ -990,6 +1062,13 @@ bool QCameraParametersIntf::getofflineRAW()
     return mImpl->getofflineRAW();
 }
 
+bool QCameraParametersIntf::getQuadraCfa()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getQuadraCfa();
+}
+
 int32_t QCameraParametersIntf::updatePpFeatureMask(cam_stream_type_t stream_type)
 {
     Mutex::Autolock lock(mLock);
@@ -998,7 +1077,7 @@ int32_t QCameraParametersIntf::updatePpFeatureMask(cam_stream_type_t stream_type
 }
 
 int32_t QCameraParametersIntf::getStreamPpMask(cam_stream_type_t stream_type,
-        uint32_t &pp_mask)
+        cam_feature_mask_t &pp_mask)
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
@@ -1047,11 +1126,11 @@ int32_t QCameraParametersIntf::configFrameCapture(bool commitSettings)
     return mImpl->configFrameCapture(commitSettings);
 }
 
-int32_t QCameraParametersIntf::resetFrameCapture(bool commitSettings)
+int32_t QCameraParametersIntf::resetFrameCapture(bool commitSettings, bool lowLightEnabled)
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
-    return mImpl->resetFrameCapture(commitSettings);
+    return mImpl->resetFrameCapture(commitSettings,lowLightEnabled);
 }
 
 cam_still_more_t QCameraParametersIntf::getStillMoreSettings()
@@ -1142,6 +1221,13 @@ void QCameraParametersIntf::setCurPPCount(int8_t count)
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
     mImpl->setCurPPCount(count);
+}
+
+int32_t QCameraParametersIntf::setQuadraCfaMode(uint32_t value, bool initCommit)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->setQuadraCfaMode(value, initCommit);
 }
 
 int32_t QCameraParametersIntf::setToneMapMode(uint32_t value, bool initCommit)
@@ -1265,6 +1351,21 @@ const cam_sync_related_sensors_event_info_t*
     return mImpl->getRelatedCamSyncInfo();
 }
 
+int32_t QCameraParametersIntf::setFrameSyncEnabled(
+	bool enable)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->setFrameSyncEnabled(enable);
+}
+
+bool QCameraParametersIntf::isFrameSyncEnabled(void)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->isFrameSyncEnabled();
+}
+
 int32_t QCameraParametersIntf::getRelatedCamCalibration(
 	cam_related_system_calibration_data_t* calib)
 {
@@ -1280,11 +1381,11 @@ int32_t QCameraParametersIntf::bundleRelatedCameras(bool sync, uint32_t sessioni
     return mImpl->bundleRelatedCameras(sync, sessionid);
 }
 
-bool QCameraParametersIntf::isFDInVideoEnabled()
+uint8_t QCameraParametersIntf::fdModeInVideo()
 {
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
-    return mImpl->isFDInVideoEnabled();
+    return mImpl->fdModeInVideo();
 }
 
 bool QCameraParametersIntf::isOEMFeatEnabled()
@@ -1334,6 +1435,37 @@ int32_t QCameraParametersIntf::checkFeatureConcurrency()
     Mutex::Autolock lock(mLock);
     CHECK_PARAM_INTF(mImpl);
     return mImpl->checkFeatureConcurrency();
+}
+
+int32_t QCameraParametersIntf::setInstantAEC(uint8_t enable, bool initCommit)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->setInstantAEC(enable, initCommit);
+}
+
+int32_t QCameraParametersIntf::getAnalysisInfo(
+        bool fdVideoEnabled,
+        bool hal3,
+        cam_feature_mask_t featureMask,
+        cam_analysis_info_t *pAnalysisInfo)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->getAnalysisInfo(fdVideoEnabled, hal3, featureMask, pAnalysisInfo);
+}
+int32_t QCameraParametersIntf::updateDtVc(int32_t *dt, int32_t *vc)
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->updateDtVc(dt, vc);
+}
+
+bool QCameraParametersIntf::isLinkPreviewForLiveShot()
+{
+    Mutex::Autolock lock(mLock);
+    CHECK_PARAM_INTF(mImpl);
+    return mImpl->isLinkPreviewForLiveShot();
 }
 
 }; // namespace qcamera

@@ -35,6 +35,9 @@
 #include <utils/Mutex.h>
 #include <utils/List.h>
 
+//Media depedancies
+#include "OMX_QCOMExtns.h"
+
 // Display dependencies
 #include "qdMetaData.h"
 
@@ -51,8 +54,14 @@ class QCameraMemoryPool;
 
 //OFFSET, SIZE, USAGE, TIMESTAMP, FORMAT
 #define VIDEO_METADATA_NUM_INTS          5
+
 //Buffer identity
+//Note that this macro might have already been
+//defined in OMX_QCOMExtns.h, in which case
+//the local value below will not be used.
+#ifndef VIDEO_METADATA_NUM_COMMON_INTS
 #define VIDEO_METADATA_NUM_COMMON_INTS   1
+#endif
 
 enum QCameraMemType {
     QCAMERA_MEM_TYPE_DEFAULT      = 0,
@@ -60,6 +69,11 @@ enum QCameraMemType {
     QCAMERA_MEM_TYPE_BATCH        = (1 << 1),
     QCAMERA_MEM_TYPE_COMPRESSED   = (1 << 2),
 };
+
+typedef enum {
+    STATUS_IDLE,
+    STATUS_SKIPPED
+} BufferStatus;
 
 // Base class for all memory types. Abstract.
 class QCameraMemory {
@@ -278,10 +292,12 @@ public:
     void setMaxFPS(int maxFPS);
     int32_t enqueueBuffer(uint32_t index, nsecs_t timeStamp = 0);
     int32_t dequeueBuffer();
-
+    inline bool isBufSkipped(uint32_t index){return (mBufferStatus[index] == STATUS_SKIPPED);};
+    void setBufferStatus(uint32_t index, BufferStatus status);
 private:
     buffer_handle_t *mBufferHandle[MM_CAMERA_MAX_NUM_FRAMES];
     int mLocalFlag[MM_CAMERA_MAX_NUM_FRAMES];
+    bool mBufferStatus[MM_CAMERA_MAX_NUM_FRAMES];
     struct private_handle_t *mPrivateHandle[MM_CAMERA_MAX_NUM_FRAMES];
     preview_stream_ops_t *mWindow;
     int mWidth, mHeight, mFormat, mStride, mScanline, mUsage;
