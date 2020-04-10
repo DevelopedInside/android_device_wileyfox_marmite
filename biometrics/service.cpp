@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-#ifdef USE_FINGERPRINT_2_0
-#define LOG_TAG "android.biometrics.fingerprint@2.0-service.custom"
-#else
-#define LOG_TAG "android.biometrics.fingerprint@2.1-service.custom"
-#endif
+#define LOG_TAG "android.hardware.biometrics.fingerprint@2.0-service-marmite"
 
 #include <binder/ProcessState.h>
 
@@ -29,9 +25,6 @@
 #include <android/hardware/biometrics/fingerprint/2.1/types.h>
 
 #include "BiometricsFingerprint.h"
-#include <cutils/properties.h>
-#include <errno.h>
-#include <unistd.h>
 
 using android::hardware::biometrics::fingerprint::V2_1::IBiometricsFingerprint;
 using android::hardware::biometrics::fingerprint::V2_1::implementation::BiometricsFingerprint;
@@ -39,43 +32,21 @@ using android::hardware::configureRpcThreadpool;
 using android::hardware::joinRpcThreadpool;
 using android::sp;
 
-bool is_goodix = false;
-
-static constexpr char kGoodixFpDev[] = "/dev/goodix_fp";
-
 int main() {
-    char vend[PROPERTY_VALUE_MAX];
-    property_get("ro.hardware.fingerprint", vend, "none");
-    
-    if (!strcmp(vend, "none")) {
-    	ALOGE("ro.hardware.fingerprint not set! Killing " LOG_TAG " binder service!");
-        return 1;
-    } else if (!strcmp(vend, "goodix")) {
-        ALOGI("is_goodix = true");
-        is_goodix = true;
-    }
 
     ALOGI("Start biometrics");
     android::sp<IBiometricsFingerprint> bio = BiometricsFingerprint::getInstance();
 
-    if (is_goodix) {
-        if (access(kGoodixFpDev, F_OK) != 0) {
-            ALOGE("Cannot access %s (%s)", kGoodixFpDev, strerror(errno));
-            return 1;
-        }
-
-        // the conventional HAL might start binder services
-        android::ProcessState::initWithDriver("/dev/binder");
-        android::ProcessState::self()->startThreadPool();
-    }
+    // the conventional HAL might start binder services
+    android::ProcessState::initWithDriver("/dev/binder");
+    android::ProcessState::self()->startThreadPool();
 
     /* process Binder transaction as a single-threaded program. */
     configureRpcThreadpool(1, true /* callerWillJoin */);
 
     if (bio != nullptr) {
-        android::status_t ret = bio->registerAsService();
-        if (ret != android::OK) {
-            ALOGE("Cannot register BiometricsFingerprint service: %d", ret);
+        if (::android::OK != bio->registerAsService()) {
+            return 1;
         }
     } else {
         ALOGE("Can't create instance of BiometricsFingerprint, nullptr");
