@@ -64,6 +64,8 @@ void check_aw87319()
     DIR* dir = opendir("/sys/bus/i2c/drivers/AW87319_PA/2-0058");
     if (dir)
     {
+        property_set("ro.audio.customplatform", "AW87319");
+        property_set("audio.acdb.name", "AW87319");
         property_set("persist.audio.calfile0", "/vendor/etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb");
         property_set("persist.audio.calfile1", "/vendor/etc/acdbdata/AW87319/AW87319_General_cal.acdb");
         property_set("persist.audio.calfile2", "/vendor/etc/acdbdata/AW87319/AW87319_Global_cal.acdb");
@@ -120,4 +122,5 @@ void vendor_load_properties()
         property_set("dalvik.vm.heapmaxfree", "8m");
     }
 }
+
 
