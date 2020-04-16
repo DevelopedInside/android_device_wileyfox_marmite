@@ -39,7 +39,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     audio.offload.min.duration.secs=30 \
     audio.offload.video=true \
     vendor.audio.offload.track.enable=true \
-    audio.deep_buffer.media=true \
     vendor.voice.path.for.pcm.voip=true \
     vendor.audio.offload.multiaac.enable=true \
     vendor.audio.dolby.ds2.enabled=false \
