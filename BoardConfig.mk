@@ -16,9 +16,6 @@
 
 DEVICE_PATH := device/wileyfox/marmite
 
-# Use Snapdragon LLVM, if available
-TARGET_USE_SDCLANG := false
-
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := msm8937
 TARGET_NO_BOOTLOADER := true
