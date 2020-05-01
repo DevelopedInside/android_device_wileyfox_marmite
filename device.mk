@@ -53,6 +53,7 @@ PRODUCT_PACKAGES += \
     audio.r_submix.default \
     audio.usb.default \
     audio.primary.msm8937 \
+    audio_amplifier.msm8937 \
     libaudio-resampler \
     libqcompostprocbundle \
     libqcomvisualizer \
