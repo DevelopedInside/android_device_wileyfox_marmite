@@ -37,6 +37,8 @@
 #define AMPLIFIER_PROP_KEY                 "ro.hardware.amplifier"
 
 /* AW87319 */
+#define AMP_SPKR_BOOST_MIXER_CTL           "SpkrMono BOOST Switch"
+#define AMP_EAR_PA_BOOST_MIXER_CTL         "EAR PA Boost"
 #define AMP_RX2_MIXER_CTL                  "RX2 MIX1 INP1"
 #define AMP_RDAC2_MIXER_CTL                "RDAC2 MUX"
 #define AMP_HPHR_MIXER_CTL                 "HPHR"
@@ -64,6 +66,22 @@ static int is_speaker(uint32_t snd_device) {
     }
 
     return speaker;
+}
+
+static void mixer_set_int(struct mixer* mixer, const char* name, int value)
+{
+    /* Acquire control by name */
+    struct mixer_ctl* ctl = mixer_get_ctl_by_name(mixer, name);
+    if (!ctl) {
+        ALOGE("Mixer: Invalid mixer control (%s)\n", name);
+        return;
+    }
+
+    /* Set value to control */
+    if (mixer_ctl_set_value(ctl, 0, value)) {
+        ALOGE("Mixer: Invalid value for index 0\n");
+        return;
+    }
 }
 
 static void mixer_set_enum(struct mixer* mixer, const char* name,
@@ -106,6 +124,8 @@ static int amp_enable_output_devices(amplifier_device_t *device,
 
         if (isAW87319) {
             /* Apply mixers for AW87319 */
+            mixer_set_int(mixer, AMP_SPKR_BOOST_MIXER_CTL, 0);
+            mixer_set_enum(mixer, AMP_EAR_PA_BOOST_MIXER_CTL, "DISABLE");
             mixer_set_enum(mixer, AMP_RX2_MIXER_CTL, enable ? "RX1" : "ZERO");
             mixer_set_enum(mixer, AMP_RX2_MIXER_CTL, enable ? "RX2" : "ZERO");
             mixer_set_enum(mixer, AMP_RDAC2_MIXER_CTL, enable ? "RX2" : "ZERO");
