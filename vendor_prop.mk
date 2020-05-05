@@ -200,3 +200,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Wi-Fi
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0
+
+# Usb
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.vendor.usb.config.extra=none
