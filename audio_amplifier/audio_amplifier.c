@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 The CyanogenMod Open Source Project
+ * Copyright (C) 2020 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "amplifier_default"
+#define LOG_TAG "amplifier_marmite"
 //#define LOG_NDEBUG 0
 
 #include <stdint.h>
@@ -23,9 +24,64 @@
 
 #include <cutils/log.h>
 #include <cutils/str_parms.h>
+#include <cutils/properties.h>
 
 #include <hardware/audio_amplifier.h>
 #include <hardware/hardware.h>
+
+#include <tinyalsa/asoundlib.h>
+
+#include <msm8916/platform.h>
+#include "audio_hw.h"
+
+#define AMPLIFIER_PROP_KEY                 "ro.hardware.amplifier"
+
+/* AW87319 */
+#define AMP_RX2_MIXER_CTL                  "RX2 MIX1 INP1"
+#define AMP_RDAC2_MIXER_CTL                "RDAC2 MUX"
+#define AMP_HPHR_MIXER_CTL                 "HPHR"
+#define AMP_SPK_SWITCH_MIXER_CTL           "Ext Spk Switch"
+
+/* Default MTP */
+#define MTP_RX3_MIXER_CTL                  "RX3 MIX1 INP1"
+#define MTP_SPK_MIXER_CTL                  "SPK"
+
+static bool isAW87319 = false;
+
+static int is_speaker(uint32_t snd_device) {
+    int speaker = 0;
+
+    switch (snd_device) {
+        case SND_DEVICE_OUT_SPEAKER:
+        case SND_DEVICE_OUT_SPEAKER_REVERSE:
+        case SND_DEVICE_OUT_SPEAKER_AND_HEADPHONES:
+        case SND_DEVICE_OUT_VOICE_SPEAKER:
+        case SND_DEVICE_OUT_SPEAKER_AND_HDMI:
+        case SND_DEVICE_OUT_SPEAKER_AND_USB_HEADSET:
+        case SND_DEVICE_OUT_SPEAKER_AND_ANC_HEADSET:
+            speaker = 1;
+            break;
+    }
+
+    return speaker;
+}
+
+static void mixer_set_enum(struct mixer* mixer, const char* name,
+        const char* value)
+{
+    /* Acquire control by name */
+    struct mixer_ctl* ctl = mixer_get_ctl_by_name(mixer, name);
+    if (!ctl) {
+        ALOGE("Mixer: Invalid mixer control (%s)\n", name);
+        return;
+    }
+
+    /* Set value to control */
+    if (mixer_ctl_set_enum_by_string(ctl, value)) {
+        ALOGE("Mixer: Invalid enum value\n");
+        return;
+    }
+}
 
 static int amp_set_input_devices(amplifier_device_t *device, uint32_t devices)
 {
@@ -40,6 +96,30 @@ static int amp_set_output_devices(amplifier_device_t *device, uint32_t devices)
 static int amp_enable_output_devices(amplifier_device_t *device,
         uint32_t devices, bool enable)
 {
+    if (is_speaker(devices)) {
+        /* Acquire mixer card */
+        struct mixer* mixer = mixer_open(0);
+        if (!mixer) {
+            ALOGE("Mixer: Failed to open mixer\n");
+            return -errno;
+        }
+
+        if (isAW87319) {
+            /* Apply mixers for AW87319 */
+            mixer_set_enum(mixer, AMP_RX2_MIXER_CTL, enable ? "RX1" : "ZERO");
+            mixer_set_enum(mixer, AMP_RX2_MIXER_CTL, enable ? "RX2" : "ZERO");
+            mixer_set_enum(mixer, AMP_RDAC2_MIXER_CTL, enable ? "RX2" : "ZERO");
+            mixer_set_enum(mixer, AMP_HPHR_MIXER_CTL, enable ? "Switch" : "ZERO");
+            mixer_set_enum(mixer, AMP_SPK_SWITCH_MIXER_CTL, enable ? "On" : "Off");
+        } else {
+            /* Apply mixers for default MTP */
+            mixer_set_enum(mixer, MTP_RX3_MIXER_CTL, enable ? "RX1" : "ZERO");
+            mixer_set_enum(mixer, MTP_SPK_MIXER_CTL, enable ? "Switch" : "ZERO");
+        }
+
+        /* Release mixer card */
+        mixer_close(mixer);
+    }
     return 0;
 }
 
@@ -120,6 +200,9 @@ static int amp_module_open(const hw_module_t *module, const char *name,
         return -ENOMEM;
     }
 
+    /* check amplifier */
+    isAW87319 = (bool) property_get_bool(AMPLIFIER_PROP_KEY, false);
+
     amp_dev->common.tag = HARDWARE_DEVICE_TAG;
     amp_dev->common.module = (hw_module_t *) module;
     amp_dev->common.version = HARDWARE_DEVICE_API_VERSION(1, 0);
@@ -153,8 +236,8 @@ amplifier_module_t HAL_MODULE_INFO_SYM = {
         .module_api_version = AMPLIFIER_MODULE_API_VERSION_0_1,
         .hal_api_version = HARDWARE_HAL_API_VERSION,
         .id = AMPLIFIER_HARDWARE_MODULE_ID,
-        .name = "Default audio amplifier HAL",
-        .author = "The CyanogenMod Open Source Project",
+        .name = "Marmite audio amplifier HAL",
+        .author = "The LineageOS Project",
         .methods = &hal_module_methods,
     },
 };
