@@ -263,3 +263,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Wi-Fi
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0
+
+# Zygote preforking
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.device_config.runtime_native.usap_pool_enabled=true
