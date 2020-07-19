@@ -190,7 +190,7 @@ BOARD_KERNEL_CMDLINE += androidboot.usbconfigfs=true
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 BOARD_KERNEL_PAGESIZE := 2048
 TARGET_KERNEL_ARCH := arm64
-TARGET_KERNEL_CONFIG := lineageos_marmite_defconfig
+TARGET_KERNEL_CONFIG := marmite_defconfig
 TARGET_KERNEL_SOURCE := kernel/wileyfox/msm8937
 TARGET_KERNEL_VERSION := 4.9
 
