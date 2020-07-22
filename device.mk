@@ -153,7 +153,7 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.0-service-marmite \
+    android.hardware.biometrics.fingerprint@2.1-service \
     libunwind
 
 PRODUCT_COPY_FILES += \
