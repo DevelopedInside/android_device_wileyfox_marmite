@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2015,2018, The Linux Foundation. All rights reserved.
+# Copyright (c) 2014-2015,2018,2020, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -45,9 +45,9 @@ on fs
     mount_all /vendor/etc/fstab.qcom
     chown root system /mnt/vendor/persist
     chmod 0771 /mnt/vendor/persist
+    restorecon_recursive /mnt/vendor/persist
     mkdir /mnt/vendor/persist/data 0700 system system
     mkdir /mnt/vendor/persist/bms 0700 root system
-    restorecon_recursive /mnt/vendor/persist
 
     #write /sys/kernel/boot_adsp/boot 1
 
@@ -69,7 +69,6 @@ on post-fs-data
     mkdir /persist/data/tz 0700 system system
     mkdir /data/vendor/hbtp 0750 system system
     mkdir /data/misc/dts 0770 media audio
-    mkdir /data/vendor/tloc 0700 system drmrpc
 
 
 #Create folder for mm-qcamera-daemon
@@ -124,18 +123,6 @@ service vendor.qseecomd /vendor/bin/qseecomd
 #   user system
 #   group system net_raw
 
-service perfd /system/vendor/bin/perfd
-   class main
-   user root
-   disabled
-
-service gamed /system/vendor/bin/gamed
-   class main
-   user system
-   group system
-   disabled
-   socket gamed seqpacket 0640 system system
-
 service thermal-engine /system/vendor/bin/thermal-engine
    class main
    user root
@@ -166,11 +153,6 @@ on boot
     chown system drmrpc /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/secure_touch
     chown system system /sys/kernel/hbtp/display_pwr
 
-# access permissions for FPC service
-   chown system system /sys/bus/platform/devices/soc/soc:fpc1020/irq
-   chown system system /sys/bus/platform/devices/soc/soc:fpc1020/wakeup_enable
-   chmod 0666 /dev/qseecom
-
 ####Regionalization config and prop files####
     chmod 0644 /persist/speccfg/spec
     chmod 0644 /persist/speccfg/devicetype
@@ -197,6 +179,7 @@ on boot
     setprop vendor.usb.rmnet.func.name "rmnet_bam"
     setprop vendor.usb.rmnet.inst.name "rmnet_bam_dmux"
     setprop vendor.usb.dpl.inst.name "dpl_bam_dmux"
+    setprop vendor.usb.qdss.inst.name "qdss"
 
 service wcnss-service /system/vendor/bin/wcnss_service
     class main
@@ -279,9 +262,8 @@ on property:init.svc.zygote=restarting
 on charger
     wait /dev/block/bootdevice/by-name/system
     mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
-    load_all_props
-    setprop sys.usb.configfs 0
-    setprop persist.sys.usb.config mass_storage
+    load_system_props
+    setprop sys.usb.configfs 1
     start qcom-post-boot
     setprop persist.sys.usb.config mass_storage
     start vendor.hvdcp_opti
@@ -332,7 +314,6 @@ on property:init.svc.vendor.per_mgr=running
 
 on property:sys.shutdown.requested=*
     stop vendor.per_proxy
-    stop vendor.ims_rtp_daemon
 
 service vendor.hvdcp_opti /vendor/bin/hvdcp_opti
     class main
@@ -352,23 +333,3 @@ service mdtpd /system/vendor/bin/mdtpd
 on boot
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/fw_name PR1702898-s3528t_00260005_00380008.img
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/update_fw 1
-
-service vendor.tlocd /vendor/bin/tloc_daemon
-    class late_start
-    user system
-    group drmrpc gps net_raw
-
-on boot
-    chown system system /sys/class/leds/red/blink
-    chown system system /sys/class/leds/red/breath
-    chown system system /sys/class/leds/red/delay_on
-    chown system system /sys/class/leds/red/delay_off
-    chown system system /sys/class/leds/green/blink
-    chown system system /sys/class/leds/green/breath
-    chown system system /sys/class/leds/green/delay_on
-    chown system system /sys/class/leds/green/delay_off
-    chown system system /sys/class/leds/blue/blink
-    chown system system /sys/class/leds/blue/breath
-    chown system system /sys/class/leds/blue/delay_on
-    chown system system /sys/class/leds/blue/delay_off
-

@@ -343,14 +343,12 @@ PRODUCT_PACKAGES += \
     init.marmite.usb.sh \
     init.recovery.qcom.rc \
     ueventd.rc \
-    init.class_late.sh \
     init.class_main.sh \
     init.qcom.early_boot.sh \
     init.qcom.mem.sh \
     init.qcom.sensors.sh \
     init.qcom.sh \
     init.qcom.usb.sh \
-    move_time_data.sh \
     fstab.qcom \
     init.marmite.rc \
     init.msm.usb.configfs.rc \
