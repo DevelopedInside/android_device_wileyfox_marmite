@@ -360,6 +360,3 @@ vendor/firmware/libpn548ad_fw.so:vendor/lib/libpn548ad_fw.so
 
 # USB
 etc/firmware/ice40.bin
-
-# Wi-Fi
-vendor/bin/wcnss_service:vendor/bin/wcnss_service
