@@ -39,22 +39,16 @@ vendor/lib64/libacdbrtac.so
 vendor/lib64/libadiertac.so
 vendor/lib64/libaudcal.so
 
-# Bluetooth
-vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti
-vendor/bin/wcnss_filter
-vendor/etc/init/android.hardware.bluetooth@1.0-service-qti.rc
-vendor/lib64/hw/android.hardware.bluetooth@1.0-impl-qti.so
-vendor/lib64/libbtnv.so
-vendor/lib64/libbt-hidlclient.so
+# Bluetooth - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
+vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti|9178856dc8651b499d1b155825b6115a486ee05e
+vendor/etc/init/android.hardware.bluetooth@1.0-service-qti.rc|a979981c55f3dcaf6cf2212e71b901ca4d58b959
+vendor/lib64/hw/android.hardware.bluetooth@1.0-impl-qti.so|8c68d863da2456efbc95046519b99f23e517c9ab
+vendor/lib64/libbtnv.so|35444e0ca93a50751db92aa4871cf277dc66b1fa
+vendor/lib64/libbt-hidlclient.so|0b0b69ef9787e3cd5409f0050cad03698dd6ce26
 
-# Bluetooth (aptX) - from marlin - OPM1.171019.011
-lib64/libaptX_encoder.so|0cebad28afcf29f931bdc2d24fce2730dc882ecf
-lib64/libaptXHD_encoder.so|90f47f10af28b3ead143200cb4370b847c513127
-lib/libaptX_encoder.so|984739a0bc968e18f75ced205733fe3f51c2d4f0
-lib/libaptXHD_encoder.so|974c486e4ca03faa0713553d9dfe2995ac93e01c
-
-# Bluetooth (shared dependencies)
-vendor/lib64/com.qualcomm.qti.ant@1.0_vendor.so
+# Bluetooth (shared dependencies) - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
+vendor/lib64/com.qualcomm.qti.ant@1.0.so|3a19c81d66ef1190d0b2f361420d5cbf707cc600
+vendor/lib64/vendor.qti.hardware.fm@1.0.so|dc576dfcb0bf390a106b5ed8861e7f547110cbf1
 
 # Charger
 vendor/bin/hvdcp_opti
