@@ -1,13 +1,10 @@
-# ADSP
-vendor/bin/adsprpcd
-vendor/lib64/libadsprpc.so
-vendor/lib64/libadsp_default_listener.so
-vendor/lib64/libfastcvadsp_stub.so
-vendor/lib64/libfastcvopt.so
-vendor/lib/libadsprpc.so
-vendor/lib/libadsp_default_listener.so
-vendor/lib/libfastcvadsp_stub.so
-vendor/lib/libfastcvopt.so
+# ADSP - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
+vendor/bin/adsprpcd|3d1e7e14dfc2f2468a06e0af9c0d34f4bda28d4b
+vendor/lib/libadsprpc.so|a2ff69f96a9242d4be0fe5cae2475c23294f937a
+vendor/lib/libfastcvadsp_stub.so|6b50fd7d53811b51e06fedd87c12a794d0c2f645
+vendor/lib/libfastcvopt.so|be6d462207dcc238a734d324c479d1022a324c16
+vendor/lib64/libadsp_default_listener.so|f7ea94537c66dfa11e1235064d43c8f56c3b3c51
+vendor/lib64/libadsprpc.so|fe4a7c28a2284ab95c068ad3ffaf256705cf9a02
 
 # ADSP modules
 vendor/lib/rfsa/adsp/libapps_mem_heap.so
@@ -26,36 +23,21 @@ lib/com.qualcomm.qti.ant@1.0.so
 vendor/lib64/hw/com.qualcomm.qti.ant@1.0-impl.so
 vendor/lib64/com.qualcomm.qti.ant@1.0_vendor.so
 
-# Audio libraries
-etc/permissions/audiosphere.xml
-framework/audiosphere.jar
-vendor/lib64/soundfx/libasphere.so
-vendor/lib64/soundfx/libqcbassboost.so
-vendor/lib64/soundfx/libqcreverb.so
-vendor/lib64/soundfx/libqcvirt.so
-vendor/lib64/soundfx/libshoebox.so
-vendor/lib64/libacdb-fts.so
-vendor/lib64/libacdbloader.so
-vendor/lib64/libacdbrtac.so
-vendor/lib64/libadiertac.so
-vendor/lib64/libaudcal.so
-vendor/lib64/libaudioalsa.so
-vendor/lib64/libmdsprpc.so
-vendor/lib64/libqtigef.so
-vendor/lib/soundfx/libasphere.so
-vendor/lib/soundfx/libqcbassboost.so
-vendor/lib/soundfx/libqcreverb.so
-vendor/lib/soundfx/libqcvirt.so
-vendor/lib/soundfx/libshoebox.so
+# Audio
 vendor/lib/libacdb-fts.so
 vendor/lib/libacdbloader.so
 vendor/lib/libacdbrtac.so
 vendor/lib/libadiertac.so
 vendor/lib/libadm.so
 vendor/lib/libaudcal.so
-vendor/lib/libaudioalsa.so
-vendor/lib/libmdsprpc.so
-vendor/lib/libqtigef.so
+vendor/lib/soundfx/libqcbassboost.so
+vendor/lib/soundfx/libqcreverb.so
+vendor/lib/soundfx/libqcvirt.so
+vendor/lib64/libacdb-fts.so
+vendor/lib64/libacdbloader.so
+vendor/lib64/libacdbrtac.so
+vendor/lib64/libadiertac.so
+vendor/lib64/libaudcal.so
 
 # Bluetooth
 vendor/bin/hw/android.hardware.bluetooth@1.0-service-qti
