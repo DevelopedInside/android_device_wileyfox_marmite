@@ -1002,9 +1002,8 @@ on property:ro.logdumpd.enabled=1
 
 service time_daemon /vendor/bin/time_daemon
     class main
-    user system
-    group system
-    capabilities SYS_TIME
+    user root
+    group root
     writepid /dev/cpuset/system-background/tasks
 
 # Set vendor-ril lib path based on Meta version
