@@ -449,18 +449,18 @@ vendor/lib64/vendor.qti.hardware.radio.uim_remote_client@1.0.so|f3a3051e4a904268
 vendor/lib64/vendor.qti.hardware.radio.uim_remote_server@1.0.so|ab552724f7d723a70a4e730dba52ab220d33a33e
 vendor/radio/qcril_database/qcril.db|f25a9215fcc2445e73d1aa0b7ef9bdbd97e33f56
 
-# Sensors
-vendor/bin/sensors.qcom:vendor/bin/sensors.qti
-vendor/lib/hw/activity_recognition.msm8937.so
-vendor/lib/libsensor1.so
-vendor/lib/libsensor_reg.so
-vendor/lib/sensor_calibrate.so
-vendor/lib/sensors.ssc.so
-vendor/lib64/hw/activity_recognition.msm8937.so
-vendor/lib64/libsensor1.so
-vendor/lib64/libsensor_reg.so
-vendor/lib64/sensor_calibrate.so
-vendor/lib64/sensors.ssc.so
+# Sensors - from TA-1024
+vendor/bin/sensors.qti|04bc1bb039459bd3ee0f4273f9a6d386f94dcab2
+vendor/lib/hw/activity_recognition.msm8937.so|e6037fda185950b3178b2c6c7412222c764be96f
+vendor/lib/libsensor1.so|db8dcbe01f18febc7820c45b2c70e9fea4efdb1b
+vendor/lib/libsensor_reg.so|6d681823cc8b74ffc36b630a9984ea5117a19ba2
+vendor/lib/sensor_calibrate.so|8cad3dc76826dd6c4de007dc4495e57137c83f2a
+vendor/lib/sensors.ssc.so|1cd6096224f0ac94e78c3b4f6788c9bd603b2d34
+vendor/lib64/hw/activity_recognition.msm8937.so|466f964062ca2f66ea465d53cee9f5144f1fd537
+vendor/lib64/libsensor1.so|4af06098403adf77ad370e46075314e962e2f272
+vendor/lib64/libsensor_reg.so|ba96b22fd16e1b1c31ada88824dc961d89708971
+vendor/lib64/sensor_calibrate.so|6a49788bc3bc6a6501fdd2660508d8efed9c8d23
+vendor/lib64/sensors.ssc.so|83eb1643ee3367f91656255ed3169b48bef6a82f
 
 # Thermal
 vendor/bin/thermal-engine|0b9cfef6c4eb965a6b9700e2e63043034a939dca
