@@ -203,6 +203,7 @@ BOARD_MKBOOTIMG_ARGS := --ramdisk_offset $(BOARD_RAMDISK_OFFSET) --tags_offset $
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_CONFIG := lineageos_marmite_defconfig
 TARGET_KERNEL_SOURCE := kernel/wileyfox/msm8937
+TARGET_KERNEL_VERSION := 4.9
 
 # Keymaster
 TARGET_PROVIDES_KEYMASTER := true
