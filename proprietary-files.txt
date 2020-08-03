@@ -334,13 +334,16 @@ vendor/lib/libmmcamera_isp_template.so
 vendor/lib/libmmcamera_isp_wb40.so
 
 # Fingerprint
-vendor/bin/gx_fpd
-vendor/lib64/hw/fingerprint.msm8937.so
+vendor/bin/hw/android.hardware.biometrics.fingerprint@2.0-service.marmite|ef0e530a393fdae526749a118159f9844cefa75b
+vendor/bin/gx_fpd|f304993201e5b73ffc42daa5d6989e0a72130b69
+vendor/etc/init/android.hardware.biometrics.fingerprint@2.0-service.marmite.rc|9305e66ada33a63b1524bda5f2ef554f7894a8d3
+vendor/lib64/hw/fingerprint.msm8937.so|0d98a0f6235fd76283ad815ad8c3796409a237d3
 vendor/lib64/hw/gxfingerprint.default.so
 vendor/lib64/libalgoandroid.so
 vendor/lib64/libgfcompat.so
-vendor/lib64/libfpservice.so
-vendor/lib64/libfp_client.so
+vendor/lib64/libbindergx.so|eb676b92d13a7835aaab309d5c692151993e016f
+vendor/lib64/libfpservice.so|c73a8683d3daf8e97b57a591001535c2e9505fac
+vendor/lib64/libfp_client.so|e6f3bee1abe48d438ba7fde617a9604203d5153f
 
 # Misc firmware
 vendor/firmware/leia_pfp_470.fw
