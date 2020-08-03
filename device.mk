@@ -180,8 +180,11 @@ PRODUCT_PACKAGES += \
 
 # IMS
 PRODUCT_PACKAGES += \
+    ims-ext-common_system
     com.android.ims.rcsmanager
 
+PRODUCT_BOOT_JARS += \
+    ims-ext-common_system
 # Init scripts ramdisk
 PRODUCT_PACKAGES += \
     init.msm.usb.configfs.rc \
