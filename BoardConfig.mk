@@ -258,6 +258,7 @@ TARGET_USES_OLD_MNC_FORMAT := true
 # SELinux
 include device/qcom/sepolicy-legacy-um/sepolicy.mk
 #BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy # TEMP DISABLE
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy-temp
 
 # Treble
 PRODUCT_FULL_TREBLE_OVERRIDE := true
