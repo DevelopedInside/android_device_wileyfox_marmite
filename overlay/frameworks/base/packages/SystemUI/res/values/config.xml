@@ -27,4 +27,7 @@
          does not work well, particularly with noisy touchscreens. Note that disabling it may
          increase the rate of unintentional unlocks. -->
     <bool name="config_lockscreenAntiFalsingClassifierEnabled">false</bool>
+     
+    <!-- Allow devices to enforce the H265 encoder for screen recordings -->
+    <bool name="config_useNewScreenRecEncoder">false</bool>
 </resources>
