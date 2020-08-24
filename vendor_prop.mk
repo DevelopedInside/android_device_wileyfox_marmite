@@ -130,6 +130,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.hwc.enable_vds=1 \
     persist.hwc.mdpcomp.enable=true \
     ro.opengles.version=196610 \
+    ro.surface_flinger.max_frame_buffer_acquired_buffers=3 \
     sdm.debug.disable_skip_validate=1 \
     vendor.display.disable_skip_validate=1 \
     vendor.display.enable_default_color_mode=1 \
