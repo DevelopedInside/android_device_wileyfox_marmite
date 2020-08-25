@@ -18,6 +18,11 @@
 # CAF Branch: LA.UM.7.6.r1-03900-89xx.0
 #
 
+# ART
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.dex2oat-filter=speed \
+    dalvik.vm.image-dex2oat-filter=speed
+
 # ADB at boot
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.service.adb.enable=1 \
