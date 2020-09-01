@@ -1,0 +1,2 @@
+persist.camera.debug.logfile                   u:object_r:camera_prop:s0
+sys.listeners.registered                       u:object_r:vendor_tee_listener_prop:s0

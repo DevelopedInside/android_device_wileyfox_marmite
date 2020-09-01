@@ -1,0 +1,2 @@
+# Allow thermal-engine to read files in /sys
+r_dir_file(thermal-engine, sysfs)

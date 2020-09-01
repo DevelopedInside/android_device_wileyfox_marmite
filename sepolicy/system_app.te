@@ -1,2 +1,0 @@
-# Allow binder calls to fingerprintd
-binder_call(system_app, fingerprintd)

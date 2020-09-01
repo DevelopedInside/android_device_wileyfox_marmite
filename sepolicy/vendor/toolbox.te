@@ -1,0 +1,3 @@
+allow toolbox init:fifo_file { getattr write };
+allow toolbox sysfs_android_usb:dir search;
+allow toolbox sysfs_android_usb:file { open read };

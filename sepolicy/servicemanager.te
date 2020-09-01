@@ -1,3 +1,0 @@
-allow servicemanager hal_fingerprint_default:dir r_dir_perms;
-allow servicemanager hal_fingerprint_default:file r_file_perms;
-allow servicemanager hal_fingerprint_default:process getattr;
