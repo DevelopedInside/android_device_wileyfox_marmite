@@ -337,7 +337,6 @@ PRODUCT_PACKAGES += \
 
 # Ramdisk
 PRODUCT_PACKAGES += \
-    init.marmite.usb.sh \
     init.recovery.qcom.rc \
     ueventd.rc \
     init.class_main.sh \
