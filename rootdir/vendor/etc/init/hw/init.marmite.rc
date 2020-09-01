@@ -74,11 +74,6 @@ on boot
     # Wifi firmware reload path
     chown wifi wifi /sys/module/wlan/parameters/fwpath
 
-service usb-config /system/bin/sh /init.marmite.usb.sh
-    class core
-    user root
-    oneshot
-
 # FM
 on property:hw.fm.init=0
     write /sys/module/radio_iris_transport/parameters/fmsmd_set 0
