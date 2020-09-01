@@ -1,1 +1,2 @@
+# Fingerprint
 type gx_fpd_service, service_manager_type;

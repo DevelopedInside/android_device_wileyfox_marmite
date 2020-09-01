@@ -1,0 +1,37 @@
+# cgroup
+/dev/cpuset(/.*)?                                                                                   u:object_r:cgroup:s0
+/dev/stune(/.*)?                                                                                    u:object_r:cgroup:s0
+
+# DRM
+/vendor/bin/hw/android\.hardware\.drm@1\.1-service\.clearkey                                        u:object_r:hal_drm_clearkey_exec:s0
+/vendor/bin/hw/android\.hardware\.drm@1\.1-service\.widevine                                        u:object_r:hal_drm_widevine_exec:s0
+
+# Fingerprint
+/dev/gf66xx-spi                                                                                     u:object_r:gx_fpd_device:s0
+/dev/ttyACM[0-9]*                                                                                   u:object_r:gx_fpd_device:s0
+/dev/goodix_fp*                                                                                     u:object_r:gx_fpd_device:s0
+/(vendor|system/vendor)/bin/gx_fpd                                                                  u:object_r:gx_fpd_exec:s0
+/data/system/fingerprint(/.*)?                                                                      u:object_r:gx_fpd_data_file:s0
+/persist/data/gxfp(/.*)?                                                                            u:object_r:gx_fpd_data_file:s0
+/data/goodix(/.*)?                                                                                  u:object_r:gx_fpd_data_file:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.0-service.marmite      u:object_r:hal_fingerprint_default_exec:s0
+
+# FRP partition
+/dev/block/platform/soc/624000.ufshc/by-name/config                                                 u:object_r:frp_block_device:s0
+
+# Lights
+/sys/devices/soc/gpio-leds\.[a-z0-9]+/leds(/.*)?                                                    u:object_r:sysfs_leds:s0
+/sys/devices/soc/qcom,camera-led-flash\.[a-z0-9]+/leds(/.*)?                                        u:object_r:sysfs_leds:s0
+/sys/devices/soc/[a-z0-9]+\.i2c/i2c-[0-9]/[0-9]-[a-z0-9]+/leds(/.*)?                                u:object_r:sysfs_leds:s0
+
+# Power
+/sys/devices/soc/78b6000.i2c/i2c-2/2-001c/name                                                      u:object_r:sysfs_battery_supply:s0
+
+# RTC
+/sys/devices/soc/qpnp-rtc-7/rtc/rtc0/hctosys                                                        u:object_r:sysfs_rtc:s0
+
+# Root files
+/firmware(/.*)?                                                                                     u:object_r:firmware_file:s0
+
+# Shell files
+/(vendor|system/vendor)/bin/init\.qcom\.mem\.sh                                                     u:object_r:qti_init_shell_exec:s0

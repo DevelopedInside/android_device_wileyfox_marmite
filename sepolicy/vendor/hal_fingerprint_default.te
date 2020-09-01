@@ -1,0 +1,25 @@
+typeattribute hal_fingerprint_default binder_in_vendor_violators, data_between_core_and_vendor_violators;
+
+r_dir_file(hal_fingerprint_default, firmware_file)
+
+allow hal_fingerprint_default fingerprintd_data_file:file create_file_perms;
+allow hal_fingerprint_default fingerprintd_data_file:dir rw_dir_perms;
+allow hal_fingerprint_default uhid_device:chr_file rw_file_perms;
+allow hal_fingerprint_default tee_device:chr_file rw_file_perms;
+allow hal_fingerprint_default property_socket:sock_file { read write };
+allow hal_fingerprint_default fingerprint_service:service_manager find;
+allow hal_fingerprint_default gx_fpd_service:service_manager find;
+allow hal_fingerprint_default init:unix_stream_socket connectto;
+
+allow hal_fingerprint_default gx_fpd:binder { call transfer };
+allow hal_fingerprint_default servicemanager:binder { call transfer };
+allow hal_fingerprint_default hwservicemanager:binder { call transfer };
+
+allow hal_fingerprint_default storage_file:dir { search };
+allow hal_fingerprint_default storage_file:lnk_file { read };
+allow hal_fingerprint_default mnt_user_file:dir { search };
+allow hal_fingerprint_default mnt_user_file:lnk_file { read };
+allow hal_fingerprint_default sdcardfs:dir { search };
+allow hal_fingerprint_default sdcardfs:file { getattr };
+
+binder_use(hal_fingerprint_default)
