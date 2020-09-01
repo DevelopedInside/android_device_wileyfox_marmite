@@ -1,0 +1,3 @@
+allow init proc:file write;
+allow init sysfs:file { setattr };
+allow init sysfs_leds:lnk_file read;
