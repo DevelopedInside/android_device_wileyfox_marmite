@@ -339,8 +339,8 @@ vendor/lib64/hw/fingerprint.msm8937.so
 vendor/lib64/hw/gxfingerprint.default.so
 vendor/lib64/libalgoandroid.so
 vendor/lib64/libgfcompat.so
-vendor/lib64/libfpservice.so
-vendor/lib64/libfp_client.so
+vendor/lib64/libfpservice.so|8ce824ebef21d5fa7901fd6c96960a84d8c0406b
+vendor/lib64/libfp_client.so|7bb896027f39b3b3c2366e712ba42bf72bc2c347
 
 # FM
 vendor/lib/hw/vendor.qti.hardware.fm@1.0-impl.so
