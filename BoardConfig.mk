@@ -252,12 +252,14 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/vendor/etc/fstab.qcom
 TARGET_RECOVERY_DEVICE_MODULES := libinit_marmite
 
 # RIL
+DISABLE_RILD_OEM_HOOK := true
 TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
 TARGET_USES_OLD_MNC_FORMAT := true
 
 # SELinux
 include device/qcom/sepolicy-legacy-um/sepolicy.mk
 #BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy # TEMP DISABLE
+BOARD_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy-temp
 
 # Treble
 PRODUCT_FULL_TREBLE_OVERRIDE := true

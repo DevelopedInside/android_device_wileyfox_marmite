@@ -51,14 +51,6 @@ on post-fs-data
     mkdir /data/vendor/nfc 0770 nfc nfc
     mkdir /data/vendor/nfc/param 0770 nfc nfc
 
-    #create netmgr log dir
-    mkdir /data/vendor/netmgr 0770 radio radio
-    chmod 0770 /data/vendor/netmgr
-
-    #create QTI dir for logs
-    mkdir /data/vendor/dataqti 0770 radio radio
-    chmod 0770 /data/vendor/dataqti
-
 on early-boot
     # SSR setup
     write /sys/bus/msm_subsys/devices/subsys0/restart_level "related"
@@ -68,9 +60,6 @@ on early-boot
     write /sys/bus/msm_subsys/devices/subsys4/restart_level "related"
 
 on boot
-    #Create NETMGR daemon socket area
-    mkdir /dev/socket/netmgr 0750 radio radio
-
     # Wifi firmware reload path
     chown wifi wifi /sys/module/wlan/parameters/fwpath
 
@@ -101,26 +90,3 @@ service dpmQmiMgr /system/vendor/bin/dpmQmiMgr
     user system
     group system
     writepid /dev/cpuset/system-background/tasks
-
-service vendor.rmt_storage /vendor/bin/rmt_storage
-    class core
-    user root
-    shutdown critical
-    ioprio rt 0
-    writepid /dev/cpuset/system-background/tasks
-
-service vendor.tftp_server /vendor/bin/tftp_server
-    class core
-    user root
-    writepid /dev/cpuset/system-background/tasks
-
-service vendor.netmgrd /vendor/bin/netmgrd
-    class main
-    writepid /dev/cpuset/system-background/tasks
-
-service vendor.dataqti /vendor/bin/qti
-    class main
-    user radio
-    group radio oem_2901 usb net_admin
-    writepid /dev/cpuset/system-background/tasks
-
