@@ -19,4 +19,10 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!-- Use the BPF offload for tethering when the kernel has support. True by default.
+         If the device doesn't want to support tether BPF offload, this should be false.
+         Note that this setting could be overridden by device config.
+    -->
+    <bool translatable="false" name="config_tether_enable_bpf_offload">false</bool>
+
 </resources>
