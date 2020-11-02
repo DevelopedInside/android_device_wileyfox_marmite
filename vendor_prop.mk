@@ -18,14 +18,6 @@
 # CAF Branch: LA.UM.7.6.r1-03900-89xx.0
 #
 
-# ADB at boot
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.service.adb.enable=1 \
-    persist.service.debuggable=1 \
-    persist.sys.usb.config=mtp,adb \
-    persist.sys.usb.configfs=0 \
-    ro.adb.secure=0
-
 # Audio
 PRODUCT_PROPERTY_OVERRIDES += \
     af.fast_track_multiplier=1 \
