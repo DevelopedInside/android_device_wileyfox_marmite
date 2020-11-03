@@ -144,6 +144,9 @@ on enable-low-power
     write /sys/block/dm-0/queue/read_ahead_kb 128
     write /sys/block/dm-1/queue/read_ahead_kb 128
 
+    # Set GPU idle freq
+    write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 4
+
 on charger
     # Offline all cores other than CPU0
     write /sys/devices/system/cpu/cpu1/online 0
