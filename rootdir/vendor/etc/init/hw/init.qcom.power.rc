@@ -138,10 +138,6 @@ on enable-low-power
     # Start memory configuration
     start qcom-mem
 
-    # Set ZCache parameters
-    write /sys/module/zcache/parameters/clear_percent 3
-    write /sys/module/zcache/parameters/max_pool_percent 30
-
     # Post process
     write /sys/block/mmcblk0/bdi/read_ahead_kb 128
     write /sys/block/mmcblk0/queue/read_ahead_kb 128
