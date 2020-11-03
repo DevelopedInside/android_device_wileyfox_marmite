@@ -120,6 +120,7 @@ service vendor.qseecomd /vendor/bin/qseecomd
    class core
    user root
    group root
+   writepid /dev/cpuset/system-background/tasks
 
 #service aostlmd /system/bin/aostlmd
 #   class late_start
@@ -134,6 +135,7 @@ service thermal-engine /system/vendor/bin/thermal-engine
    socket thermal-recv-passive-client stream 0666 system system
    socket thermal-send-rule stream 0660 system system
    group root
+   writepid /dev/cpuset/system-background/tasks
 
 service audiod /system/vendor/bin/audiod
    class late_start
@@ -203,6 +205,7 @@ service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
     socket ims_qmid stream 0660 system radio
     group radio log diag
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 on property:vendor.service.qti.ims.enabled=1
     start vendor.imsqmidaemon
@@ -214,6 +217,7 @@ service vendor.imsdatadaemon /system/vendor/bin/imsdatadaemon
     socket ims_datad stream 0660 system radio
     group system wifi radio inet log diag
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 on property:vendor.ims.QMI_DAEMON_STATUS=1
     start vendor.imsdatadaemon
@@ -222,11 +226,13 @@ service vendor.ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
    class main
    user system
    group radio diag inet log
+   writepid /dev/cpuset/system-background/tasks
 
 service vendor.imsrcsservice /system/vendor/bin/imsrcsd
    class main
    user system
    group radio diag inet log wakelock
+   writepid /dev/cpuset/system-background/tasks
 
 on property:vendor.ims.DATA_DAEMON_STATUS=1
     restart vendor.ims_rtp_daemon
@@ -237,6 +243,7 @@ service ppd /system/vendor/bin/mm-pp-dpps
     user system
     socket pps stream 0660 system system
     group system graphics
+    writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.surfaceflinger=stopped
     stop ppd
@@ -288,6 +295,7 @@ service adsprpcd /system/vendor/bin/adsprpcd
     class main
     user media
     group media
+    writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.dts_configurator=stopped
     start dtseagleservice
@@ -296,12 +304,14 @@ service vendor.per_mgr /system/vendor/bin/pm-service
     class core
     user system
     group system net_raw
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.per_proxy /system/vendor/bin/pm-proxy
     class core
     user system
     group system
     disabled
+    writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.vendor.per_mgr=running
     start vendor.per_proxy

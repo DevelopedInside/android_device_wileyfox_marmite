@@ -84,16 +84,20 @@ service vendor.rmt_storage /vendor/bin/rmt_storage
     user root
     shutdown critical
     ioprio rt 0
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.tftp_server /vendor/bin/tftp_server
     class core
     user root
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.netmgrd /vendor/bin/netmgrd
     class main
+    writepid /dev/cpuset/system-background/tasks
 
 service vendor.dataqti /vendor/bin/qti
     class main
     user radio
     group radio oem_2901 usb net_admin
+    writepid /dev/cpuset/system-background/tasks
 
