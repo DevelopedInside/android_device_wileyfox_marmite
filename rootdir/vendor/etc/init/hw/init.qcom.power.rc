@@ -8,12 +8,6 @@ on boot
     chown cameraserver cameraserver /dev/cpuset/camera-daemon/tasks
     chmod 0660 /dev/cpuset/camera-daemon/tasks
 
-    # Update foreground and background cpusets while booting
-    write /dev/cpuset/foreground/cpus 0-7
-    write /dev/cpuset/background/cpus 0-7
-    write /dev/cpuset/system-background/cpus 0-7
-    write /dev/cpuset/top-app/cpus 0-7
-
     # Enable sched boost in order to schedule tasks on perf cluster
     write /proc/sys/kernel/sched_boost 1
 
@@ -179,15 +173,6 @@ on early-boot
 on property:dev.bootcomplete=1
     trigger enable-low-power
     setprop sys.io.scheduler bfq
-
-    # update cpusets now that boot is complete and we want
-    # better load balancing
-    write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/foreground/cpus 0-6
-    write /dev/cpuset/background/cpus 4-6
-    write /dev/cpuset/system-background/cpus 4-6
-    write /dev/cpuset/camera-daemon/cpus 4-7
-    write /dev/cpuset/restricted/cpus 4-7
 
     # Tell perfd that we're ready to go
     setprop vendor.post_boot.parsed 1

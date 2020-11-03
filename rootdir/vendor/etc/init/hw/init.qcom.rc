@@ -577,7 +577,6 @@ service vendor.sensors.qti /vendor/bin/sensors.qti
     user system
     group system
     disabled
-    writepid /dev/cpuset/system-background/tasks
 
 # Adjust socket buffer to enlarge TCP receive window for high bandwidth
 # but only if ro.data.large_tcp_window_size property is set.
@@ -711,7 +710,6 @@ service cnss-daemon /system/vendor/bin/cnss-daemon -n -l
     user system
     group system inet net_admin wifi
     capabilities NET_ADMIN
-    writepid /dev/cpuset/system-background/tasks
 
 on property:sys.shutdown.requested=*
     write /sys/kernel/shutdown_wlan/shutdown 1
@@ -743,7 +741,6 @@ service loc_launcher /system/vendor/bin/loc_launcher
     class late_start
     user gps
     group gps
-    writepid /dev/cpuset/system-background/tasks
 
 service drmdiag /system/vendor/bin/drmdiagapp
     class late_start
@@ -807,7 +804,6 @@ service vendor.atfwd /vendor/bin/ATFWD-daemon
     class late_start
     user system
     group system radio
-    writepid /dev/cpuset/system-background/tasks
 
 service hostapd_fst /vendor/bin/hw/hostapd -dd -g /data/vendor/wifi/hostapd/global
     class main
@@ -1004,7 +1000,6 @@ service time_daemon /vendor/bin/time_daemon
     class main
     user root
     group root
-    writepid /dev/cpuset/system-background/tasks
 
 # Set vendor-ril lib path based on Meta version
 on property:vendor.rild.libpath=*
