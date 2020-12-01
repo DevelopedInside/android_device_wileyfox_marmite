@@ -1,5 +1,5 @@
 # TODO: Fix dac_override
-#allow gx_fpd self:capability dac_override;
+allow gx_fpd self:capability dac_override;
 
 # gx_fpd
 init_daemon_domain(gx_fpd)
