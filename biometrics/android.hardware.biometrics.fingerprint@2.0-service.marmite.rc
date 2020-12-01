@@ -1,0 +1,23 @@
+service vendor.fps_hal /vendor/bin/hw/android.hardware.biometrics.fingerprint@2.0-service.marmite
+    # "class hal" causes a race condition on some devices due to files created
+    # in /data. As a workaround, postpone startup until later in boot once
+    # /data is mounted.
+    class late_start
+    user system
+    group system input uhid
+    writepid /dev/cpuset/system-background/tasks
+
+on property:init.svc.vendor.fps_hal=running
+    start vendor.gx_fpd
+
+service vendor.gx_fpd /vendor/bin/gx_fpd
+    class late_start
+    user root
+    group root system drmrpc
+    disabled
+
+on post-fs-data
+    # Fingerprint
+    mkdir /data/system/fingerprint 0770 system system
+    restorecon /data/system/fingerprint
+
