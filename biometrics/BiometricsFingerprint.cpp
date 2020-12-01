@@ -217,7 +217,18 @@ Return<RequestStatus> BiometricsFingerprint::enumerate()  {
 }
 
 Return<RequestStatus> BiometricsFingerprint::remove(uint32_t gid, uint32_t fid) {
-    return ErrorFilter(mDevice->remove(mDevice, gid, fid));
+    /* remove hack */
+    int ret = mDevice->remove(mDevice, gid, fid);
+    ALOG(LOG_VERBOSE, LOG_TAG, "remove(ret=%d, fid=%d, gid=%d)", ret, fid, gid);
+    if (ret == 0) {
+        fingerprint_msg_t msg;
+        msg.type = FINGERPRINT_TEMPLATE_REMOVED;
+        msg.data.removed.finger.fid = fid;
+        msg.data.removed.finger.gid = gid;
+        msg.data.removed.remaining_templates = 0;
+        sInstance->notify(&msg);
+    }
+    return ErrorFilter(ret);
 }
 
 Return<RequestStatus> BiometricsFingerprint::setActiveGroup(uint32_t gid,
