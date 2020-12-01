@@ -40,3 +40,5 @@ set_prop(gx_fpd, system_prop)
 
 # Ignore all logging requests
 dontaudit gx_fpd storage_file:dir search;
+
+allow gx_fpd system_data_file:dir write;

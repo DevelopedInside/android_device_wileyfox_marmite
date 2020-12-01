@@ -1,0 +1,11 @@
+# Allow nfc to read and write in nfc_vendor_data_file
+allow nfc nfc_vendor_data_file:dir search;
+allow nfc nfc_vendor_data_file:file rw_file_perms;
+
+# Allow nfc to find hal_nxpnfc_hwservice
+allow nfc nxpnfc_hwservice:hwservice_manager find;
+
+allow nfc nfc_vendor_data_file:dir { rw_dir_perms };
+allow nfc nfc_vendor_data_file:file { create_file_perms };
+
+binder_call(nfc, gpuservice)

@@ -1,0 +1,1 @@
+allow wcnss_service sysfs:file { getattr open write };
