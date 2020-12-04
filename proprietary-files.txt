@@ -15,7 +15,7 @@ vendor/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb
 vendor/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb
 
 # Camera
-vendor/bin/mm-qcamera-daemon
+vendor/bin/mm-qcamera-daemon|abef78392399a482f0c3121487e170c46c2f4495
 
 lib64/libfilterpack_facedetect.so
 
