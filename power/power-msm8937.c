@@ -93,6 +93,8 @@ static int profile_bias_performance[] = {
 };
 // clang-format on
 
+#define VENDOR_HINT_ANIM_BOOST 0x00001083
+
 #ifdef INTERACTION_BOOST
 int get_number_of_profiles() {
     return 5;
@@ -294,6 +296,8 @@ static int process_activity_launch_hint(void* data) {
             launch_handle_packing = -1;
         }
         launch_mode = 0;
+        // boost for end animations
+        perf_hint_enable_with_type(VENDOR_HINT_ANIM_BOOST, -1, -1);
         return HINT_HANDLED;
     }
 
