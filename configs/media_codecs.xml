@@ -113,9 +113,6 @@ Only the three quirks included above are recognized at this point:
     <Settings>
         <Setting name="max-video-encoder-input-buffers" value="9" />
     </Settings>
-    <Settings>
-        <Variant name="slow-cpu" enabled="true" />
-    </Settings>
     <Encoders>
         <!-- Video Hardware  -->
         <MediaCodec name="OMX.qcom.video.encoder.avc" type="video/avc" >
@@ -158,6 +155,7 @@ Only the three quirks included above are recognized at this point:
             <Limit name="performance-point-720x480" value="30" />
             <Limit name="performance-point-720x576" value="25" />
         </MediaCodec>
+        <MediaCodec name="c2.android.hevc.encoder" type="video/hevc" update="true" enabled="false" />
     </Encoders>
     <Decoders>
         <!-- Video Hardware  -->
@@ -257,8 +255,30 @@ Only the three quirks included above are recognized at this point:
             <Limit name="performance-point-720x480" value="30" />
             <Limit name="performance-point-720x576" value="25" />
         </MediaCodec>
+        <MediaCodec name="c2.android.hevc.decoder" type="video/hevc" update="true">
+            <!-- profiles and levels:  ProfileMain : MainTierLevel51 -->
+            <Limit name="size" min="2x2" max="2048x2048" />
+            <Limit name="alignment" value="2x2" />
+            <Limit name="block-size" value="8x8" />
+            <Limit name="block-count" range="1-65536" />
+            <Limit name="blocks-per-second" range="1-491520" />
+            <Limit name="bitrate" range="1-5000000" />
+       </MediaCodec>
+        <MediaCodec name="c2.android.avc.decoder" type="video/avc" update="true">
+            <!-- profiles and levels:  ProfileHigh : Level51 -->
+            <Limit name="size" min="2x2" max="2048x2048" />
+            <Limit name="alignment" value="2x2" />
+            <Limit name="block-size" value="16x16" />
+            <Limit name="block-count" range="1-16384" />
+            <Limit name="blocks-per-second" range="1-491520" />
+            <Limit name="bitrate" range="1-40000000" />
+            <Feature name="adaptive-playback" />
+        </MediaCodec>
         <MediaCodec name="OMX.google.opus.decoder" type="audio/opus" update="true" rank="100"/>
+        <!-- SimpleOMXComponet based software decoder-->
+        <MediaCodec name="OMX.qti.audio.decoder.flac" type="audio/flac" rank="0">
+            <Limit name="concurrent-instances" max="10" />
+        </MediaCodec>
     </Decoders>
     <Include href="media_codecs_google_video_le.xml" />
 </MediaCodecs>
-
