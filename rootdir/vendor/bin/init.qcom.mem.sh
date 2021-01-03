@@ -1,5 +1,6 @@
 #!/vendor/bin/sh
-# Copyright (c) 2012-2013,2016,2018,2019 The Linux Foundation. All rights reserved.
+
+# Copyright (c) 2012-2013, 2016-2017, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -29,18 +30,16 @@
 # Set Memory parameters.
 #
 # Set per_process_reclaim tuning parameters
-# All targets will use vmpressure range 50-70,
-# All targets will use 512 pages swap size.
+# 2GB 64-bit will have aggressive settings when compared to 1GB 32-bit
+# 1GB and less will use vmpressure range 50-70, 2GB will use 10-70
+# 1GB and less will use 512 pages swap size, 2GB will use 1024
 #
 # Set Low memory killer minfree parameters
-# 32 bit Non-Go, all memory configurations will use 15K series
-# 32 bit Go, all memory configurations will use uLMK + Memcg
-# 64 bit will use Google default LMK series.
+# 32 bit all memory configurations will use 15K series
+# 64 bit up to 2GB with use 14K, and above 2GB will use 18K
 #
 # Set ALMK parameters (usually above the highest minfree values)
-# vmpressure_file_min threshold is always set slightly higher
-# than LMK minfree's last bin value for all targets. It is calculated as
-# vmpressure_file_min = (last bin - second last bin ) + last bin
+# 32 bit will have 53K & 64 bit will have 81K
 #
 
 arch_type=`uname -m`
@@ -60,32 +59,14 @@ set_almk_ppr_adj="${adj_1%%,*}"
 # For uLMK + Memcg, this will be set as 6 since adj is zero.
 set_almk_ppr_adj=$(((set_almk_ppr_adj * 6) + 6))
 echo $set_almk_ppr_adj > /sys/module/lowmemorykiller/parameters/adj_max_shift
-
-# Calculate vmpressure_file_min as below & set for 64 bit:
-# vmpressure_file_min = last_lmk_bin + (last_lmk_bin - last_but_one_lmk_bin)
-minfree_series=`cat /sys/module/lowmemorykiller/parameters/minfree`
-minfree_1="${minfree_series#*,}" ; rem_minfree_1="${minfree_1%%,*}"
-minfree_2="${minfree_1#*,}" ; rem_minfree_2="${minfree_2%%,*}"
-minfree_3="${minfree_2#*,}" ; rem_minfree_3="${minfree_3%%,*}"
-minfree_4="${minfree_3#*,}" ; rem_minfree_4="${minfree_4%%,*}"
-minfree_5="${minfree_4#*,}"
-
-vmpres_file_min=$((minfree_5 + (minfree_5 - rem_minfree_4)))
-echo $vmpres_file_min > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
-
-# Enable adaptive LMK for all targets &
-# use Google default LMK series for all 64-bit targets >=2GB.
-echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
-
-# Enable oom_reaper
-if [ -f /sys/module/lowmemorykiller/parameters/oom_reaper ]; then
-    echo 1 > /sys/module/lowmemorykiller/parameters/oom_reaper
-fi
-
-#Set PPR parameters for all other targets.
 echo $set_almk_ppr_adj > /sys/module/process_reclaim/parameters/min_score_adj
+
+#Set other memory parameters
 echo 0 > /sys/module/process_reclaim/parameters/enable_process_reclaim
-echo 50 > /sys/module/process_reclaim/parameters/pressure_min
 echo 70 > /sys/module/process_reclaim/parameters/pressure_max
 echo 30 > /sys/module/process_reclaim/parameters/swap_opt_eff
-echo 512 > /sys/module/process_reclaim/parameters/per_swap_size
+echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+echo 10 > /sys/module/process_reclaim/parameters/pressure_min
+echo 1024 > /sys/module/process_reclaim/parameters/per_swap_size
+echo "18432,23040,27648,32256,55296,80640" > /sys/module/lowmemorykiller/parameters/minfree
+echo 81250 > /sys/module/lowmemorykiller/parameters/vmpressure_file_min
