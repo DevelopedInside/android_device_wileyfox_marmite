@@ -46,3 +46,6 @@
 
 # Shell files
 /(vendor|system/vendor)/bin/init\.qcom\.mem\.sh                                                     u:object_r:qti_init_shell_exec:s0
+
+# Touchscreen
+/vendor/bin/hw/vendor\.lineage\.touch@1\.0-service\.marmite                                         u:object_r:hal_lineage_touch_default_exec:s0
