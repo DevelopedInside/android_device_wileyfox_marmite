@@ -26,7 +26,7 @@ PRODUCT_ENFORCE_RRO_TARGETS := framework-res
 
 # AAPT
 PRODUCT_AAPT_CONFIG := normal
-PRODUCT_AAPT_PREF_CONFIG := xxhdpi
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
 
 # Additional native libraries
 PRODUCT_COPY_FILES += \
