@@ -1,0 +1,8 @@
+on boot
+    chown system system /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+    chmod 0664 /proc/class/ms-touchscreen-msg20xx/device/glove_mode
+
+service vendor.touch-hal-1-0 /vendor/bin/hw/vendor.lineage.touch@1.0-service.marmite
+    class hal
+    user system
+    group system
