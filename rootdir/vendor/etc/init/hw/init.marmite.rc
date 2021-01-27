@@ -32,9 +32,6 @@ on early-init
     # Turn off backlight on blank
     write /sys/class/leds/lcd-backlight/trigger "backlight"
 
-on fs
-    setprop sys.usb.ffs.aio_compat 1
-
 on post-fs-data
     #Create folder for mm-qcamera-daemon
     mkdir /data/vendor/qcam 0770 camera camera
