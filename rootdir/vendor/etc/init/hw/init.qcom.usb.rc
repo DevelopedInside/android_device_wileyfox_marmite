@@ -50,6 +50,11 @@ on charger
 
 on boot
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
+    write /sys/class/android_usb/android0/iManufacturer ${ro.product.manufacturer}
+    write /sys/class/android_usb/android0/iProduct ${ro.product.model}
+    write /sys/class/android_usb/android0/f_rndis/manufacturer ${ro.product.manufacturer}
+    write /sys/class/android_usb/android0/f_rndis/vendorID ${ro.usb.vid}
+    setprop persist.vendor.usb.config.extra none
     mount configfs none /config
     mkdir /config/usb_gadget/g1 0770
     mkdir /config/usb_gadget/g2 0770
@@ -112,6 +117,12 @@ service vendor.qcom-usb-sh /vendor/bin/init.qcom.usb.sh
     user root
     oneshot
     disabled
+
+on fs
+    write /sys/class/android_usb/android0/iSerial ${ro.serialno}
+    write /sys/class/android_usb/android0/iManufacturer ${ro.product.manufacturer}
+    write /sys/class/android_usb/android0/iProduct ${ro.product.model}
+    write /sys/class/android_usb/android0/f_rndis/manufacturer ${ro.product.manufacturer}
 
 on property:persist.vendor.usb.config=*
     setprop persist.sys.usb.config ${persist.vendor.usb.config}
@@ -1036,8 +1047,8 @@ on property:sys.usb.config=rndis,diag,diag_mdm,diag_qsc,adb && property:sys.usb.
 on property:sys.usb.config=ptp && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct 904D
+    write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+    write /sys/class/android_usb/android0/idProduct ${ro.usb.id.ptp}
     write /sys/class/android_usb/android0/functions ptp
     write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state ${sys.usb.config}
@@ -1045,8 +1056,8 @@ on property:sys.usb.config=ptp && property:sys.usb.configfs=0
 on property:sys.usb.config=ptp,adb && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct 904E
+    write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+    write /sys/class/android_usb/android0/idProduct ${ro.usb.id.ptp_adb}
     write /sys/class/android_usb/android0/functions ptp,adb
     write /sys/class/android_usb/android0/enable 1
     start adbd
@@ -1055,8 +1066,8 @@ on property:sys.usb.config=ptp,adb && property:sys.usb.configfs=0
 on property:sys.usb.config=mtp && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct F003
+    write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+    write /sys/class/android_usb/android0/idProduct ${ro.usb.id.mtp}
     write /sys/class/android_usb/android0/functions mtp
     write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state ${sys.usb.config}
@@ -1064,8 +1075,8 @@ on property:sys.usb.config=mtp && property:sys.usb.configfs=0
 on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct 9039
+    write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+    write /sys/class/android_usb/android0/idProduct ${ro.usb.id.mtp_adb}
     write /sys/class/android_usb/android0/functions mtp,adb
     write /sys/class/android_usb/android0/enable 1
     start adbd
@@ -1158,8 +1169,8 @@ on property:sys.usb.config=diag,diag_mdm,ccid,adb && property:sys.usb.configfs=0
 on property:sys.usb.config=mass_storage,adb && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct 9015
+    write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+    write /sys/class/android_usb/android0/idProduct ${ro.usb.id.ums_adb}
     write /sys/class/android_usb/android0/functions adb,mass_storage
     write /sys/class/android_usb/android0/enable 1
     start adbd
@@ -1169,8 +1180,8 @@ on property:sys.usb.config=mass_storage,adb && property:sys.usb.configfs=0
 on property:sys.usb.config=mass_storage && property:sys.usb.configfs=0
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct F000
+    write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+    write /sys/class/android_usb/android0/idProduct ${ro.usb.id.ums}
     write /sys/class/android_usb/android0/functions mass_storage
     write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state ${sys.usb.config}
@@ -1497,12 +1508,6 @@ on property:sys.usb.config=ncm,adb && property:sys.usb.configfs=0
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=charging && property:sys.usb.configfs=0
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-    write /sys/class/android_usb/android0/idVendor 05C6
-    write /sys/class/android_usb/android0/idProduct F006
-    write /sys/class/android_usb/android0/functions charging
-    write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=diag,serial_smd,rmnet_qti_bam,dpl_qti_bam_dmux && property:sys.usb.configfs=0
@@ -1560,8 +1565,8 @@ on property:sys.usb.config=diag,diag_cnss,serial_smd,serial_tty,rmnet_bam,mass_s
 on property:sys.usb.config=midi && property:sys.usb.configfs=0
      write /sys/class/android_usb/android0/enable 0
      write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-     write /sys/class/android_usb/android0/idVendor 05C6
-     write /sys/class/android_usb/android0/idProduct 90BA
+     write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+     write /sys/class/android_usb/android0/idProduct ${ro.usb.id.midi}
      write /sys/class/android_usb/android0/functions midi
      write /sys/class/android_usb/android0/enable 1
      setprop sys.usb.state ${sys.usb.config}
@@ -1569,8 +1574,8 @@ on property:sys.usb.config=midi && property:sys.usb.configfs=0
 on property:sys.usb.config=midi,adb && property:sys.usb.configfs=0
      write /sys/class/android_usb/android0/enable 0
      write /sys/class/android_usb/android0/iSerial ${ro.serialno}
-     write /sys/class/android_usb/android0/idVendor 05C6
-     write /sys/class/android_usb/android0/idProduct 90BB
+     write /sys/class/android_usb/android0/idVendor ${ro.usb.vid}
+     write /sys/class/android_usb/android0/idProduct ${ro.usb.id.midi_adb}
      write /sys/class/android_usb/android0/functions midi,adb
      write /sys/class/android_usb/android0/enable 1
      start adbd
