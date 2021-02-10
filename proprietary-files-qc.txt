@@ -279,10 +279,9 @@ vendor/lib/libvpplibrary.so|816a79fe9a6d30e9402acb767119b9ee1c2c8aea
 vendor/lib/libvqzip.so|24e5eb30e5a2cdb544c8688d81d7cc75a1d85eaf
 vendor/lib64/libgpustats.so|a899ae72983277442cdacf8f43271986c91ce710
 
-# Media OMX
-vendor/lib/libMpeg4SwEncoder.so
-vendor/lib/libOmxSwVdec.so
-vendor/lib/libOmxSwVencMpeg4.so
+# Media - from D1C - PKQ1.181105.001
+-vendor/lib/libMpeg4SwEncoder.so|ac4aaba9259a4868ad29a96c07a5814e1f569d47
+-vendor/lib/libOmxSwVencMpeg4.so|ed4200c66e3a185dd13952b3ccf6cc2524ded519
 
 # Perf - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
 vendor/bin/energy-awareness|d9b3f1cc791e0e9612a5ff5df6836af4c921a52b
