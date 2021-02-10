@@ -51,14 +51,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vendor.voice.record.conc.disabled=false \
     vendor.voice.voip.conc.disabled=true
 
-# Battery
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.cutoff_voltage_mv=3400
-
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
-    bluetooth.hfp.client=1 \
-    persist.vendor.btstack.enable.splita2dp=false \
     vendor.bluetooth.soc=smd \
     vendor.qcom.bluetooth.soc=smd
 
@@ -77,7 +71,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # CABL
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.qualcomm.cabl=2 \
     ro.vendor.display.cabl=2
 
 # CNE
@@ -95,7 +88,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Data modules
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.data.netmgrd.qos.enable=true \
     persist.vendor.data.mode=concurrent \
     ro.vendor.use_data_netmgrd=true
 
@@ -129,17 +121,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.frp.pst=/dev/block/bootdevice/by-name/config
 
-# Fingerprint
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.qfp=false
-
 # Force triple frame buffers
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.surface_flinger.max_frame_buffer_acquired_buffers=3
-
-# FM radio
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.fm.transmitter=false
 
 # IMS
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -151,35 +135,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     debug.stagefright.omx_default_rank.sw-audio=1 \
     debug.stagefright.omx_default_rank=0 \
-    media.aac_51_output_enabled=true \
-    media.msm8956hw=0 \
-    mm.enable.smoothstreaming=true \
-    mmp.enable.3g2=true \
-    persist.mm.sta.enable=0 \
-    vendor.mm.enable.qcom_parser=1048575 \
     vendor.vidc.disable.split.mode=1 \
     vendor.vidc.enc.narrow.searchrange=1 \
     vendor.video.disable.ubwc=1
 
-# Misc
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.emmc_size=16GB
-
 # OEM Unlocking
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.oem_unlock_supported=true
-
-# Nitz
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.rild.nitz_long_ons_0="" \
-    persist.rild.nitz_long_ons_1="" \
-    persist.rild.nitz_long_ons_2="" \
-    persist.rild.nitz_long_ons_3="" \
-    persist.rild.nitz_plmn="" \
-    persist.rild.nitz_short_ons_0="" \
-    persist.rild.nitz_short_ons_1="" \
-    persist.rild.nitz_short_ons_2="" \
-    persist.rild.nitz_short_ons_3="" \
 
 # Perf
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -202,15 +164,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.default_network=9,9 \
     telephony.lteOnCdmaDevice=1
 
-# Shutdown timeout
-PRODUCT_PROPERTY_OVERRIDES += \
-    sys.vendor.shutdown.waittime=500 \
-    ro.build.shutdown_timeout=0
-
-# Storage
-PRODUCT_PROPERTY_OVERRIDES += \
-    persist.fuse_sdcard=true
-
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.usb.id.midi=90BA \
@@ -225,7 +178,6 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 
 # Time services
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.timed.enable=true \
     persist.vendor.delta_time.enable=true
 
 # Trim properties
