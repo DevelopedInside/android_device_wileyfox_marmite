@@ -21,4 +21,4 @@
 
 /devices/soc/7864900.sdhci/mmc_host*       auto                  auto      defaults                                                          voldmanaged=sdcard1:auto,noemulatedsd,encryptable=footer
 
-/dev/block/zram0                           none                  swap      defaults                                                          zramsize=1610612736,max_comp_streams=4
+/dev/block/zram0                           none                  swap      defaults                                                          zramsize=1610612736,max_comp_streams=8
