@@ -1,8 +1,3 @@
-on init
-    # ZRAM setup
-    write /sys/block/zram0/comp_algorithm lz4
-    write /proc/sys/vm/page-cluster 0
-
 on boot
     # Add a cpuset for the camera daemon
     # we want all cores for camera
@@ -33,14 +28,14 @@ on enable-low-power
 
     # Disable sched_boost in 8937
     write /proc/sys/kernel/sched_boost 0
-    
+
     write /sys/class/devfreq/soc:qcom,mincpubw/governor "cpufreq"
     write /sys/class/devfreq/soc:qcom,cpubw/governor "bw_hwmon"
     write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/io_percent 20
     write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/guard_band_mbps 30
 
     write /sys/class/devfreq/soc:qcom,gpubw/bw_hwmon/io_percent 40
-    
+
     # Disable thermal core_control to update interactive gov and core_ctl settings
     write /sys/module/msm_thermal/core_control/enabled 0
 
@@ -193,11 +188,6 @@ on property:dev.bootcomplete=1
 
     # Tell perfd that we're ready to go
     setprop vendor.post_boot.parsed 1
-
-on property:sys.boot_completed=1
-    # Enable ZRAM on boot_complete
-    swapon_all /vendor/etc/fstab.qcom
-    write /proc/sys/vm/swappiness 100
 
 service qcom-mem /system/vendor/bin/init.qcom.mem.sh
     disabled
