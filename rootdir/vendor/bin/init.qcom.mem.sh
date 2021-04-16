@@ -62,7 +62,7 @@ echo $set_almk_ppr_adj > /sys/module/lowmemorykiller/parameters/adj_max_shift
 echo $set_almk_ppr_adj > /sys/module/process_reclaim/parameters/min_score_adj
 
 #Set other memory parameters
-echo 0 > /sys/module/process_reclaim/parameters/enable_process_reclaim
+echo 1 > /sys/module/process_reclaim/parameters/enable_process_reclaim
 echo 70 > /sys/module/process_reclaim/parameters/pressure_max
 echo 30 > /sys/module/process_reclaim/parameters/swap_opt_eff
 echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
