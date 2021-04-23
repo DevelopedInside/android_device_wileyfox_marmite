@@ -14,6 +14,7 @@ service vendor.gx_fpd /vendor/bin/gx_fpd
     class late_start
     user root
     group root system drmrpc
+    writepid /dev/cpuset/system-background/tasks
     disabled
 
 on post-fs-data
