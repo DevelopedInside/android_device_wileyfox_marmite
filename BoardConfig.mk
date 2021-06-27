@@ -39,6 +39,9 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
 
+# Broken
+BUILD_BROKEN_DUP_RULES := true
+
 # Assertions
 TARGET_OTA_ASSERT_DEVICE := marmite, MARMITE, omni_marmite
 
