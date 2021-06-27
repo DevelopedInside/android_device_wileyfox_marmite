@@ -18,6 +18,7 @@ cc_library_static {
     name: "libinit_marmite",
     recovery_available: true,
     srcs: ["init_marmite.cpp"],
+    shared_libs: ["libbase"],
     include_dirs: [
         "system/core/base/include",
         "system/core/init"
