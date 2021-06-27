@@ -39,6 +39,7 @@
 
 # Root files
 /firmware(/.*)?                                                                                     u:object_r:firmware_file:s0
+/persist(/.*)?                                                                                      u:object_r:mnt_vendor_file:s0
 
 # Shell files
 /(vendor|system/vendor)/bin/init\.qcom\.mem\.sh                                                     u:object_r:qti_init_shell_exec:s0
