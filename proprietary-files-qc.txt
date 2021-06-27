@@ -499,7 +499,7 @@ vendor/bin/thermal-engine|0b9cfef6c4eb965a6b9700e2e63043034a939dca
 vendor/lib64/libthermalioctl.so
 
 # Time services - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
--vendor/app/TimeService/TimeService.apk;:timeservice_app_cert-legacy-um|78109530538aa8fb533ad288c9d356c57481a10e
+-vendor/app/TimeService/TimeService.apk|78109530538aa8fb533ad288c9d356c57481a10e
 vendor/bin/time_daemon|bc58af8ed0cc94708aa75372565f4251991ab123
 vendor/lib64/libtime_genoff.so|8f4c1f9ace6af463b241b130d6872b5d39cc7b2a
 
