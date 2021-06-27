@@ -1,4 +1,10 @@
 allow priv_app mnt_vendor_file:dir search;
+allow priv_app sysfs:file { read open write };
+allow priv_app sysfs:dir { read open write };
+allow priv_app device:dir r_dir_perms;
+allow priv_app proc_interrupts:file { open read getattr };
+allow priv_app proc_modules:file { open read getattr };
+allow priv_app sysfs_android_usb:file open;
 
 allow priv_app hal_memtrack_hwservice:hwservice_manager find;
 binder_call(priv_app, hal_memtrack_default)
