@@ -17,8 +17,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <integer name="config_buttonBrightnessSettingDefault">0</integer>
-
     <!-- The list of components which should be automatically disabled for a specific device. -->
     <string-array name="config_deviceDisabledComponents" translatable="false">
         <item>com.google.android.gms/com.google.android.gms.nearby.discovery.service.DiscoveryService</item>
