@@ -418,7 +418,7 @@ vendor/lib64/libril-qc-qmi-1.so|7d6bd33376fa096746de50cce525ef0b2872d074
 vendor/lib64/libril-qc-radioconfig.so|3ee0fa2ca0a2419a2629dfea6c7b4078d9ae11f6
 vendor/lib64/libril-qcril-hook-oem.so|159f6addcb48e2e02ddba6278e05bc5a312d8136
 vendor/lib64/librilqmiservices.so|c61998e2944ff427a9d06c0ab5db83986db412ea
-vendor/lib64/libsettings.so|6ee6af1dc861a34110550d8cd58ee461e22c253e
+vendor/lib64/libsettings.so|6ee6af1dc861a34110550d8cd58ee461e22c253e|7badd19e83cf052433660c3876ebec735a616298
 vendor/lib64/libsystem_health_mon.so|a8a8e75cd251f4f8d8d054d75cea1238e654f7d0
 vendor/lib64/vendor.qti.hardware.radio.am@1.0.so|ef6d56f7aa6ff13866ccb0c31c8ef96de503c17c
 vendor/lib64/vendor.qti.hardware.radio.atcmdfwd@1.0.so|8ad1c06563a4e5cd57eec16ade2509e9647fc8fb
@@ -460,7 +460,7 @@ vendor/lib64/libtime_genoff.so|8f4c1f9ace6af463b241b130d6872b5d39cc7b2a
 # Widevine - from daisy - QKQ1.191002.002/V11.0.4.0.QDLMIXM
 vendor/bin/hw/android.hardware.drm@1.2-service.widevine|e130b8f1c8d46d8a185b00cba5ff8a2a871ee94c
 vendor/etc/init/android.hardware.drm@1.2-service.widevine.rc|68767969f86126ada017fc09af151e299db651d5
-vendor/lib64/libwvhidl.so|243dc27c272bf86da43703ab31106907048259de
+vendor/lib64/libwvhidl.so|243dc27c272bf86da43703ab31106907048259de|3288acf6c988c52a72029bef79da4d0fe8a72015
 
 # WiFi - from daisy - PKQ1.180917.001
 vendor/bin/cnss-daemon|badadcc672341e36228301b02c2bfaa36be09233
