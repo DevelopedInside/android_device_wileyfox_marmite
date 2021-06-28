@@ -43,8 +43,21 @@
 #include "vendor_init.h"
 #include "property_service.h"
 
+#define _REALLY_INCLUDE_SYS__SYSTEM_PROPERTIES_H_
+#include <sys/_system_properties.h>
+
 using android::base::GetProperty;
-using android::init::property_set;
+
+void property_override(char const prop[], char const value[], bool add = true)
+{
+    auto pi = (prop_info *) __system_property_find(prop);
+
+    if (pi != nullptr) {
+        __system_property_update(pi, value, strlen(value));
+    } else if (add) {
+        __system_property_add(prop, strlen(prop), value, strlen(value));
+    }
+}
 
 /*
  * In some device revisions, there is a sound amplifier that is not activated at
@@ -62,14 +75,14 @@ void check_aw87319()
     DIR* dir = opendir("/sys/bus/i2c/drivers/AW87319_PA/2-0058");
     if (dir)
     {
-        property_set("ro.hardware.amplifier", "true");
-        property_set("persist.audio.calfile0", "/vendor/etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb");
-        property_set("persist.audio.calfile1", "/vendor/etc/acdbdata/AW87319/AW87319_General_cal.acdb");
-        property_set("persist.audio.calfile2", "/vendor/etc/acdbdata/AW87319/AW87319_Global_cal.acdb");
-        property_set("persist.audio.calfile3", "/vendor/etc/acdbdata/AW87319/AW87319_Handset_cal.acdb");
-        property_set("persist.audio.calfile4", "/vendor/etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb");
-        property_set("persist.audio.calfile5", "/vendor/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb");
-        property_set("persist.audio.calfile6", "/vendor/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb");
+        property_override("ro.hardware.amplifier", "true");
+        property_override("persist.audio.calfile0", "/vendor/etc/acdbdata/AW87319/AW87319_Bluetooth_cal.acdb");
+        property_override("persist.audio.calfile1", "/vendor/etc/acdbdata/AW87319/AW87319_General_cal.acdb");
+        property_override("persist.audio.calfile2", "/vendor/etc/acdbdata/AW87319/AW87319_Global_cal.acdb");
+        property_override("persist.audio.calfile3", "/vendor/etc/acdbdata/AW87319/AW87319_Handset_cal.acdb");
+        property_override("persist.audio.calfile4", "/vendor/etc/acdbdata/AW87319/AW87319_Hdmi_cal.acdb");
+        property_override("persist.audio.calfile5", "/vendor/etc/acdbdata/AW87319/AW87319_Headset_cal.acdb");
+        property_override("persist.audio.calfile6", "/vendor/etc/acdbdata/AW87319/AW87319_Speaker_cal.acdb");
         closedir(dir);
     }
 }
@@ -84,22 +97,22 @@ void vendor_load_properties()
     if (cmv == "mv1")
     {
         /* Swift 2 */
-        property_set("ro.product.model", "Swift 2");
-        property_set("ro.media.maxmem", "10590068224");
+        property_override("ro.product.model", "Swift 2");
+        property_override("ro.media.maxmem", "10590068224");
     }
     else if (cmv == "mv2")
     {
         /* Swift 2 Plus*/
-        property_set("ro.product.model", "Swift 2 Plus");
+        property_override("ro.product.model", "Swift 2 Plus");
     }
     else if (cmv == "mv3")
     {
         /* Swift 2 X */
-        property_set("ro.product.model", "Swift 2 X");
+        property_override("ro.product.model", "Swift 2 X");
         display_density = 480;
     }
     char density[5];
     snprintf(density, sizeof(density), "%d", display_density);
-    property_set("ro.sf.lcd_density", density);
+    property_override("ro.sf.lcd_density", density);
 }
 
