@@ -21,4 +21,5 @@ cc_library {
         "strdup8to16.cpp",
     ],
     compile_multilib: "64",
+    system_ext_specific: true,
 }
