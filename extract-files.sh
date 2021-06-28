@@ -53,8 +53,79 @@ fi
 
 function blob_fixup() {
     case "${1}" in
+        lib/com.qualcomm.qti.ant@1.0.so)
+            ;&
+        vendor/lib/vendor.qti.hardware.fm@1.0_vendor.so)
+            ;&
+        vendor/lib64/vendor.qti.hardware.fm@1.0_vendor.so)
+            ;&
+        vendor/lib64/com.qualcomm.qti.ant@1.0_vendor.so)
+            ;&
+        lib64/libwfdnative.so)
+            ;&
+        lib64/com.qualcomm.qti.ant@1.0.so)
+            "${PATCHELF}" --remove-needed "android.hidl.base@1.0.so" "${2}"
+            ;;
+        product/etc/permissions/qti_libpermissions.xml)
+            sed -i "s|name=\"android.hidl.manager-V1.0-java|name=\"android.hidl.manager@1.0-java|g" "${2}"
+            ;;
         product/etc/permissions/qcrilhook.xml)
             sed -i "s|/system/framework/qcrilhook.jar|/system/product/framework/qcrilhook.jar|g" "${2}"
+            ;;
+        vendor/bin/mm-qcamera-daemon)
+            sed -i "s|/data/vendor/camera/cam_socket%d|/data/vendor/qcam/cam_socket%d\x0\x0|g" "${2}"
+            ;;
+        vendor/lib/libmmcamera2_cpp_module.so)
+            ;&
+        vendor/lib/libmmcamera2_cpp_module.so)
+            ;&
+        vendor/lib/libmmcamera2_dcrf.so)
+            ;&
+        vendor/lib/libmmcamera2_iface_modules.so)
+            ;&
+        vendor/lib/libmmcamera2_imglib_modules.so)
+            ;&
+        vendor/lib/libmmcamera2_mct.so)
+            ;&
+        vendor/lib/libmmcamera2_pproc_modules.so)
+            ;&
+        vendor/lib/libmmcamera2_q3a_core.so)
+            ;&
+       	vendor/lib/libmmcamera2_sensor_modules.so)
+            ;&
+        vendor/lib/libmmcamera2_stats_algorithm.so)
+            ;&
+        vendor/lib/libmmcamera2_stats_modules.so)
+            ;&
+        vendor/lib/libmmcamera_dbg.so)
+            ;&
+        vendor/lib/libmmcamera_imglib.so)
+            ;&
+        vendor/lib/libmmcamera_pdaf.so)
+            ;&
+        vendor/lib/libmmcamera_pdafcamif.so)
+            ;&
+        vendor/lib/libmmcamera_tintless_algo.so)
+            ;&
+        vendor/lib/libmmcamera_tintless_bg_pca_algo.so)
+            ;&
+        vendor/lib/libmmcamera_tuning.so)
+            ;&
+        vendor/lib64/libmmcamera2_q3a_core.so)
+            ;&
+        vendor/lib64/libmmcamera2_stats_algorithm.so)
+            ;&
+        vendor/lib64/libmmcamera_dbg.so)
+            ;&
+        vendor/lib64/libmmcamera_tintless_algo.so)
+            ;&
+        vendor/lib64/libmmcamera_tintless_bg_pca_algo.so)
+            sed -i "s|/data/misc/camera|/data/vendor/qcam|g" "${2}"
+            ;;
+        vendor/lib/libaudcal.so)
+            ;&
+        vendor/lib64/libaudcal.so)
+            sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/acdbdata\/delta\/\x00\x00\x00\x00\x00|g" "${2}"
             ;;
     esac
 }
@@ -64,23 +135,5 @@ setup_vendor "${DEVICE}" "${VENDOR}" "${ANDROID_ROOT}" false "${CLEAN_VENDOR}"
 
 extract "${MY_DIR}/proprietary-files-qc.txt" "${SRC}" "${SECTION}"
 extract "${MY_DIR}/proprietary-files.txt" "${SRC}" "${SECTION}"
-
-DEVICE_BLOB_ROOT="$ANDROID_ROOT"/vendor/"$VENDOR"/"$DEVICE"/proprietary
-
-#
-# Hax libaudcal.so to store acdbdata in new path
-#
-sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/acdbdata\/delta\/\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib/libaudcal.so
-sed -i "s|\/data\/vendor\/misc\/audio\/acdbdata\/delta\/|\/data\/vendor\/audio\/acdbdata\/delta\/\x00\x00\x00\x00\x00|g" \
-    "$DEVICE_BLOB_ROOT"/vendor/lib64/libaudcal.so
-
-for HIDL_BASE_LIB in $(grep -lr "android\.hidl\.base@1\.0\.so" $DEVICE_BLOB_ROOT); do
-    "${PATCHELF}" --remove-needed android.hidl.base@1.0.so "$HIDL_BASE_LIB" || true
-done
-
-for HIDL_MANAGER_LIB in $(grep -lr "android\.hidl\.@1\.0\.so" $DEVICE_BLOB_ROOT); do
-    "${PATCHELF}" --remove-needed android.hidl.manager@1.0.so "$HIDL_MANAGER_LIB" || true
-done
 
 "${MY_DIR}/setup-makefiles.sh"
