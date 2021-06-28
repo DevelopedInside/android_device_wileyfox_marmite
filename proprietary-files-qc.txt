@@ -388,14 +388,14 @@ vendor/lib/libqmi_cci.so|a921e84ec500f7cfb7fe88a4ffba149581410a44
 vendor/lib64/libqmi_cci.so|411a074dc765fb263bec50531ce5c408dd72388f
 
 # RIL - from daisy - QKQ1.191002.002/V11.0.4.0.QDLMIXM
+product/etc/permissions/qcrilhook.xml:system_ext/etc/permissions/qcrilhook.xml|ceb890ab3c1645aa0d0044abab1ba58c4097a991|4e58dc0e3d4391451fc67ad0d5e9ee5943631e54
+product/framework/qcrilhook.jar:system_ext/framework/qcrilhook.jar|99c85f639bdf74b6779607f1f29628c33d4edc85
 system_ext/framework/qti-telephony-common.jar|11d6b89b31a9bf65218b3676c2bbd296275b1932
+-product/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk:system_ext/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk|20c011ffc54539161fa7cc05c55c9c5ed3f936b4
 
 # RIL - from tissot - PKQ1.180917.001.V10.0.4.0.PDHMIXM
 -app/datastatusnotification/datastatusnotification.apk:system_ext/app/datastatusnotification/datastatusnotification.apk|ceafcce87298531a3adb13a87709a1fd65291625
 -app/QtiTelephonyService/QtiTelephonyService.apk:system_ext/app/QtiTelephonyService/QtiTelephonyService.apk|420b39e20a5166940c1e2e55e8d9c92ec910cebb
-etc/permissions/qcrilhook.xml:system_ext/etc/permissions/qcrilhook.xml|9fc58a3d54d20ac1d53bab14608815121aefbce5|394fe5f8578e073acef575a84ca9120764b5155e
-framework/qcrilhook.jar:system_ext/framework/qcrilhook.jar|784df5e6aa9df0127700b9a6f1083440ebfac057
--priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk:system_ext/priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk|d1d3adfe6eff32a3013e146317324029181e3c4a
 vendor/bin/ATFWD-daemon|390c764ab1b425e836f2b98cf039086d6729d751
 vendor/bin/netmgrd|48d3b006b85cf3b30ec5c4b972e64f2003c52e60
 vendor/bin/qti|28c5da423ba2e0c7873c24e6eca4bb4db7f41fe8
