@@ -256,11 +256,10 @@ static void process_interaction_hint(void* data) {
 
     struct timespec cur_boost_timespec;
     long long elapsed_time;
-    int input_duration = 0;
     int duration = kMinInteractiveDuration;
 
     if (data) {
-        input_duration = *((int*)data);
+        int input_duration = *((int*)data);
         if (input_duration > duration) {
             duration = (input_duration > kMaxInteractiveDuration) ? kMaxInteractiveDuration
                                                                   : input_duration;
@@ -270,10 +269,8 @@ static void process_interaction_hint(void* data) {
     clock_gettime(CLOCK_MONOTONIC, &cur_boost_timespec);
 
     elapsed_time = calc_timespan_us(s_previous_boost_timespec, cur_boost_timespec);
-    // don't hint if it's been less than 250ms since last boost
-    // also detect if the duration of previous hint's durtaion 
-    // covers this hint's duration.
-    if (elapsed_time < 250000 && input_duration <= s_previous_duration) {
+    // don't hint if previous hint's duration covers this hint's duration
+    if ((s_previous_duration * 1000) > (elapsed_time + duration * 1000)) {
         return;
     }
     s_previous_boost_timespec = cur_boost_timespec;
@@ -284,7 +281,7 @@ static void process_interaction_hint(void* data) {
     }
 
     interaction_handle =
-            perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration + 250, SCROLL_VERTICAL);
+            perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, SCROLL_VERTICAL);
 }
 
 static int process_activity_launch_hint(void* data) {
