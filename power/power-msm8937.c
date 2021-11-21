@@ -280,8 +280,10 @@ static void process_interaction_hint(void* data) {
         release_request(interaction_handle);
     }
 
-    interaction_handle =
-            perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, SCROLL_VERTICAL);
+    if (duration > kMinInteractiveDuration) {
+        interaction_handle = perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, 
+                                                        SCROLL_VERTICAL);
+    }
 }
 
 static int process_activity_launch_hint(void* data) {
