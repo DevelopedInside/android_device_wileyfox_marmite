@@ -283,6 +283,9 @@ static void process_interaction_hint(void* data) {
     if (duration > kMinInteractiveDuration) {
         interaction_handle = perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, 
                                                         SCROLL_VERTICAL);
+    } else {
+        interaction_handle = perf_hint_enable_with_type(VENDOR_HINT_SCROLL_BOOST, duration, 
+                                                        SCROLL_PREFILING);
     }
 }
 
