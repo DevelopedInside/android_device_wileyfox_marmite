@@ -33,6 +33,7 @@ on enable-low-power
     write /sys/class/devfreq/soc:qcom,cpubw/governor "bw_hwmon"
     write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/io_percent 20
     write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/guard_band_mbps 30
+    write /sys/class/devfreq/soc:qcom,cpubw/bw_hwmon/mbps_zones "2929 5053 5712 6152 7031"
     write /sys/class/devfreq/soc:qcom,cpubw/min_freq 2929
 
     write /sys/class/devfreq/soc:qcom,gpubw/bw_hwmon/io_percent 40
