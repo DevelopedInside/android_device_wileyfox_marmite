@@ -125,6 +125,8 @@ on enable-low-power
     # HMP scheduler (big.Little cluster related) settings
     write /proc/sys/kernel/sched_upmigrate 93
     write /proc/sys/kernel/sched_downmigrate 83
+    write /proc/sys/kernel/sched_grp_upmigrate 140
+    write /proc/sys/kernel/sched_grp_downmigrate 120
 
     # Enable core control
     write /sys/devices/system/cpu/cpu0/core_ctl/min_cpus 2
